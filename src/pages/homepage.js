@@ -6,17 +6,18 @@ const Homepage = () => {
   const navigate = useNavigate();
 
   const handleRoleClick = (role) => {
-    if (role === 'general') {
-      navigate('/login/general'); // General User - Kakao login
-    } else {
-      localStorage.setItem('userRole', role); // Store the role in local storage
-      navigate('/login'); // Navigate to the login component for Ambulance Personnel and Hospital Doctor
+    if (role === 'admin') {
+      navigate('/login/admin');
+    } else if (role === 'ambulance') {
+      navigate('/login/ambulance');
+    } else if (role === 'hospital') {
+      navigate('/login/hospital');
     }
   };
 
   return (
     <ButtonContainer>
-      <Button onClick={() => handleRoleClick('general')}>General User</Button>
+      <Button onClick={() => handleRoleClick('admin')}>Admin</Button>
       <Button onClick={() => handleRoleClick('ambulance')}>Ambulance Personnel</Button>
       <Button onClick={() => handleRoleClick('hospital')}>Hospital Doctor</Button>
     </ButtonContainer>
