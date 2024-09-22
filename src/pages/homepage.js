@@ -6,7 +6,12 @@ const Homepage = () => {
   const navigate = useNavigate();
 
   const handleRoleClick = (role) => {
-    navigate(role === 'general' ? '/login/general' : '/login');
+    if (role === 'general') {
+      navigate('/login/general'); // General User - Kakao login
+    } else {
+      localStorage.setItem('userRole', role); // Store the role in local storage
+      navigate('/login'); // Navigate to the login component for Ambulance Personnel and Hospital Doctor
+    }
   };
 
   return (
