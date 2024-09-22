@@ -15,7 +15,6 @@ const SignupHospital = () => {
   const [isIdAvailable, setIsIdAvailable] = useState(null);
   const navigate = useNavigate();
 
-  // ID 중복 확인 함수
   const handleIdCheck = async () => {
     if (!id) {
       alert('ID를 입력하세요.');
@@ -37,7 +36,6 @@ const SignupHospital = () => {
     }
   };
 
-  // 회원가입 요청 함수
   const handleSubmit = async (e) => {
     e.preventDefault();
 

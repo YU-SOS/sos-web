@@ -35,7 +35,6 @@ const SignupAmbulance = () => {
     }
   };
 
-  // 회원가입 요청 함수
   const handleSubmit = async (e) => {
     e.preventDefault();
 

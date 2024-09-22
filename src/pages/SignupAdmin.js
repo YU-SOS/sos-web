@@ -9,7 +9,6 @@ const SignupAdmin = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // 폼 제출 핸들러
   const handleSubmit = async (e) => {
     e.preventDefault();
 
