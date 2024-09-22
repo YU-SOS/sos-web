@@ -6,12 +6,18 @@ const Homepage = () => {
   const navigate = useNavigate();
 
   const handleRoleClick = (role) => {
-    navigate(role === 'general' ? '/login/general' : '/login');
+    if (role === 'admin') {
+      navigate('/login/admin');
+    } else if (role === 'ambulance') {
+      navigate('/login/ambulance');
+    } else if (role === 'hospital') {
+      navigate('/login/hospital');
+    }
   };
 
   return (
     <ButtonContainer>
-      <Button onClick={() => handleRoleClick('general')}>General User</Button>
+      <Button onClick={() => handleRoleClick('admin')}>Admin</Button>
       <Button onClick={() => handleRoleClick('ambulance')}>Ambulance Personnel</Button>
       <Button onClick={() => handleRoleClick('hospital')}>Hospital Doctor</Button>
     </ButtonContainer>
