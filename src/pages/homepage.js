@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ButtonContainer, Button } from '../components/StyledComponents';
 
 const Homepage = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
 
   const handleRoleClick = (role) => {
     if (role === 'admin') {

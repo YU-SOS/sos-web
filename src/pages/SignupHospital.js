@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const SignupHospital = () => {
   const navigate = useNavigate();
-  const [id, setId] = useState('');
+  const [id, setId] = useState(''); 
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [latitude, setLatitude] = useState('');

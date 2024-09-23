@@ -8,7 +8,7 @@ const LoginHospital = () => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [success, setSuccess] = useState(''); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
