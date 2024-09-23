@@ -4,6 +4,7 @@ import { FormContainer, Input, Button } from '../components/StyledComponents';
 import axios from 'axios';
 
 const SignupAmbulance = () => {
+  const navigate = useNavigate();
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [ambulanceName, setAmbulanceName] = useState('');
@@ -12,7 +13,6 @@ const SignupAmbulance = () => {
   const [success, setSuccess] = useState('');
   const [isIdChecked, setIsIdChecked] = useState(false);
   const [isIdAvailable, setIsIdAvailable] = useState(null);
-  const navigate = useNavigate();
 
   const handleIdCheck = async () => {
     if (!id) {
@@ -104,7 +104,7 @@ const SignupAmbulance = () => {
           {error && <p style={{ color: 'red' }}>{error}</p>}
           {success && <p style={{ color: 'green' }}>{success}</p>}
         </form>
-        <p>이미 계정이 있으신가요? <a href="/login">로그인</a></p>
+        <p>이미 계정이 있으신가요? <a href="/login/ambulance">로그인</a></p>
       </FormContainer>
   );
 };

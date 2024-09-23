@@ -17,9 +17,9 @@ const Homepage = () => {
 
   return (
     <ButtonContainer>
-      <Button onClick={() => handleRoleClick('admin')}>Admin</Button>
-      <Button onClick={() => handleRoleClick('ambulance')}>Ambulance Personnel</Button>
-      <Button onClick={() => handleRoleClick('hospital')}>Hospital Doctor</Button>
+      <Button onClick={() => handleRoleClick('admin')}>관리자</Button>
+      <Button onClick={() => handleRoleClick('ambulance')}>구급대원</Button>
+      <Button onClick={() => handleRoleClick('hospital')}>병원 의사</Button>
     </ButtonContainer>
   );
 };

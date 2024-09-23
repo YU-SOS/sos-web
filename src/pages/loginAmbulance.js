@@ -4,11 +4,11 @@ import { FormContainer, Input, Button } from '../components/StyledComponents';
 import axios from 'axios';
 
 const LoginAmbulance = () => {
+  const navigate = useNavigate();
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();

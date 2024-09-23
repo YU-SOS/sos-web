@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FormContainer, Input, Button } from '../components/StyledComponents';
 import axios from 'axios';
 
 const SignupAdmin = () => {
+  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -61,6 +63,7 @@ const SignupAdmin = () => {
           {error && <p style={{ color: 'red' }}>{error}</p>}
           {success && <p style={{ color: 'green' }}>{success}</p>}
         </form>
+        <p>이미 계정이 있으신가요? <a href="/login/admin">로그인</a></p>
       </FormContainer>
   );
 };
