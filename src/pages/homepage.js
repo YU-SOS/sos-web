@@ -1,9 +1,9 @@
-import React from 'react';
+import React from 'react'; 
 import { useNavigate } from 'react-router-dom';
 import { ButtonContainer, Button } from '../components/StyledComponents';
 
 const Homepage = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
 
   const handleRoleClick = (role) => {
     if (role === 'admin') {
@@ -17,9 +17,9 @@ const Homepage = () => {
 
   return (
     <ButtonContainer>
-      <Button onClick={() => handleRoleClick('admin')}>Admin</Button>
-      <Button onClick={() => handleRoleClick('ambulance')}>Ambulance Personnel</Button>
-      <Button onClick={() => handleRoleClick('hospital')}>Hospital Doctor</Button>
+      <Button onClick={() => handleRoleClick('admin')}>관리자</Button>
+      <Button onClick={() => handleRoleClick('ambulance')}>구급대원</Button>
+      <Button onClick={() => handleRoleClick('hospital')}>병원 의사</Button>
     </ButtonContainer>
   );
 };
