@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; 
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FormContainer, Input, Button } from '../components/StyledComponents';
 import axios from 'axios';
@@ -8,13 +8,13 @@ const LoginHospital = () => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(''); 
+  const [success, setSuccess] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
-      const response = await axios.post('/login/hospital', {
+      const response = await axios.post('/login', {
         id,
         password,
       });
@@ -33,29 +33,28 @@ const LoginHospital = () => {
   };
 
   return (
-    <FormContainer>
-      <h1>병원 로그인</h1>
-      <form onSubmit={handleSubmit}>
-        <Input
-          type="text"
-          placeholder="ID"
-          value={id}
-          onChange={(e) => setId(e.target.value)}
-          required
-        />
-        <Input
-          type="password"
-          placeholder="비밀번호"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <Button type="submit" primary>로그인</Button>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        {success && <p style={{ color: 'green' }}>{success}</p>}
-      </form>
-      <p>계정이 없으신가요? <a href="/signup/hospital">회원가입</a></p>
-    </FormContainer>
+      <FormContainer>
+        <h1>병원 로그인</h1>
+        <form onSubmit={handleSubmit}>
+          <Input
+              type="text"
+              placeholder="ID"
+              value={id}
+              onChange={(e) => setId(e.target.value)}
+              required
+          />
+          <Input
+              type="password"
+              placeholder="비밀번호"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+          />
+          <Button type="submit" primary>로그인</Button>
+          {error && <p style={{ color: 'red' }}>{error}</p>}
+          {success && <p style={{ color: 'green' }}>{success}</p>}
+        </form>
+      </FormContainer>
   );
 };
 
