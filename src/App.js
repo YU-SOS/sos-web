@@ -7,6 +7,7 @@ import LoginHospital from './pages/loginHospital';
 import SignupAdmin from './pages/SignupAdmin';
 import SignupAmbulance from './pages/SignupAmbulance';
 import SignupHospital from './pages/SignupHospital';
+import Layout from './layout/Layout';
 
 const App = () => {
   return (
@@ -19,6 +20,8 @@ const App = () => {
         <Route path="/signup/admin" element={<SignupAdmin />} />
         <Route path="/signup/ambulance" element={<SignupAmbulance />} />
         <Route path="/signup/hospital" element={<SignupHospital />} />
+
+        <Route path='/test' element ={<Layout />}/>
       </Routes>
     </Router>
   );
