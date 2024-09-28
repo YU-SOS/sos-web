@@ -1,10 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { ReactComponent as Quit } from '../assets/svg/quit.svg';
 import { ReactComponent as Request } from '../assets/svg/request.svg';
 import { ReactComponent as Reception } from '../assets/svg/reception.svg';
+import CategoryList from './components/CategoryList';
+import {useNavigate} from 'react-router-dom';
 
 const Header = () => {
+
+    const navigate = useNavigate();
+    const [ active, setActive ] = useState(null);
+
+    const categoryList = [
+        { Icon : Request, text : "응급실 방문 요청", path : "request"}, /*상대 경로 사용, 절대 경로 사용 시 /test/request*/
+        { Icon : Reception, text : "응급실 접수 목록", path: "reception"}
+    ]
+
+    const categoryClickHandler = (path) => {
+        setActive(path);
+        navigate(path);
+
+    }
+
   return (
     <Wrapper>
         <Logo>SOS</Logo>
@@ -13,26 +30,25 @@ const Header = () => {
                 <Image/>
             </ImageContainer>
             <Name>
-                영남대병원
+                {/* hospital name */}
+                영남대병원 
             </Name>
             <Address>
+                {/* hospital name */}
                 대구광역시 남구 현충로 170
                 테스트 주소
             </Address>
 
-            <ContentName>
-                관리
-            </ContentName>
+            <CategoryList 
+                title={"관리"} 
+                categoryList={categoryList.map(el => ({
+                    ...el,
+                    onClick : () => categoryClickHandler(el.path),
+                    isActive : active === el.path
+                }))} 
+            />
 
-            <Category>
-                <Request />
-                응급실 방문 요청
-            </Category>
-
-            <Category>
-                <Reception />
-                응급실 접수 목록
-            </Category>
+            
         </Content>
         <Footer>
             <QuitIcon />
@@ -54,9 +70,16 @@ const Wrapper = styled.div`
 const Logo = styled.div`
     height : 50px;
     color : #fff;
+
+    display : flex;
+    justify-content : end;
+    align-items : center;
+    
     box-sizing : border-box;
-    padding : 10px;
-    font-family : "Pretendard Variable";
+    padding : 0 20px;
+    /* font-family : "Pretendard Variable"; */
+    font-family: "Pacifico", cursive;
+    
     font-size : 30px;
     font-weight : 600;
     border-bottom : 0.5px solid #404040;
@@ -100,29 +123,6 @@ const Address = styled.div`
     font-size : 18px; 
     text-align : center;
 `
-const ContentName = styled.div`
-    font-family : "Pretendard Variable";
-    font-size : 20px; 
-    color : #aaa;
-    
-    box-sizing : border-box;
-    padding : 20px;
-`
-
-const Category = styled.div`
-    box-sizing : border-box;
-    padding : 15px 20px;
-    display : flex;
-    gap : 10px;
-    align-items : center;
-    transition : 0.3s;
-
-    &:hover {
-        background-color : #FF2121;
-    }
-`
-
-
 
 
 const Footer = styled.div`
