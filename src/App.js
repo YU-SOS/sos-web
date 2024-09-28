@@ -8,6 +8,8 @@ import SignupAdmin from './pages/SignupAdmin';
 import SignupAmbulance from './pages/SignupAmbulance';
 import SignupHospital from './pages/SignupHospital';
 import Layout from './layout/Layout';
+import Reqeust from './pages/hospital/Reqeust';
+import Reception from './pages/hospital/Reception';
 
 const App = () => {
   return (
@@ -21,7 +23,10 @@ const App = () => {
         <Route path="/signup/ambulance" element={<SignupAmbulance />} />
         <Route path="/signup/hospital" element={<SignupHospital />} />
 
-        <Route path='/test' element ={<Layout />}/>
+        <Route path='/test' element ={<Layout />}>
+          <Route path='request' element={<Reqeust/>} />
+          <Route path='reception' element={<Reception/>} />
+        </Route>
       </Routes>
     </Router>
   );
