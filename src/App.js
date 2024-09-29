@@ -10,6 +10,7 @@ import SignupHospital from './pages/SignupHospital';
 import Layout from './layout/Layout';
 import Reqeust from './pages/hospital/Reqeust';
 import Reception from './pages/hospital/Reception';
+import Test from './Test';
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/signup/admin" element={<SignupAdmin />} />
         <Route path="/signup/ambulance" element={<SignupAmbulance />} />
         <Route path="/signup/hospital" element={<SignupHospital />} />
+        <Route path="/test2" element={<Test />} />
 
         <Route path='/test' element ={<Layout />}>
           <Route path='request' element={<Reqeust/>} />
