@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FormContainer, Input, Button } from '../components/StyledComponents';
+import { FormContainer, Input, Button } from '../../components/StyledComponents';
 import axios from 'axios';
 
 const LoginHospital = () => {
@@ -22,6 +22,9 @@ const LoginHospital = () => {
       if (response.data.status === 'success') {
         setSuccess('로그인 성공!');
         setError('');
+
+        localStorage.setItem('HospitalDoctorLoggedIn', true);
+
         navigate('/hospital/dashboard');
       } else {
         setError('로그인에 실패했습니다. ID 또는 비밀번호를 확인하세요.');

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FormContainer, Input, Button } from '../components/StyledComponents';
+import { FormContainer, Input, Button } from '../../components/StyledComponents';
 import axios from 'axios';
 
-const LoginHospital = () => {
+const LoginAdmin = () => {
   const navigate = useNavigate();
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
@@ -22,7 +22,7 @@ const LoginHospital = () => {
       if (response.data.status === 'success') {
         setSuccess('로그인 성공!');
         setError('');
-        navigate('/hospital/dashboard');
+        navigate('/admin/dashboard');
       } else {
         setError('로그인에 실패했습니다. ID 또는 비밀번호를 확인하세요.');
       }
@@ -34,7 +34,7 @@ const LoginHospital = () => {
 
   return (
       <FormContainer>
-        <h1>병원 로그인</h1>
+        <h1>관리자 로그인</h1>
         <form onSubmit={handleSubmit}>
           <Input
               type="text"
@@ -58,4 +58,4 @@ const LoginHospital = () => {
   );
 };
 
-export default LoginHospital;
+export default LoginAdmin;
