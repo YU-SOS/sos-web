@@ -12,6 +12,7 @@ import Reqeust from './pages/hospital/Reqeust';
 import Reception from './pages/hospital/Reception';
 import ProtectedRoute from './components/ProtectedRoute';
 
+
 const App = () => {
   return (
     <Router>
