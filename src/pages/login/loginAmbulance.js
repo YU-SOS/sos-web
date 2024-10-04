@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FormContainer, Input, Button } from '../components/StyledComponents';
+import { FormContainer, Input, Button } from '../../components/StyledComponents';
 import axios from 'axios';
 
-const SignupAdmin = () => {
+const LoginHospital = () => {
   const navigate = useNavigate();
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
@@ -14,27 +14,27 @@ const SignupAdmin = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('/signup/admin', {
+      const response = await axios.post('/login', {
         id,
         password,
       });
 
       if (response.data.status === 'success') {
-        setSuccess('회원가입 성공!');
+        setSuccess('로그인 성공!');
         setError('');
-        navigate('/admin/dashboard');
+        navigate('/hospital/dashboard');
       } else {
-        setError('회원가입에 실패했습니다. 정보를 확인하세요.');
+        setError('로그인에 실패했습니다. ID 또는 비밀번호를 확인하세요.');
       }
     } catch (err) {
-      setError('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+      setError('로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
       setSuccess('');
     }
   };
 
   return (
       <FormContainer>
-        <h1>관리자 회원가입</h1>
+        <h1>병원 로그인</h1>
         <form onSubmit={handleSubmit}>
           <Input
               type="text"
@@ -50,7 +50,7 @@ const SignupAdmin = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
           />
-          <Button type="submit" primary>회원가입</Button>
+          <Button type="submit" primary>로그인</Button>
           {error && <p style={{ color: 'red' }}>{error}</p>}
           {success && <p style={{ color: 'green' }}>{success}</p>}
         </form>
@@ -58,4 +58,4 @@ const SignupAdmin = () => {
   );
 };
 
-export default SignupAdmin;
+export default LoginHospital;

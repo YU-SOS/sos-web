@@ -1,16 +1,17 @@
 import React from 'react';  
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Homepage from './pages/homepage';
-import LoginAdmin from './pages/loginAdmin';
-import LoginAmbulance from './pages/loginAmbulance';
-import LoginHospital from './pages/loginHospital';
-import SignupAdmin from './pages/SignupAdmin';
-import SignupAmbulance from './pages/SignupAmbulance';
-import SignupHospital from './pages/SignupHospital';
+import LoginAdmin from './pages/login/loginAdmin';
+import LoginAmbulance from './pages/login/loginAmbulance';
+import LoginHospital from './pages/login/loginHospital';
+import SignupAdmin from './pages/signup/SignupAdmin';
+import SignupAmbulance from './pages/signup/SignupAmbulance';
+import SignupHospital from './pages/signup/SignupHospital';
 import Layout from './layout/Layout';
 import Reqeust from './pages/hospital/Reqeust';
 import Reception from './pages/hospital/Reception';
-import Test from './Test';
+import ProtectedRoute from './components/ProtectedRoute';
+
 
 const App = () => {
   return (
@@ -25,9 +26,16 @@ const App = () => {
         <Route path="/signup/hospital" element={<SignupHospital />} />
         <Route path="/test2" element={<Test />} />
 
-        <Route path='/test' element ={<Layout />}>
-          <Route path='request' element={<Reqeust/>} />
-          <Route path='reception' element={<Reception/>} />
+        <Route 
+          path='/test' 
+          element={
+            <ProtectedRoute>
+              <Layout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path='request' element={<Reqeust />} />
+          <Route path='reception' element={<Reception />} />
         </Route>
       </Routes>
     </Router>

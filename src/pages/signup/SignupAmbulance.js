@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FormContainer, Input, Button } from '../components/StyledComponents';
+import { FormContainer, Input, Button } from '../../components/StyledComponents';
 import axios from 'axios';
 
-const SignupHospital = () => {
+const SignupAmbulance = () => {
   const navigate = useNavigate();
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
@@ -14,7 +14,7 @@ const SignupHospital = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('/signup/hospital', {
+      const response = await axios.post('/signup/ambulance', {
         id,
         password,
       });
@@ -22,7 +22,7 @@ const SignupHospital = () => {
       if (response.data.status === 'success') {
         setSuccess('회원가입 성공!');
         setError('');
-        navigate('/hospital/dashboard');
+        navigate('/ambulance/dashboard');
       } else {
         setError('회원가입에 실패했습니다. 정보를 확인하세요.');
       }
@@ -34,7 +34,7 @@ const SignupHospital = () => {
 
   return (
       <FormContainer>
-        <h1>병원 회원가입</h1>
+        <h1>앰뷸런스 회원가입</h1>
         <form onSubmit={handleSubmit}>
           <Input
               type="text"
@@ -58,4 +58,4 @@ const SignupHospital = () => {
   );
 };
 
-export default SignupHospital;
+export default SignupAmbulance;
