@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FormContainer, Input, Button } from '../../components/StyledComponents';
 import axios from 'axios';
+
 
 const SignupAdmin = () => {
   const navigate = useNavigate();
@@ -10,8 +11,20 @@ const SignupAdmin = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  useEffect(()=> {
+    const fet = async () => {
+      const res = await axios.post('http://3.35.136.82:8080/');
+      console.log(res)
+    }
+
+    fet();
+  }, [])
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+
+
 
     try {
       const response = await axios.post('/signup/admin', {

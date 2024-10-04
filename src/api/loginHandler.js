@@ -1,11 +1,11 @@
 import apiClient from "./apiClient"
 
-export const loginHandler = async () => {
+const loginHandler = async () => {
     try {
         const result = await apiClient.post('/login',{
-            role : "AMB",
-            id : "testamb",
-            password : "testpw"
+            role : "HOS",
+            id : "test",
+            password : "test"
         })
 
         console.log(result);
@@ -19,3 +19,4 @@ export const loginHandler = async () => {
         console.error(err)
     }
 }
+export default loginHandler;

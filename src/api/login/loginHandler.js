@@ -24,8 +24,8 @@ export const loginHospitalHandler = async () => {
     try {
         const result = await apiClient.post('/login', {
             role: "HOS",
-            id: "testhos",
-            password: "testpw" 
+            id: "test",
+            password: "test"
         });
 
         console.log(result);

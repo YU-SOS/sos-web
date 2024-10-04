@@ -1,28 +1,29 @@
 import { getAuthAxios } from '../authAxios';
+import apiClient from "../apiClient";
 
 const signupHospital = async (hospitalData) => {
   try {
-    const authAxios = getAuthAxios();
-    const response = await authAxios.post('/signup/hospital', hospitalData);
+    const response = await apiClient.post('/signup/hospital', hospitalData);
 
-    if (response.status === 201) {
-      return {
-        statusCode: 201,
-        message: "회원가입 성공",
-      };
+    return {
+      status : response.status,
+      body : response.data
     }
+
   } catch (error) {
-    if (error.response.status === 409) {
+    console.error(error);
+    console.log(error.response.status);
+
+    if(error.response.status === 409) {
+      alert('이미 존재하는 사용자입니다.')
+
       return {
-        statusCode: 409,
-        message: "회원가입 실패",
-      };
-    } else if (error.response.status === 403) {
-      return {
-        statusCode: 403,
-        message: "인자 에러",
-      };
+        status : error.response.status,
+
+      }
     }
+
+
   }
 };
 
