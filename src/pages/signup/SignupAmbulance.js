@@ -14,7 +14,7 @@ const SignupAmbulance = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('/signup/ambulance', {
+      const result = await signupHospitalAPI({
         id,
         password,
       });

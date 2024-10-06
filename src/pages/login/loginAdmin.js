@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FormContainer, Input, Button } from '../../components/StyledComponents';
-import axios from 'axios';
+import loginAdminAPI from '../../api/login/loginAdminAPI';
 
 const LoginAdmin = () => {
   const navigate = useNavigate();
@@ -14,12 +14,12 @@ const LoginAdmin = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('/login', {
+      const result = await loginAdminAPI({
         id,
         password,
       });
 
-      if (response.data.status === 'success') {
+      if (result.status === 'success') {
         setSuccess('로그인 성공!');
         setError('');
         navigate('/admin/dashboard');
@@ -33,28 +33,28 @@ const LoginAdmin = () => {
   };
 
   return (
-      <FormContainer>
-        <h1>관리자 로그인</h1>
-        <form onSubmit={handleSubmit}>
-          <Input
-              type="text"
-              placeholder="ID"
-              value={id}
-              onChange={(e) => setId(e.target.value)}
-              required
-          />
-          <Input
-              type="password"
-              placeholder="비밀번호"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-          />
-          <Button type="submit" primary>로그인</Button>
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-          {success && <p style={{ color: 'green' }}>{success}</p>}
-        </form>
-      </FormContainer>
+    <FormContainer>
+      <h1>관리자 로그인</h1>
+      <form onSubmit={handleSubmit}>
+        <Input
+          type="text"
+          placeholder="ID"
+          value={id}
+          onChange={(e) => setId(e.target.value)}
+          required
+        />
+        <Input
+          type="password"
+          placeholder="비밀번호"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <Button type="submit" primary>로그인</Button>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {success && <p style={{ color: 'green' }}>{success}</p>}
+      </form>
+    </FormContainer>
   );
 };
 

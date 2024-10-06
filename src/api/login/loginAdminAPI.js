@@ -1,17 +1,15 @@
-import { getAuthAxios } from '../authAxios';
+import apiClient from "../apiClient";
 
 const loginAdmin = async (adminData) => {
   try {
-    const authAxios = getAuthAxios();
-    const response = await authAxios.post('/login/admin', adminData);
 
-    if (response.status === 200) {
-      return {
-        statusCode: 200,
-        message: "로그인 성공",
-        data: response.data,
-      };
+    const response = await apiClient.post('/login/admin', adminData);
+
+    return {
+      status : response.status,
+      body : response.data
     }
+
   } catch (error) {
     if (error.response.status === 401) {
       return {

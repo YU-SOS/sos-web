@@ -1,4 +1,3 @@
-import { getAuthAxios } from '../authAxios';
 import apiClient from "../apiClient";
 
 const signupHospital = async (hospitalData) => {
