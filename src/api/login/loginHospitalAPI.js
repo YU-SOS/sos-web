@@ -2,10 +2,7 @@ import apiClient from "../apiClient";
 
 const loginHospital = async (id, password) => {
   try {
-    const response = await apiClient.post('/login', {
-      id,
-      password
-    });
+    const response = await apiClient.post('/login', { id,password });
 
     const accessToken = response.headers['authorization'];
 
@@ -16,27 +13,22 @@ const loginHospital = async (id, password) => {
     }
 
     return {
-      status : response.status,
-      body : response.data
-    }
-
+      status: response.status,
+      body: response.data,
+    };
   } catch (error) {
     console.error(error);
 
-    if (error.response.status === 403) {
+    if (error.response && error.response.status === 403) {
       return {
-        status: 403,
-        body: {
-          message: "블랙리스트된 사용자입니다.",
-          userId: error.response.data.data  
-        }
+        statusCode: 403,
+        message: "블랙리스트된 사용자입니다.",
+        userId: error.response.data.data
       };
-    } else if (error.response.status === 404) {
+    } else if (error.response && error.response.status === 404) {
       return {
-        status: 404,
-        body: {
-          message: "사용자 조회 불가"
-        }
+        statusCode: 404,
+        message: "사용자 조회 불가"
       };
     }
 

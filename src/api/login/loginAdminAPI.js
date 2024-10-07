@@ -17,7 +17,8 @@ const loginAdmin = async (adminData) => {
       body: response.data,
     };
   } catch (error) {
-    console.error("Error during login:", error);
+    console.error(error);
+
     if (error.response && error.response.status === 401) {
       return {
         statusCode: 401,

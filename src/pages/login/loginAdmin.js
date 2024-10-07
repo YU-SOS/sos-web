@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FormContainer, Input, Button } from '../../components/StyledComponents';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import loginAdminAPI from '../../api/login/loginAdminAPI';
 
 const LoginAdmin = () => {
     const navigate = useNavigate();
     const [adminId, setAdminId] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -20,40 +19,50 @@ const LoginAdmin = () => {
             });
 
             if (result.status === 200) {
-                setSuccess('로그인 성공!');
-                setError('');
+                alert('로그인 성공! 환영합니다.');
                 navigate('/admin/dashboard');
             } else {
-                setError('로그인에 실패했습니다. ID 또는 비밀번호를 확인하세요.');
+                toast.error('로그인에 실패했습니다. ID 또는 비밀번호를 확인하세요.');
             }
         } catch (e) {
             console.error(e);
-            setError('로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
-            setSuccess('');
+            toast.error('로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
         }
     };
 
     return (
-        <FormContainer>
-            <h1>관리자 로그인</h1>
-            <form onSubmit={handleSubmit}>
-                <Input
-                    type="text"
-                    placeholder="ID"
-                    value={adminId}
-                    onChange={(e) => setAdminId(e.target.value)}
-                    required
-                />
-                <Input
-                    type="password"
-                    placeholder="비밀번호"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-                <Button type="submit" primary>로그인</Button>
-            </form>
-        </FormContainer>
+        <div className="login-container">
+            <div className="tab-menu">
+                <button
+                    className="tab"
+                    onClick={() => (window.location.href = '/login')}
+                >
+                    병원 로그인
+                </button>
+                <button className="tab active">관리자 로그인</button>
+            </div>
+            <div className="login-content">
+                <div className="logo-space">LOGO가 들어갈 공간</div>
+                <form className="login-form" onSubmit={handleSubmit}>
+                    <input
+                        type="text"
+                        placeholder="관리자 아이디"
+                        value={adminId}
+                        onChange={(e) => setAdminId(e.target.value)}
+                    />
+                    <input
+                        type="password"
+                        placeholder="비밀번호"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <button type="submit" className="login-button">
+                        관리자 로그인
+                    </button>
+                </form>
+            </div>
+            <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} closeOnClick />
+        </div>
     );
 };
 
