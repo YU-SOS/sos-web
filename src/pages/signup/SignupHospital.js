@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { FormContainer, Input, Button } from '../../components/StyledComponents';
 import axios from 'axios';
 import signupHospitalAPI from "../../api/signup/signupHospitalAPI";
-import { loginHospitalHandler } from "../../api/login/loginHandler";
 
 const SignupHospital = () => {
   const navigate = useNavigate();
@@ -39,15 +38,18 @@ const SignupHospital = () => {
         categories
       });
 
-      const loginResult = await loginHospitalHandler();
-
-      console.log(loginResult);
-
-      if (loginResult.status === 409) {
-        navigate('/');
-      } 
+      if (result.status === 200) {
+        setSuccess('가입 신청이 성공적으로 완료되었습니다. 관리자의 승인을 기다려 주세요.');
+        setError('');
+        setTimeout(() => navigate('/'), 1000);
+      } else {
+        setError('회원가입에 실패했습니다. 입력 정보를 확인해주세요.');
+        setSuccess('');
+      }
 
     } catch (e) {
+      console.error(e);
+      setError('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
       console.error(e);
     }
   };

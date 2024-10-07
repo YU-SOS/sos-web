@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FormContainer, Input, Button } from '../../components/StyledComponents';
-import loginHospitalAmbulanceAPI from '../../api/login/loginHospitalAmbulanceAPI';
+import loginHospitalAPI from '../../api/login/loginHospitalAPI';
 
 const LoginHospital = () => {
   const navigate = useNavigate();
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
-  const [role] = useState('HOS');
+  const [role] = useState('');
 
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -16,10 +16,10 @@ const LoginHospital = () => {
     e.preventDefault();
 
     try {
-      const result = await loginHospitalAmbulanceAPI({
+      const result = await loginHospitalAPI({
         id,
         password,
-        role,
+        role
       });
 
       if (result.statusCode === 200) {
@@ -30,10 +30,8 @@ const LoginHospital = () => {
       } else if (result.statusCode === 403) {
         const userId = result.userId; 
         setError(`블랙리스트된 사용자입니다. 사용자 ID: ${userId}`);
-        navigate('/');
       } else if (result.statusCode === 404) {
         setError('사용자 조회 불가. ID 또는 비밀번호를 확인하세요.');
-        navigate('/');
       } else {
         setError('로그인에 실패했습니다. 다시 시도해주세요.');
         setSuccess('');
@@ -63,8 +61,6 @@ const LoginHospital = () => {
           required
         />
         <Button type="submit" primary>로그인</Button>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        {success && <p style={{ color: 'green' }}>{success}</p>}
       </form>
     </FormContainer>
   );

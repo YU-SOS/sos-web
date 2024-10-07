@@ -2,19 +2,31 @@ import apiClient from "../apiClient";
 
 const loginAdmin = async (adminData) => {
   try {
-
     const response = await apiClient.post('/login/admin', adminData);
 
-    return {
-      status : response.status,
-      body : response.data
+    const accessToken = response.headers['authorization'];
+
+    if (accessToken) {
+      localStorage.setItem('accessToken', accessToken);
+    } else {
+      console.error("Access token not found in response:", response);
     }
 
+    return {
+      status: response.status,
+      body: response.data,
+    };
   } catch (error) {
-    if (error.response.status === 401) {
+    console.error("Error during login:", error);
+    if (error.response && error.response.status === 401) {
       return {
         statusCode: 401,
         message: "인증 에러",
+      };
+    } else {
+      return {
+        statusCode: error.response ? error.response.status : 500,
+        message: "오류 발생",
       };
     }
   }

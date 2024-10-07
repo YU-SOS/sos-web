@@ -1,11 +1,19 @@
 import apiClient from "../apiClient";
 
-const loginHospitalAmbulance = async (id, password) => {
+const loginHospital = async (id, password) => {
   try {
     const response = await apiClient.post('/login', {
       id,
       password
     });
+
+    const accessToken = response.headers['authorization'];
+
+    if (accessToken) {
+      localStorage.setItem('accessToken', accessToken);
+    } else {
+      console.error("Access token not found in response:", response);
+    }
 
     return {
       status : response.status,
@@ -41,4 +49,4 @@ const loginHospitalAmbulance = async (id, password) => {
   }
 };
 
-export default loginHospitalAmbulance;
+export default loginHospital;
