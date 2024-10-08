@@ -3,24 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import loginHospitalAPI from '../../api/login/loginHospitalAPI';
-import '../LoginPage.css';
 
 const LoginHospital = () => {
   const navigate = useNavigate();
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
-  const [role] = useState('');
+  const [role, setRole] = useState('HOS');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
-      const result = await loginHospitalAPI({
-        id,
-        password,
-        role,
-      });
-
+      const result = await loginHospitalAPI(id, password, role);
+  
       if (result.status === 200) {
         alert('로그인 성공! 환영합니다.');
         localStorage.setItem('HospitalDoctorLoggedIn', true);
@@ -43,44 +38,51 @@ const LoginHospital = () => {
   };
 
   return (
-      <div className="login-container">
-        <div className="tab-menu">
-          <button className="tab active">병원 로그인</button>
-          <button
-              className="tab"
-              onClick={() => (window.location.href = '/login/admin')}
-          >
-            관리자 로그인
-          </button>
-        </div>
-        <div className="login-content">
-          <div className="logo-space">LOGO가 들어갈 공간</div>
-          <form className="login-form" onSubmit={handleSubmit}>
-            <input
-                type="text"
-                placeholder="아이디"
-                value={id}
-                onChange={(e) => setId(e.target.value)}
-            />
-            <input
-                type="password"
-                placeholder="비밀번호"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <button type="submit" className="login-button">
-              병원 로그인
-            </button>
-            <div className="register">
-              <p>ID가 없다면, 회원 가입하세요.</p>
-              <button type="button" className="register-button" onClick={handleRegister}>
-                회원가입하기
-              </button>
-            </div>
-          </form>
-        </div>
-        <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} closeOnClick />
+    <div className="login-container">
+      <div className="tab-menu">
+        <button className="tab active">병원 로그인</button>
+        <button
+          className="tab"
+          onClick={() => (window.location.href = '/login/admin')}
+        >
+          관리자 로그인
+        </button>
       </div>
+      <div className="login-content">
+        <div className="logo-space">LOGO가 들어갈 공간</div>
+        <form className="login-form" onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="아이디"
+            value={id}
+            onChange={(e) => setId(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="비밀번호"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+          >
+            <option value="HOS">HOS</option>
+            <option value="AMB">AMB</option>
+          </select>
+          <button type="submit" className="login-button">
+            병원 로그인
+          </button>
+          <div className="register">
+            <p>ID가 없다면, 회원 가입하세요.</p>
+            <button type="button" className="register-button" onClick={handleRegister}>
+              회원가입하기
+            </button>
+          </div>
+        </form>
+      </div>
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} closeOnClick />
+    </div>
   );
 };
 

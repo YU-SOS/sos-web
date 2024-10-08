@@ -1,8 +1,10 @@
 import apiClient from "../apiClient";
 
-const loginHospital = async (id, password) => {
+const loginHospital = async (id, password, role) => {
   try {
-    const response = await apiClient.post('/login', { id,password });
+    console.log("Sending request with:", { id, password, role });
+
+    const response = await apiClient.post('/login', { id, password, role });
 
     const accessToken = response.headers['authorization'];
 
@@ -17,8 +19,7 @@ const loginHospital = async (id, password) => {
       body: response.data,
     };
   } catch (error) {
-    console.error(error);
-
+    console.error("Error response:", error.response ? error.response.data : error);
     if (error.response && error.response.status === 403) {
       return {
         statusCode: 403,
@@ -40,5 +41,8 @@ const loginHospital = async (id, password) => {
     };
   }
 };
+
+
+
 
 export default loginHospital;
