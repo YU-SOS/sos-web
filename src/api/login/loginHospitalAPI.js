@@ -42,7 +42,4 @@ const loginHospital = async (id, password, role) => {
   }
 };
 
-
-
-
 export default loginHospital;

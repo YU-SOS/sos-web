@@ -4,7 +4,10 @@ const loginAdmin = async (adminData) => {
   try {
     const response = await apiClient.post('/login/admin', adminData);
 
-    const accessToken = response.headers['authorization'];
+    let accessToken = response.headers['authorization'];
+    if (accessToken && accessToken.startsWith('Bearer ')) {
+      accessToken = accessToken.substring(7);
+    }
 
     if (accessToken) {
       localStorage.setItem('accessToken', accessToken);
@@ -15,18 +18,19 @@ const loginAdmin = async (adminData) => {
     return {
       status: response.status,
       body: response.data,
+      accessToken,
     };
   } catch (error) {
     console.error(error);
 
     if (error.response && error.response.status === 401) {
       return {
-        statusCode: 401,
+        status: 401,
         message: "인증 에러",
       };
     } else {
       return {
-        statusCode: error.response ? error.response.status : 500,
+        status: error.response ? error.response.status : 500,
         message: "오류 발생",
       };
     }
