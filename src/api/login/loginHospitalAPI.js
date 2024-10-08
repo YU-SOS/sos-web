@@ -1,13 +1,12 @@
 import apiClient from "../apiClient";
 
-const loginHospital = async (hospitalData) => {
+const loginHospital = async (id, password, role) => {
   try {
-    const response = await apiClient.post('/login', hospitalData);
+    console.log("Sending request with:", { id, password, role });
 
-    let accessToken = response.headers['authorization'];
-    if (accessToken && accessToken.startsWith('Bearer ')) {
-      accessToken = accessToken.substring(7);
-    }
+    const response = await apiClient.post('/login', { id, password, role });
+
+    const accessToken = response.headers['authorization'];
 
     if (accessToken) {
       localStorage.setItem('accessToken', accessToken);
@@ -18,26 +17,27 @@ const loginHospital = async (hospitalData) => {
     return {
       status: response.status,
       body: response.data,
-      accessToken,
     };
   } catch (error) {
-    console.error(error);
-
+    console.error("Error response:", error.response ? error.response.data : error);
     if (error.response && error.response.status === 403) {
       return {
-        status: 403,
+        statusCode: 403,
         message: "블랙리스트된 사용자입니다.",
+        userId: error.response.data.data
       };
     } else if (error.response && error.response.status === 404) {
       return {
-        status: 404,
+        statusCode: 404,
         message: "사용자 조회 불가"
       };
     }
 
     return {
-      status: error.response ? error.response.status : 500,
-      message: "오류 발생"
+      status: error.response.status,
+      body: {
+        message: "오류 발생"
+      }
     };
   }
 };
