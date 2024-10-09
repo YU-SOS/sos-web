@@ -8,7 +8,8 @@ import Layout from './layout/Layout';
 import Reqeust from './pages/hospital/Reqeust';
 import Reception from './pages/hospital/Reception';
 import ProtectedRoute from './components/ProtectedRoute';
-
+import AdminDashboard from './pages/dashboard/adminDashboard'; 
+import HospitalDashboard from './pages/dashboard/HospitalDashboard';  
 
 const App = () => {
   return (
@@ -18,6 +19,24 @@ const App = () => {
         <Route path="/login/admin" element={<LoginAdmin />} />
         <Route path="/login" element={<LoginHospital />} />
         <Route path="/signup/hospital" element={<SignupHospital />} />
+
+        <Route 
+          path="/admin/dashboard" 
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/hospital/dashboard" 
+          element={
+            <ProtectedRoute>
+              <HospitalDashboard />
+            </ProtectedRoute>
+          } 
+        />
 
         <Route 
           path='/test' 
