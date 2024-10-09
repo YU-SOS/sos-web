@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import loginHospitalAPI from '../../api/login/loginHospitalAPI';
+import SOSLogo from "../SOS_Logo.png";
 
 const LoginHospital = () => {
   const navigate = useNavigate();
@@ -33,6 +34,16 @@ const LoginHospital = () => {
     }
   };
 
+  const logoStyle = {
+    width: '230px',
+    height: '200px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: '20px',
+    backgroundColor: 'transparent'
+  };
+
   const handleRegister = () => {
     navigate('/signup/hospital');
   };
@@ -49,27 +60,29 @@ const LoginHospital = () => {
         </button>
       </div>
       <div className="login-content">
-        <div className="logo-space">LOGO가 들어갈 공간</div>
+        <div style={logoStyle}>
+          <img src={SOSLogo} alt="SOS Logo" style={{width: '100%', height: '100%', objectFit: 'contain'}}/>
+        </div>
         <form className="login-form" onSubmit={handleSubmit}>
           <input
-            type="text"
-            placeholder="아이디"
-            value={id}
-            onChange={(e) => setId(e.target.value)}
+              type="text"
+              placeholder="병원 아이디"
+              value={id}
+              onChange={(e) => setId(e.target.value)}
           />
           <input
-            type="password"
-            placeholder="비밀번호"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              placeholder="비밀번호"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
           />
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
+          {/*<select
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
           >
             <option value="HOS">HOS</option>
             <option value="AMB">AMB</option>
-          </select>
+          </select>*/}
           <button type="submit" className="login-button">
             병원 로그인
           </button>
@@ -81,7 +94,7 @@ const LoginHospital = () => {
           </div>
         </form>
       </div>
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} closeOnClick />
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} closeOnClick/>
     </div>
   );
 };
