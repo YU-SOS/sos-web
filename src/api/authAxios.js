@@ -13,6 +13,7 @@ export const getAuthAxios = () => {
         withCredentials: true
     })
 
+    return authAxios;
 }
 
 export default getAuthAxios;

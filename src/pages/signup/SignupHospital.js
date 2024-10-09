@@ -44,12 +44,44 @@ const SignupHospital = () => {
   }
 
   const handleCheckId = async () => {
-  // 중복 확인 핸들러
+    try {
+      const response = await axios.get(`http://3.35.136.82:8080/dup-check`, {
+        params: {
+          id: id,
+          role: 'HOS',
+        },
+      });
+  
+      if (response.data.status === 200) {
+        setSuccess('사용가능한 아이디입니다.');
+        setError('');
+        return true;
+      }
+  
+    } catch (error) {
+      if (error.response && error.response.status === 409) {
+        setError('이미 사용 중인 아이디입니다.');
+        setSuccess('');
+        return false;
+      } else {
+        setError('ID 중복 확인 중 오류가 발생했습니다.');
+        setSuccess('');
+        console.error(error);
+        return false;
+      }
+    }
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    const isIdAvailable = await handleCheckId();
+  
+    if (!isIdAvailable) {
+      return;
+    }
+  
     try {
       const result = await signupHospitalAPI({
         id,
@@ -60,11 +92,11 @@ const SignupHospital = () => {
         imageUrl,
         location: {
           latitude,
-          longitude
+          longitude,
         },
-        categories
+        categories,
       });
-
+  
       if (result.status === 200) {
         setSuccess('가입 신청이 성공적으로 완료되었습니다. 관리자의 승인을 기다려 주세요.');
         setError('');
@@ -73,13 +105,13 @@ const SignupHospital = () => {
         setError('회원가입에 실패했습니다. 입력 정보를 확인해주세요.');
         setSuccess('');
       }
-
-    } catch (e) {
+    } catch (error) {
       setError('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
       setSuccess('');
-      console.error(e);
+      console.error(error);
     }
   };
+  
 
   return (
       <FormContainer>
