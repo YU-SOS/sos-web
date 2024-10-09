@@ -5,6 +5,8 @@ import axios from 'axios';
 import signupHospitalAPI from "../../api/signup/signupHospitalAPI";
 import { Map } from "react-kakao-maps-sdk"
 import useKakaoLoader from "../../api/signup/useKakaoLoader"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SignupHospital = () => {
   const navigate = useNavigate();
@@ -51,37 +53,52 @@ const SignupHospital = () => {
           role: 'HOS',
         },
       });
-  
+
       if (response.data.status === 200) {
-        setSuccess('사용가능한 아이디입니다.');
+        toast.success('사용가능한 아이디입니다.');
         setError('');
         return true;
       }
-  
+
     } catch (error) {
       if (error.response && error.response.status === 409) {
-        setError('이미 사용 중인 아이디입니다.');
+        toast.error('이미 사용 중인 아이디입니다.');
         setSuccess('');
         return false;
       } else {
-        setError('ID 중복 확인 중 오류가 발생했습니다.');
+        toast.error('ID 중복 확인 중 오류가 발생했습니다.');
         setSuccess('');
         console.error(error);
         return false;
       }
     }
   };
-  
+
+  const checkId = async () => {
+    try {
+      const response = await axios.get(`http://3.35.136.82:8080/dup-check`, {
+        params: {
+          id: id,
+          role: 'HOS',
+        },
+      });
+      return response.data.status === 200;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    const isIdAvailable = await handleCheckId();
-  
+
+    const isIdAvailable = await checkId();
+
     if (!isIdAvailable) {
       return;
     }
-  
+
     try {
       const result = await signupHospitalAPI({
         id,
@@ -96,22 +113,23 @@ const SignupHospital = () => {
         },
         categories,
       });
-  
-      if (result.status === 200) {
-        setSuccess('가입 신청이 성공적으로 완료되었습니다. 관리자의 승인을 기다려 주세요.');
+
+      if (result.status === 201) {
+        alert('가입 신청이 성공적으로 완료되었습니다. 관리자의 승인을 기다려 주세요.');
         setError('');
         setTimeout(() => navigate('/'), 1000);
       } else {
-        setError('회원가입에 실패했습니다. 입력 정보를 확인해주세요.');
+        console.log(result.status)
+        toast.error('회원가입에 실패했습니다. 입력 정보를 확인해주세요.');
         setSuccess('');
       }
     } catch (error) {
-      setError('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+      toast.error('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
       setSuccess('');
       console.error(error);
     }
   };
-  
+
 
   return (
       <FormContainer>
@@ -225,10 +243,14 @@ const SignupHospital = () => {
               required
               style={{width: '500px'}}
           />
-          <Button type="submit" primary>회원가입</Button>
+          <Button
+              type="submit"
+              primary
+          >회원가입</Button>
           {error && <p style={{color: 'red'}}>{error}</p>}
           {success && <p style={{color: 'green'}}>{success}</p>}
         </form>
+        <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} closeOnClick/>
       </FormContainer>
   );
 };

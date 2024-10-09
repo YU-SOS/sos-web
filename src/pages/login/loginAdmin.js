@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import loginAdminAPI from '../../api/login/loginAdminAPI';
-import '../LoginPage.css';
+import './LoginPage.css';
 import SOSLogo from '../../pages/SOS_Logo.png';
 
 const LoginAdmin = () => {

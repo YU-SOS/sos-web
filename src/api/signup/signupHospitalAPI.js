@@ -7,7 +7,7 @@ const signupHospital = async (hospitalData) => {
     return {
       status : response.status,
       body : response.data
-    }
+    };
 
   } catch (error) {
     console.error(error);
