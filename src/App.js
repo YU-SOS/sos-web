@@ -9,7 +9,7 @@ import Reqeust from './pages/hospital/Reqeust';
 import Reception from './pages/hospital/Reception';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminDashboard from './pages/dashboard/adminDashboard'; 
-import HospitalDashboard from './pages/dashboard/HospitalDashboard';  
+import HospitalDashboard from './pages/dashboard/HospitalDashboard';
 
 const App = () => {
   return (

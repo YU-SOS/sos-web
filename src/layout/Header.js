@@ -12,7 +12,7 @@ const Header = () => {
     const [ active, setActive ] = useState(null);
 
     const categoryList = [
-        { Icon : Request, text : "응급실 방문 요청", path : "request"}, /*상대 경로 사용, 절대 경로 사용 시 /test/request*/
+        { Icon : Request, text : "응급실 방문 요청", path : "request"},
         { Icon : Reception, text : "응급실 접수 목록", path: "reception"}
     ]
 

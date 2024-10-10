@@ -76,13 +76,6 @@ const LoginHospital = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
           />
-          {/*<select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-          >
-            <option value="HOS">HOS</option>
-            <option value="AMB">AMB</option>
-          </select>*/}
           <button type="submit" className="login-button">
             병원 로그인
           </button>

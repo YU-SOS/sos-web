@@ -1,6 +1,6 @@
 import { getAuthAxios } from '../authAxios';
 
-const logout = async () => {
+const logoutAPI = async () => {
   try {
     const authAxios = getAuthAxios();
     const response = await authAxios.post('/logout');
@@ -19,4 +19,4 @@ const logout = async () => {
   }
 };
 
-export default logout;
+export default logoutAPI;

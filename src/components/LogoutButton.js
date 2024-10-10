@@ -11,7 +11,7 @@ const LogoutButton = () => {
     try {
       const result = await logoutAPI();
 
-      if (result.status === 200) {
+      if (result.statusCode === 200) {
         toast.success(result.message);
         localStorage.removeItem('accessToken');
         localStorage.removeItem('HospitalDoctorLoggedIn');
