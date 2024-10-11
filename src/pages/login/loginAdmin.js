@@ -13,24 +13,25 @@ const LoginAdmin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-      try {
-        const result = await loginAdminAPI({
-          adminId,
-          password,
-        });
-
-        if (result.status === 200) {
-          alert('로그인 성공! 환영합니다.');
-          navigate('/admin/dashboard');
-        } else {
-          toast.error('로그인에 실패했습니다. ID 또는 비밀번호를 확인하세요.');
-        }
-      } catch (e) {
-        console.error(e);
-        toast.error('로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
+  
+    try {
+      const result = await loginAdminAPI({
+        adminId,
+        password,
+      });
+  
+      // Ensure that you're checking for the correct status
+      if (result.status === 200) {
+        alert('로그인 성공! 환영합니다.'); // Successful login alert
+        navigate('/admin/dashboard'); // Navigate to the dashboard
+      } else {
+        toast.error('로그인에 실패했습니다. ID 또는 비밀번호를 확인하세요.'); // Login failure message
       }
-    };
+    } catch (e) {
+      console.error(e);
+      toast.error('로그인 중 오류가 발생했습니다. 다시 시도해주세요.'); // General error message
+    }
+  };
 
     const logoStyle = {
       width: '230px',
