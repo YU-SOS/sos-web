@@ -1,10 +1,12 @@
-// reissueTokenAPI.js
 import { getAuthAxios } from '../api/authAxios';
 
 const reissueToken = async () => {
   try {
     const authAxios = getAuthAxios();
-    const response = await authAxios.get('/reissue-token');
+    const refreshToken = localStorage.getItem('refreshToken'); // 리프레시 토큰 가져오기
+    const response = await authAxios.get('/reissue-token', {
+      headers: { Authorization: `Bearer ${refreshToken}` }, // 헤더에 리프레시 토큰 포함
+    });
 
     if (response.status === 200 && response.data.token) {
       return {

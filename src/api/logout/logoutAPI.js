@@ -3,7 +3,7 @@ import { getAuthAxios } from '../authAxios';
 const logoutAPI = async () => {
   try {
     const authAxios = getAuthAxios();
-    const response = await authAxios.post('/logout/user');
+    const response = await authAxios.post('/logout');
 
     if (response.status === 200) {
       return {
