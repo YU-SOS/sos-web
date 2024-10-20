@@ -1,84 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { getEmergencyList } from '../../api/hospitalAPI'; // API 함수 import
+import React from 'react';
+import { Link, Outlet } from 'react-router-dom';
+import './HospitalDashboard.css';  // 스타일을 위한 CSS 파일
 
 const HospitalDashboard = () => {
-    const [emergencyList, setEmergencyList] = useState([]);  // 응급실 목록 저장
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [categories, setCategories] = useState([]);  // 선택된 카테고리
-    const [page, setPage] = useState(0);  // 페이지 번호
-
-    const availableCategories = ['내과', '정형외과', '소아과', '치과', '신경과'];
-
-    // 카테고리 선택 함수
-    const handleCategoryChange = (event) => {
-        const selectedCategories = Array.from(event.target.selectedOptions, (option) => option.value);
-        setCategories(selectedCategories);
-    };
-
-    // 페이지 변경 함수
-    const handlePageChange = (newPage) => {
-        setPage(newPage);
-    };
-
-    // 응급실 목록 불러오기
-    const fetchEmergencyList = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await getEmergencyList(categories, page);
-            setEmergencyList(response.data.data);  // 응급실 목록 저장
-        } catch (err) {
-            setError('응급실 목록을 불러오는 중 오류가 발생했습니다.');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    // 카테고리나 페이지 변경 시 데이터 불러오기
-    useEffect(() => {
-        fetchEmergencyList();
-    }, [categories, page]);
-
     return (
-        <div className="hospital-dashboard-container">
-            <h2>병원 대시보드</h2>
+        <div className="dashboard-layout">
+            {/* 사이드바 */}
+            <aside className="sidebar">
+                <div className="profile-section">
+                    <img src="https://via.placeholder.com/100" alt="Profile" className="profile-image" />
+                    <h3>병원 이름</h3>
+                </div>
 
-            {/* 카테고리 선택 */}
-            <div className="category-selector">
-                <label>카테고리 선택: </label>
-                <select multiple={true} onChange={handleCategoryChange}>
-                    {availableCategories.map((category) => (
-                        <option key={category} value={category}>
-                            {category}
-                        </option>
-                    ))}
-                </select>
-            </div>
+                <div className="sidebar-menu">
+                    <Link to="info" className="menu-item">병원 정보 관리</Link>
+                    <Link to="emergency-status" className="menu-item">응급실 상태 관리</Link>
+                    <Link to="emergency-reception" className="menu-item">응급실 신청 목록</Link>
+                </div>
 
-            {/* 페이지네이션 */}
-            <div className="pagination">
-                <button onClick={() => handlePageChange(page - 1)} disabled={page === 1}>이전</button>
-                <span>Page {page}</span>
-                <button onClick={() => handlePageChange(page + 1)}>다음</button>
-            </div>
+                <div className="logout-section">
+                    <button className="logout-button">로그아웃</button>
+                </div>
+            </aside>
 
-            {/* 응급실 목록 */}
-            {loading && <p>로딩 중...</p>}
-            {error && <p>{error}</p>}
-            {emergencyList.length > 0 ? (
-                <ul>
-                    {emergencyList.map((emergency) => (
-                        <li key={emergency.id}>
-                            <p><strong>응급실 이름:</strong> {emergency.name}</p>
-                            <p><strong>위치:</strong> {emergency.address}</p>
-                            <p><strong>상태:</strong> {emergency.status}</p>
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                !loading && <p>응급실 목록이 없습니다.</p>
-            )}
+            {/* 메인 콘텐츠 */}
+            <main className="dashboard-main">
+                <Outlet />  {/* 서브 라우팅된 페이지들이 여기 렌더링됨 */}
+            </main>
         </div>
     );
 };

@@ -6,7 +6,11 @@ const loginHospital = async (id, password, role) => {
 
     const response = await apiClient.post('/login', { id, password, role });
 
-    const accessToken = response.headers['authorization'];
+    // 서버로부터 Authorization 헤더에서 토큰을 받아서 처리
+    let accessToken = response.headers['authorization'];
+    if (accessToken && accessToken.startsWith('Bearer ')) {
+      accessToken = accessToken.substring(7); // 'Bearer ' 부분을 제거
+    }
 
     if (accessToken) {
       localStorage.setItem('accessToken', accessToken);

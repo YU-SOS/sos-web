@@ -1,29 +1,85 @@
-.hospital-dashboard-container {
+/* 전체 대시보드 컨테이너 */
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 20px;
-    background-color: #f5f5f5;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.hospital-details, .emergency-list {
-    padding: 15px;
+/* 제목 */
+.dashboard-container h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* 그리드 레이아웃 */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    width: 100%;
+}
+
+/* 병원 정보 수정 섹션 */
+.info-section {
     background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-top: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
-.hospital-details p, .emergency-list p {
-    margin: 10px 0;
+/* 추가 기능 섹션 */
+.extra-section {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-li {
+/* 폼 스타일 */
+.info-form label {
+    display: block;
     margin-bottom: 10px;
 }
 
-strong {
-    color: #34495e;
+.info-form input,
+.info-form select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* 버튼 스타일 */
+.submit-button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.submit-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.submit-button:hover:enabled {
+    background-color: #45a049;
+}
+
+/* 에러 메시지 스타일 */
+.error-message {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
 }
