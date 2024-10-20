@@ -81,7 +81,7 @@ const SignupHospital = () => {
   {/* 아이디 중복 체크 */}
   const handleCheckId = async () => {
     try {
-      const response = await axios.get('http://3.35.136.82:8080/dup-check', {
+      const response = await axios.get('http://api.yu-sos.co.kr:8080/dup-check', {
         params: { id, role: 'HOS' },
       });
 

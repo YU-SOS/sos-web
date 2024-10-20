@@ -1,14 +1,17 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
-const ProtectedRoute = ({ children }) => {
-  const accessToken = localStorage.getItem('accessToken'); // Check for admin access token
-  const isHospitalLoggedIn = localStorage.getItem('HospitalDoctorLoggedIn'); // Check for hospital login
+const ProtectedRoute = ({ isAuthenticated, children }) => {
+  // 인증된 사용자인지 확인 (localStorage에서 토큰을 확인)
+  const accessToken = localStorage.getItem('accessToken');
 
-  // Assuming you want to allow both hospital and admin users
-  const isAuthenticated = accessToken || isHospitalLoggedIn;
+  // 토큰이 없으면 로그인 페이지로 리다이렉트
+  if (!accessToken) {
+    return <Navigate to="/login/admin" replace />;
+  }
 
-  return isAuthenticated ? children : <Navigate to="/login/hospital" />;
+  // 토큰이 있으면 자식 컴포넌트를 렌더링
+  return children;
 };
 
 export default ProtectedRoute;

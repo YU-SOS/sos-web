@@ -20,10 +20,9 @@ const LoginAdmin = () => {
         password,
       });
   
-      // Ensure that you're checking for the correct status
       if (result.status === 200) {
-        alert('로그인 성공! 환영합니다.'); // Successful login alert
-        navigate('/admin/dashboard'); // Navigate to the dashboard
+        alert('로그인 성공! 환영합니다.');
+        navigate('/admin/dashboard');
       } else {
         toast.error('로그인에 실패했습니다. ID 또는 비밀번호를 확인하세요.'); // Login failure message
       }

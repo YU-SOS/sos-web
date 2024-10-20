@@ -4,8 +4,8 @@ const logoutAPI = async () => {
   try {
     const authAxios = getAuthAxios();
     const response = await authAxios.post('/logout');
-
     if (response.status === 200) {
+      localStorage.removeItem('accessToken');
       return {
         statusCode: 200,
         message: "로그아웃 성공",
@@ -18,5 +18,6 @@ const logoutAPI = async () => {
     };
   }
 };
+
 
 export default logoutAPI;
