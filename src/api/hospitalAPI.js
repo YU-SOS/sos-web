@@ -12,40 +12,187 @@ const getAuthToken = () => {
     return localStorage.getItem('accessToken');
 };
 
-// 응급실 목록 조회 (categories 필수)
-// 응급실 목록 조회 API (카테고리와 페이지 포함)
-export const getEmergencyList = (categories, page) => {
-    const token = getAuthToken();  // 토큰을 가져옴
+// Fetch the list of emergency receptions
+export const getEmergencyList = async (categories, page) => {
+    const token = getAuthToken();  // Get the token from local storage
     if (!token) {
-        console.error("토큰이 없습니다. 로그인 후 시도하세요.");
+        console.error("Token not found. Please log in.");
         return;
     }
 
-    // categories와 page를 쿼리 스트링에 포함하여 요청
+    // Prepare query parameters
     const query = {
-        categories: categories.join('&categories='),  // 여러 카테고리를 쿼리 스트링에 맞게 변환
+        categories: categories.join('&categories='),  // Join categories for the query string
         page: page
     };
 
-    return apiClient.get(`/hospital`, {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        },
-        params: query
-    });
+    try {
+        const response = await apiClient.get(`/hospital/receptions`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            params: query
+        });
+        return response.data;  // Return the response data
+    } catch (error) {
+        console.error("Error fetching emergency list:", error);
+        throw error;  // Rethrow error for further handling
+    }
 };
 
-
-export const getHospitalDetails = (hospitalId) => {
-    const token = getAuthToken();  // 토큰을 가져옴
+// Fetch details of a specific hospital
+export const getHospitalDetails = async (hospitalId) => {
+    const token = getAuthToken();  // Get the token from local storage
     if (!token) {
-        console.error("토큰이 없습니다. 로그인 후 시도하세요.");
+        console.error("Token not found. Please log in.");
         return;
     }
 
-    return apiClient.get(`hospital/${hospitalId}`, {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    });
+    try {
+        const response = await apiClient.get(`/hospital/${hospitalId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        return response.data;  // Return the response data
+    } catch (error) {
+        console.error("Error fetching hospital details:", error);
+        throw error;  // Rethrow error for further handling
+    }
+};
+
+// Accept or reject a visit request
+export const respondToReceptionRequest = async (receptionId, isApproved) => {
+    const token = getAuthToken();  // Get the token from local storage
+    if (!token) {
+        console.error("Token not found. Please log in.");
+        return;
+    }
+
+    try {
+        const response = await apiClient.put(`/hospital/receptions/${receptionId}`, {
+            isApproved: isApproved
+        }, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        return response.data;  // Return the response data
+    } catch (error) {
+        console.error("Error responding to reception request:", error);
+        throw error;  // Rethrow the error for further handling
+    }
+};
+
+/* // Fetch guest reception details by reception ID
+export const getGuestReceptionDetails = async (receptionId) => {
+    // Validate receptionId
+    if (!receptionId) {
+        console.error("Reception ID is required.");
+        return;
+    }
+
+    try {
+        const response = await apiClient.get(`/hospital/receptions/${receptionId}/guest`);
+        return response.data;  // Return the response data
+    } catch (error) {
+        console.error("Error fetching guest reception details:", error);
+        throw error;  // Rethrow the error for further handling
+    }
+}; */
+
+// Add this function to your existing hospitalAPI.js file
+
+// Submit a comment for a specific reception
+export const submitCommentForReception = async (receptionId, description) => {
+    const token = getAuthToken();  // Get the token from local storage
+    if (!token) {
+        console.error("Token not found. Please log in.");
+        return;
+    }
+
+    // Validate input
+    if (!receptionId || !description) {
+        console.error("Both reception ID and comment description are required.");
+        return;
+    }
+
+    try {
+        const response = await apiClient.post(`/hospital/receptions/${receptionId}/comment`, {
+            description: description
+        }, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        return response.data;  // Return the response data
+    } catch (error) {
+        console.error("Error submitting comment for reception:", error);
+        throw error;  // Rethrow the error for further handling
+    }
+};
+
+// Add this function to hospitalAPI.js
+export const updateReceptionStatus = async (receptionId, isApproved) => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) throw new Error("Token not found.");
+
+    try {
+        const response = await apiClient.put(`/hospital/receptions/${receptionId}`, 
+            { isApproved }, 
+            { headers: { 'Authorization': `Bearer ${token}` } }
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error updating reception status:", error);
+        throw error;
+    }
+};
+
+// Create a new reception
+export const createReception = async (receptionData) => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) throw new Error("Token not found.");
+
+    try {
+        const response = await apiClient.post(`/hospital/receptions`, receptionData, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error creating reception:", error);
+        throw error;
+    }
+};
+
+// Re-request reception after rejection
+export const reRequestReception = async (receptionId) => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) throw new Error("Token not found.");
+
+    try {
+        const response = await apiClient.put(`/hospital/receptions/${receptionId}/re`, null, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error re-requesting reception:", error);
+        throw error;
+    }
+};
+
+// Fetch guest emergency reception details
+export const getGuestReceptionDetails = async (receptionId) => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) throw new Error("Token not found.");
+
+    try {
+        const response = await apiClient.get(`/hospital/receptions/${receptionId}/guest`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching guest reception details:", error);
+        throw error;
+    }
 };

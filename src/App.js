@@ -10,6 +10,7 @@ import Reception from './pages/hospital/Reception';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminDashboard from './pages/dashboard/AdminDashboard';
 import HospitalDashboard from './pages/dashboard/HospitalDashboard';
+import ReceptionDetails from './pages/reception/ReceptionDetails';
 
 const App = () => {
     return (
@@ -20,7 +21,6 @@ const App = () => {
                 <Route path="/login" element={<LoginHospital />} />
                 <Route path="/signup/hospital" element={<SignupHospital />} />
 
-                {/* 관리자 대시보드 내부 라우팅 */}
                 <Route
                     path="/admin/dashboard/*"
                     element={
@@ -28,8 +28,7 @@ const App = () => {
                             <AdminDashboard />
                         </ProtectedRoute>
                     }
-                >
-                </Route>
+                />
 
                 <Route
                     path="/hospital/dashboard"
@@ -50,6 +49,7 @@ const App = () => {
                 >
                     <Route path='request' element={<Reqeust />} />
                     <Route path='reception' element={<Reception />} />
+                    <Route path='reception/:receptionId' element={<ReceptionDetails />} />
                 </Route>
             </Routes>
         </Router>
