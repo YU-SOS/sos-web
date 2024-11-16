@@ -13,9 +13,13 @@ import HospitalDashboard from './pages/dashboard/HospitalDashboard';
 import HospitalInfoPage from './pages/hospital/HospitalInfoPage';  // 병원 정보 관리 페이지
 import EmergencyStatusPage from './pages/hospital/EmergencyStatusPage';  // 응급실 상태 관리 페이지
 import EmergencyReceptionPage from './pages/hospital/EmergencyReceptionPage';  // 응급실 방문 신청 목록 페이지
+import Dashboard from './admin/page/Dashboard.js';
+import AdminLayout from './admin/layout/AdminLayout';
+import GlobalStyle from './GlobalStyle.js';
 
 const App = () => {
     return (
+        <>
         <Router>
             <Routes>
                 <Route path="/" element={<Homepage />} />
@@ -23,7 +27,11 @@ const App = () => {
                 <Route path="/login" element={<LoginHospital />} />
                 <Route path="/signup/hospital" element={<SignupHospital />} />
 
-                {/* 관리자 대시보드 내부 라우팅 */}
+                <Route path='/admin' element ={ <AdminLayout />}>
+                    <Route path="" element={<Dashboard />} /> 
+                </Route>
+
+                {/* 관리자 대시보드 내부 라우팅
                 <Route
                     path="/admin/dashboard/*"
                     element={
@@ -31,7 +39,7 @@ const App = () => {
                             <AdminDashboard />
                         </ProtectedRoute>
                     }
-                />
+                /> */}
 
                 {/* 병원 대시보드 내부 라우팅 */}
                 <Route
@@ -64,6 +72,7 @@ const App = () => {
                 </Route>
             </Routes>
         </Router>
+        </>
     );
 };
 
