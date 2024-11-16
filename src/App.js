@@ -8,14 +8,13 @@ import Layout from './layout/Layout';
 import Reqeust from './pages/hospital/Reqeust';
 import Reception from './pages/hospital/Reception';
 import ProtectedRoute from './components/ProtectedRoute';
-import AdminDashboard from './pages/dashboard/AdminDashboard';
 import HospitalDashboard from './pages/dashboard/HospitalDashboard';
 import HospitalInfoPage from './pages/hospital/HospitalInfoPage';  // 병원 정보 관리 페이지
 import EmergencyStatusPage from './pages/hospital/EmergencyStatusPage';  // 응급실 상태 관리 페이지
 import EmergencyReceptionPage from './pages/hospital/EmergencyReceptionPage';  // 응급실 방문 신청 목록 페이지
 import Dashboard from './admin/page/Dashboard.js';
 import AdminLayout from './admin/layout/AdminLayout';
-import GlobalStyle from './GlobalStyle.js';
+import Main from './pages/Main';
 
 const App = () => {
     return (
@@ -23,6 +22,7 @@ const App = () => {
         <Router>
             <Routes>
                 <Route path="/" element={<Homepage />} />
+                <Route path='/main' element={<Main/>} />
                 <Route path="/login/admin" element={<LoginAdmin />} />
                 <Route path="/login" element={<LoginHospital />} />
                 <Route path="/signup/hospital" element={<SignupHospital />} />
