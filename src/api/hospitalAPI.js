@@ -149,38 +149,6 @@ export const updateReceptionStatus = async (receptionId, isApproved) => {
     }
 };
 
-// Create a new reception
-export const createReception = async (receptionData) => {
-    const token = localStorage.getItem('accessToken');
-    if (!token) throw new Error("Token not found.");
-
-    try {
-        const response = await apiClient.post(`/hospital/receptions`, receptionData, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        return response.data;
-    } catch (error) {
-        console.error("Error creating reception:", error);
-        throw error;
-    }
-};
-
-// Re-request reception after rejection
-export const reRequestReception = async (receptionId) => {
-    const token = localStorage.getItem('accessToken');
-    if (!token) throw new Error("Token not found.");
-
-    try {
-        const response = await apiClient.put(`/hospital/receptions/${receptionId}/re`, null, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        return response.data;
-    } catch (error) {
-        console.error("Error re-requesting reception:", error);
-        throw error;
-    }
-};
-
 // Fetch guest emergency reception details
 export const getGuestReceptionDetails = async (receptionId) => {
     const token = localStorage.getItem('accessToken');

@@ -11,6 +11,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import AdminDashboard from './pages/dashboard/AdminDashboard';
 import HospitalDashboard from './pages/dashboard/HospitalDashboard';
 import ReceptionDetails from './pages/reception/ReceptionDetails';
+import List from './pages/hospital/List';
 
 const App = () => {
     return (
@@ -50,6 +51,7 @@ const App = () => {
                     <Route path='request' element={<Reqeust />} />
                     <Route path='reception' element={<Reception />} />
                     <Route path='reception/:receptionId' element={<ReceptionDetails />} />
+                    <Route path='list' element={<List />} />
                 </Route>
             </Routes>
         </Router>

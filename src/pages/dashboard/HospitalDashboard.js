@@ -1,87 +1,80 @@
-import React, { useState, useEffect } from 'react';
-import { getEmergencyList, respondToReceptionRequest } from '../../api/hospitalAPI';
-import GuestReception from '../../components/GuestReception';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import for navigation
+import { FaPaperPlane, FaClipboardList, FaRegStickyNote, FaSignOutAlt } from 'react-icons/fa';
+import './HospitalDashboard.css';
+import Reqeust from '../hospital/Reqeust'; // Ensure this path is correct
+import Reception from '../hospital/Reception'; // Ensure this path is correct
+import List from '../hospital/List'; // Ensure this path is correct
 
 const HospitalDashboard = () => {
-    const [emergencyList, setEmergencyList] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [categories, setCategories] = useState([]);
-    const [page, setPage] = useState(0);
-    const [selectedReceptionId, setSelectedReceptionId] = useState(null);
+    const [activeComponent, setActiveComponent] = useState('Reqeust'); // Default to Reqeust view
+    const navigate = useNavigate(); // Initialize navigation hook
 
-    const availableCategories = ['내과', '정형외과', '소아과', '치과', '신경과'];
-
-    const fetchEmergencyList = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await getEmergencyList(categories, page);
-            setEmergencyList(response.data.data);
-        } catch (err) {
-            setError('Failed to load emergency list.');
-        } finally {
-            setLoading(false);
-        }
+    const handleLogout = () => {
+        localStorage.removeItem('accessToken'); // Remove token from localStorage
+        alert('로그아웃 성공!'); // Show logout success alert
+        navigate('/login'); // Redirect to login page
     };
 
-    const handleResponse = async (receptionId, isApproved) => {
-        try {
-            const response = await respondToReceptionRequest(receptionId, isApproved);
-            if (response.status === 200) {
-                setError(null); // Clear previous errors
-                fetchEmergencyList();
-            }
-        } catch (error) {
-            setError('Error responding to reception request.');
+    const renderMainContent = () => {
+        switch (activeComponent) {
+            case 'Reqeust':
+                return <Reqeust />;
+            case 'Reception':
+                return <Reception />;
+            case 'List':
+                return <List />;
+            default:
+                return null;
         }
     };
-
-    useEffect(() => {
-        fetchEmergencyList();
-    }, [categories, page]);
 
     return (
-        <div className="hospital-dashboard-container">
-            <h2>병원 대시보드</h2>
+        <div className="hospital-dashboard">
+            <div className="hospital-sidebar">
+            <div className="hospital-logo">SOS</div>
+                <div className="hospital-image">
+                    <img src="" alt="" className="hospital-image-placeholder" />
+                </div>
+                <div className="hospital-info">
+                    <div className="hospital-name">영남대병원</div>
+                    <div className="hospital-address">대구광역시 남구 현충로 170 테스트 주소</div>
+                </div>
 
-            {loading && <p>Loading...</p>}
-            {error && <p>{error}</p>}
-            {emergencyList.length > 0 ? (
-                <ul>
-                    {emergencyList.map((emergency) => (
-                        <li key={emergency.id}>
-                            <p><strong>응급실 이름:</strong> {emergency.hospital.name}</p>
-                            <p><strong>환자 이름:</strong> {emergency.patient.name}</p>
-                            <p><strong>위치:</strong> {emergency.hospital.address}</p>
-                            <button 
-                                style={{ backgroundColor: 'green', color: 'white', marginRight: '10px' }}
-                                onClick={() => handleResponse(emergency.id, true)}
-                            >
-                                Accept
-                            </button>
-                            <button 
-                                style={{ backgroundColor: 'red', color: 'white' }} 
-                                onClick={() => handleResponse(emergency.id, false)}
-                            >
-                                Reject
-                            </button>
-                            <button 
-                                style={{ marginLeft: '10px' }}
-                                onClick={() => setSelectedReceptionId(emergency.id)}
-                            >
-                                View Details
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                !loading && <p>No emergency requests available.</p>
-            )}
 
-            {selectedReceptionId && (
-                <GuestReception receptionId={selectedReceptionId} />
-            )}
+                <div className="hospital-menu">
+                    <div 
+                        className="hospital-menu-item" 
+                        onClick={() => setActiveComponent('Reqeust')}
+                    >
+                        <FaPaperPlane className="hospital-menu-icon" />
+                        <span>응급실 방문 요청</span>
+                    </div>
+                    <div 
+                        className="hospital-menu-item" 
+                        onClick={() => setActiveComponent('Reception')}
+                    >
+                        <FaRegStickyNote  className="hospital-menu-icon" />
+                        <span>응급실 접수 목록</span>
+                    </div>
+                    <div 
+                        className="hospital-menu-item" 
+                        onClick={() => setActiveComponent('List')}
+                    >
+                        <FaClipboardList className="hospital-menu-icon" />
+                        <span>응급실 목록 화면</span>
+                    </div>
+                </div>
+                <div className="hospital-logout">
+                    <button onClick={handleLogout} className="logout-button">
+                        <FaSignOutAlt className="hospital-logout-icon" />
+                        <span>로그아웃</span>
+                    </button>
+                </div>
+            </div>
+            <div className="hospital-main">
+                {renderMainContent()} {/* Render the selected component here */}
+            </div>
         </div>
     );
 };
