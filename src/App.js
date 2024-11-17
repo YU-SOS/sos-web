@@ -15,6 +15,8 @@ import EmergencyReceptionPage from './pages/hospital/EmergencyReceptionPage';  /
 import Dashboard from './admin/page/Dashboard.js';
 import AdminLayout from './admin/layout/AdminLayout';
 import Main from './pages/Main';
+import Login from './pages/login/Login';
+import Signup from './pages/signup/Signup';
 
 const App = () => {
     return (
@@ -23,9 +25,12 @@ const App = () => {
             <Routes>
                 <Route path="/" element={<Homepage />} />
                 <Route path='/main' element={<Main/>} />
-                <Route path="/login/admin" element={<LoginAdmin />} />
+                <Route path='/login' element={<Login/>} />
+                <Route path='/signup' element={<Signup/>} />
+                <Route path='/signup/hospital' element={<SignupHospital/>}/>
+                {/* <Route path="/login/admin" element={<LoginAdmin />} />
                 <Route path="/login" element={<LoginHospital />} />
-                <Route path="/signup/hospital" element={<SignupHospital />} />
+                <Route path="/signup/hospital" element={<SignupHospital />} /> */}
 
                 <Route path='/admin' element ={ <AdminLayout />}>
                     <Route path="" element={<Dashboard />} /> 
