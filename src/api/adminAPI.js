@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { apiServer } from '../config/api';
+import {message} from "antd";
 
 const apiClient = axios.create({
     baseURL: apiServer,
@@ -13,12 +14,11 @@ const getAuthToken = () => {
 };
 
 export const getRegistrationList = (type) => {
-    const token = getAuthToken();  // 토큰을 가져옴
+    const token = getAuthToken();
     if (!token) {
         console.error("토큰이 없습니다. 로그인 후 시도하세요.");
         return;
     }
-
     return apiClient.get(`/admin/registration`, {
         headers: {
             'Authorization': `Bearer ${token}`
@@ -41,14 +41,24 @@ export const getRegistrationDetails = (id, role) => {
     });
 };
 
-export const approveRegistration = (id, role, isApproved) => {
-    const token = getAuthToken();  // 토큰을 가져옴
+export const getFetchStatus = () => {
+    const token = getAuthToken();
     if (!token) {
         console.error("토큰이 없습니다. 로그인 후 시도하세요.");
         return;
     }
+    return apiClient.get(`/admin/status`, {
+            headers: {'Authorization': `Bearer ${token}`}
+        }
+    )
+};
 
-    // API 3번 PUT 요청
+export const approveRegistration = (id, role, isApproved) => {
+    const token = getAuthToken();
+    if (!token) {
+        console.error("토큰이 없습니다. 로그인 후 시도하세요.");
+        return;
+    }
     return apiClient.put(`/admin/registration`,
         { isApproved },
         {

@@ -1,114 +1,123 @@
-import React, {useState} from 'react';
-import {useNavigate} from 'react-router-dom';
-import {FormContainer, Input, Button} from '../../components/StyledComponents';
-import axios from 'axios';
-import signupHospitalAPI from "../../api/signup/signupHospitalAPI";
-import {Map} from "react-kakao-maps-sdk";
-import useKakaoLoader from "../../api/signup/useKakaoLoader";
-import {ToastContainer, toast} from 'react-toastify';
-import {storage} from "../../firebase";
-import {ref, uploadBytesResumable, getDownloadURL} from "firebase/storage";
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Form, Input, Button, Checkbox, Upload, notification, Space, Image } from 'antd';
+import { UploadOutlined, SearchOutlined } from '@ant-design/icons';
+import signupHospitalAPI from '../../api/signup/signupHospitalAPI';
+import dupCheckAPI from '../../api/duplicates/dupCheckAPI';
+import { storage } from '../../firebase';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 const SignupHospital = () => {
+  const [form] = Form.useForm();
   const navigate = useNavigate();
-  const [id, setId] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [address, setAddress] = useState('');
-  const [telephoneNumber, setTelephoneNumber] = useState('');
   const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null); // 미리보기 상태
+  const [imageUrl, setImageUrl] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
-  const [categories, setCategories] = useState([]);
-  const [isUploading, setIsUploading] = useState(false);
+  const [address, setAddress] = useState('');
+  const [isIdChecked, setIsIdChecked] = useState(false);
+  const [mapCenter, setMapCenter] = useState({ lat: 35.8358302, lng: 128.7521449 });
+  const [markerPosition, setMarkerPosition] = useState({ lat: 35.8358302, lng: 128.7521449 });
+  const [mapInstance, setMapInstance] = useState(null);
+  const categoryOptions = ['산부인과', '정형외과', '흉부외과', '화상외과', '내과'];
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!imageFile) {
-      toast.error("이미지를 선택해주세요.");
+  // id 중복 확인
+  const handleIdCheck = async () => {
+    const id = form.getFieldValue('id');
+    if (!id) {
+      notification.error({ message: 'ID를 입력하세요.' });
       return;
     }
 
     try {
-      const downloadURL = await uploadImage();
-      const result = await signupHospitalAPI({
-        id,
-        password,
-        name,
-        address,
-        telephoneNumber,
-        imageUrl: downloadURL,
-        location: {latitude, longitude},
-        categories,
-      });
-
-      if (result.status === 201) {
-        alert('가입 신청이 완료되었습니다.');
-        setTimeout(() => navigate('/'), 1000);
+      const response = await dupCheckAPI(id, 'HOS');
+      if (response.status === 200) {
+        notification.success({ message: '사용 가능한 ID입니다.' });
+        setIsIdChecked(true);
+      } else if (response.status === 409) {
+        notification.error({ message: '이미 사용 중인 ID입니다.' });
+        setIsIdChecked(false);
       } else {
-        toast.error('회원가입 실패.');
+        notification.error({ message: 'ID 중복 검사 중 오류가 발생했습니다.' });
+        setIsIdChecked(false);
       }
     } catch (error) {
-      toast.error('회원가입 중 오류 발생.');
+      notification.error({ message: '서버 오류가 발생했습니다. 다시 시도해주세요.' });
       console.error(error);
+      setIsIdChecked(false);
     }
   };
 
-  {/* 지도 사용 */}
-  useKakaoLoader();
-  const [map, setMap] = useState({
-    center: {lat: 35.8358302, lng: 128.7521449},
-    isPanto: true,
-  });
-
+  // 지도 사용
   const ps = new window.kakao.maps.services.Places();
 
-  const SearchMap = () => {
-    const placesSearchCB = (data, map, pagination) => {
-      if (map === window.kakao.maps.services.Status.OK) {
-        const newSearch = data[0];
-        setMap({center: {lat: newSearch.y, lng: newSearch.x}});
-        setLatitude(newSearch.y);
-        setLongitude(newSearch.x);
-      }
-    };
-    ps.keywordSearch(address, placesSearchCB);
-  };
+  const handleSearch = () => {
+    if (!address) {
+      notification.error({ message: '주소를 입력하세요.' });
+      return;
+    }
 
-  {/* 아이디 중복 체크 */}
-  const handleCheckId = async () => {
-    try {
-      const response = await axios.get('http://api.yu-sos.co.kr:8080/dup-check', {
-        params: { id, role: 'HOS' },
-      });
+    ps.keywordSearch(address, (data, status) => {
+      if (status === window.kakao.maps.services.Status.OK) {
+        const newLocation = {
+          lat: parseFloat(data[0].y),
+          lng: parseFloat(data[0].x),
+        };
+        const newCenter = new window.kakao.maps.LatLng(newLocation.lat, newLocation.lng);
 
-      if (response.data.status === 200) {
-        toast.success('사용 가능한 아이디입니다.');
+        if (mapInstance) {
+          mapInstance.panTo(newCenter);
+        }
+
+        setMapCenter(newLocation);
+        setMarkerPosition(newLocation);
+        setLatitude(newLocation.lat);
+        setLongitude(newLocation.lng);
+        notification.success({ message: '검색된 위치로 부드럽게 이동했습니다.' });
       } else {
-        toast.error('이미 사용 중인 아이디입니다.');
+        notification.error({ message: '검색 결과가 없습니다.' });
       }
-    } catch (error) {
-      console.error('ID 중복 확인 오류:', error);
-      toast.error('ID 중복 확인 중 오류가 발생했습니다.');
+    });
+  };
+
+  // 대표 이미지 설정
+  const handleMapClick = (map, mouseEvent) => {
+    const lat = mouseEvent.latLng.getLat();
+    const lng = mouseEvent.latLng.getLng();
+    const newCenter = new window.kakao.maps.LatLng(lat, lng);
+
+    map.panTo(newCenter);
+
+    setMarkerPosition({ lat, lng });
+    setLatitude(lat);
+    setLongitude(lng);
+  };
+
+  const handleImageChange = ({ file }) => {
+    const imageFile = file.originFileObj || file;
+    if (imageFile instanceof Blob) {
+      const previewUrl = URL.createObjectURL(imageFile);
+      setImageFile(imageFile);
+      setImageUrl(previewUrl);
+
+      form.setFieldsValue({ imageUrl: previewUrl });
+    } else {
+      notification.error({ message: '이미지 파일을 업로드할 수 없습니다.' });
     }
   };
 
-  {/* 대표 이미지 선택 및 미리보기 */}
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      setImagePreview(URL.createObjectURL(file));
-    }
+
+  const handleRemoveImage = () => {
+    setImageFile(null);
+    setImageUrl('');
   };
 
+  // 대표 이미지 업로드
   const uploadImage = () => {
     const storageRef = ref(storage, `images/${imageFile.name}`);
     const uploadTask = uploadBytesResumable(storageRef, imageFile);
-
     setIsUploading(true);
 
     return new Promise((resolve, reject) => {
@@ -116,14 +125,13 @@ const SignupHospital = () => {
           'state_changed',
           null,
           (error) => {
-            console.error("이미지 업로드 중 오류:", error);
-            toast.error("이미지 업로드 실패.");
+            notification.error({ message: '이미지 업로드 실패.' });
             setIsUploading(false);
             reject(error);
           },
           async () => {
             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            toast.success("이미지 업로드 성공.");
+            notification.success({ message: '이미지 업로드 성공.' });
             setIsUploading(false);
             resolve(downloadURL);
           }
@@ -131,156 +139,136 @@ const SignupHospital = () => {
     });
   };
 
-  const inputStyle = {
-    width: '100%',
-    height: '40px',
-    marginBottom: '5px',
-    boxSizing: 'border-box',
+
+  // 회원가입 요청
+  const handleFinish = async (values) => {
+    try {
+      const downloadURL = await uploadImage();
+
+      const payload = {
+        ...values,
+        imageUrl: downloadURL,
+        location: { latitude, longitude },
+      };
+
+      const result = await signupHospitalAPI(payload);
+
+      if (result.status === 201) {
+        notification.success({ message: '가입 신청이 완료되었습니다.' });
+        setTimeout(() => navigate('/'), 1000);
+      } else if (result.status === 409) {
+        notification.error({ message: '이미 존재하는 사용자입니다.' });
+      } else {
+        notification.error({ message: '회원가입 실패. 서버 오류가 발생했습니다.' });
+      }
+    } catch (error) {
+      notification.error({ message: '회원가입 중 오류가 발생했습니다.' });
+      console.error('회원가입 오류:', error);
+    }
   };
 
-  const buttonStyle = {
-    width: '90px',
-    height: '40px',
-  };
 
   return (
-      <FormContainer>
-        <h1>병원 회원가입</h1>
-        <form onSubmit={handleSubmit} style={{width: '500px', margin: '0 auto'}}>
-          <div style={{display: 'flex', marginBottom: '5px'}}>
-            <Input
-                type="text"
-                placeholder="ID"
-                value={id}
-                onChange={(e) => setId(e.target.value)}
-                required
-                style={{flex: 1, marginRight: '5px', ...inputStyle}}
-            />
-            <Button type="button" onClick={handleCheckId} style={buttonStyle}>
-              중복확인
-            </Button>
-          </div>
-          <Input
-              type="password"
-              placeholder="비밀번호"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              style={inputStyle}
-          />
-          <Input
-              type="text"
-              placeholder="병원 이름"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              style={inputStyle}
-          />
-          <div style={{display: 'flex', marginBottom: '5px'}}>
-            <Input
-                type="text"
-                placeholder="주소"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                required
-                style={{flex: 1, marginRight: '5px', ...inputStyle}}
-            />
-            <Button type="button" onClick={SearchMap} style={buttonStyle}>
-              검색
-            </Button>
-          </div>
-
+      <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', borderRadius: '10px' }}>
+        <h1 style={{ textAlign: 'center' }}>병원 회원가입</h1>
+        <Form form={form} layout="vertical" onFinish={handleFinish}>
+          <Form.Item name="id" label="ID" rules={[{ required: true, message: '아이디를 입력하세요.' }]}>
+            <Space>
+              <Input placeholder="아이디" onChange={() => setIsIdChecked(false)} />
+              <Button onClick={handleIdCheck}>중복 검사</Button>
+            </Space>
+          </Form.Item>
+          <Form.Item name="password" label="비밀번호" rules={[{ required: true, message: '비밀번호를 입력하세요.' }]}>
+            <Input.Password placeholder="비밀번호" />
+          </Form.Item>
+          <Form.Item name="name" label="병원 이름" rules={[{ required: true, message: '병원 이름을 입력하세요.' }]}>
+            <Input placeholder="병원 이름" />
+          </Form.Item>
+          <Form.Item name='address' label="주소" rules={[{ required: true, message: '주소를 입력하세요.' }]}>
+            <Space>
+              <Input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="주소" />
+              <Button icon={<SearchOutlined />} onClick={handleSearch}>주소 검색</Button>
+            </Space>
+          </Form.Item>
+          <div>위도: {latitude} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 경도: {longitude}</div>
           <Map
-              center={map.center}
-              isPanto={map.isPanto}
-              style={{width: '100%', height: '350px', marginBottom: '5px'}}
+              center={mapCenter}
+              style={{ width: '100%', height: '350px', marginBottom: '20px' }}
               level={3}
-              onClick={(_, mouseEvent) => {
-                const latlng = mouseEvent.latLng;
-                setLatitude(latlng.getLat());
-                setLongitude(latlng.getLng());
-              }}
-          />
-          <Input
-              type="text"
-              placeholder="위도"
-              value={latitude}
-              readOnly
-              required
-              disabled
-              style={inputStyle}
-          />
-          <Input
-              type="text"
-              placeholder="경도"
-              value={longitude}
-              readOnly
-              required
-              disabled
-              style={inputStyle}/>
-          <Input
-              type="text"
-              placeholder="전화번호"
-              value={telephoneNumber}
-              onChange={(e) => setTelephoneNumber(e.target.value)}
-              required
-              style={inputStyle}
-          />
-          <Input
-              type="text"
-              placeholder="카테고리 (쉼표로 구분)"
-              value={categories}
-              onChange={(e) => setCategories(e.target.value.split(','))}
-              required
-              style={inputStyle}
-          />
-          <div
-              style={{display: 'flex', alignItems: 'center', marginBottom: '20px'}}>
-            <div style={{flex: 1}}>
-              <p style={{fontSize: '14px', marginBottom: '5px'}}>대표 이미지 설정</p>
-              <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  style={{
-                    width: '100%',
-                    height: '40px',
-                    fontSize: '14px',
-                    marginBottom: '5px',
-                  }}
-              />
-            </div>
-            <div
-                style={{
-                  width: '120px',
-                  height: '120px',
-                  border: '1px solid #ddd',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginLeft: '15px',
-                  overflow: 'hidden',
-                }}
+              onClick={handleMapClick}
+              onCreate={(map) => setMapInstance(map)}
+          >
+            <MapMarker position={markerPosition} />
+          </Map>
+          <Form.Item label="전화번호" name="telephoneNumber" rules={[{ required: true, message: '전화번호를 입력하세요.' }]}>
+            <Input placeholder="전화번호" />
+          </Form.Item>
+          <Form.Item
+              name="categories"
+              label="카테고리 선택"
+              rules={[
+                {
+                  required: true,
+                  message: '카테고리를 최소 하나 이상 선택해주세요.',
+                },
+                {
+                  validator: (_, value) =>
+                      value && value.length > 0
+                          ? Promise.resolve()
+                          : Promise.reject(),
+                },
+              ]}
+          >
+            <Checkbox.Group options={categoryOptions} />
+          </Form.Item>
+
+          <Form.Item
+              label="대표 이미지"
+              name="imageUrl"
+              rules={[
+                {
+                  required: true,
+                  message: '대표 이미지를 업로드해주세요.',
+                },
+                {
+                  validator: () =>
+                      form.getFieldValue('imageUrl')
+                          ? Promise.resolve()
+                          : Promise.reject(new Error('대표 이미지를 업로드해주세요.')),
+                },
+              ]}
+          >
+            <Upload
+                beforeUpload={() => false}
+                onChange={handleImageChange}
+                onRemove={handleRemoveImage}
+                listType="picture"
+                showUploadList={false}
+                maxCount={1}
             >
-              {imagePreview ? (
-                  <img
-                      src={imagePreview}
-                      alt="미리보기"
-                      style={{width: '120px', height: '120px'}}
+              {!imageFile && <Button icon={<UploadOutlined />}>이미지 업로드</Button>}
+            </Upload>
+
+            {imageUrl && (
+                <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                  <Image
+                      src={imageUrl}
+                      alt="대표 이미지"
+                      width={200}
+                      height={200}
+                      style={{ objectFit: 'cover', borderRadius: '10px' }}
+                      preview={false}
                   />
-              ) : (
-                  <p style={{fontSize: '12px', color: '#aaa'}}>미리보기</p>
-              )}
-            </div>
-          </div>
-          <Button
-              type="submit"
-              primary style={{width: '100%', padding: '15px', fontSize: '18px'}}>
-            회원가입
+                  <div style={{ fontSize: '12px', color: '#888' }}>{imageFile?.name}</div>
+                </div>
+            )}
+          </Form.Item>
+
+          <Button type="primary" htmlType="submit" block loading={isUploading}>
+            회원가입 요청
           </Button>
-        </form>
-        <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} closeOnClick/>
-      </FormContainer>
+        </Form>
+      </div>
   );
 };
 

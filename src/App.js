@@ -1,8 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Homepage from './pages/homepage';
-import LoginAdmin from './pages/login/loginAdmin';
-import LoginHospital from './pages/login/loginHospital';
+import Login from './pages/login/Login';
 import SignupHospital from './pages/signup/SignupHospital';
 import Layout from './layout/Layout';
 import Reqeust from './pages/hospital/Reqeust';
@@ -16,6 +15,7 @@ import EmergencyReceptionPage from './pages/hospital/EmergencyReceptionPage';  /
 import Dashboard from './admin/page/Dashboard.js';
 import AdminLayout from './admin/layout/AdminLayout';
 import GlobalStyle from './GlobalStyle.js';
+import RegistrationList from "./admin/page/AdminDashboardRegistrationList";
 
 const App = () => {
     return (
@@ -23,12 +23,13 @@ const App = () => {
         <Router>
             <Routes>
                 <Route path="/" element={<Homepage />} />
-                <Route path="/login/admin" element={<LoginAdmin />} />
-                <Route path="/login" element={<LoginHospital />} />
+                <Route path="/login" element={<Login />} />
                 <Route path="/signup/hospital" element={<SignupHospital />} />
 
                 <Route path='/admin' element ={ <AdminLayout />}>
-                    <Route path="" element={<Dashboard />} /> 
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="registration-list" element={<RegistrationList />} />
+
                 </Route>
 
                 {/* 관리자 대시보드 내부 라우팅
