@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
-import { Layout, Menu, Avatar, message } from 'antd';
-import { AppstoreOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
+import { Layout, Menu, message } from 'antd';
+import { AppstoreOutlined, LogoutOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
+import SOSLogo from "../../pages/SOS_Logo.png";
 
 const { Sider } = Layout;
 
@@ -19,7 +20,7 @@ const Header = () => {
 
     const menuItems = [
         {
-            key: 'register',
+            key: 'admin/registration-list',
             icon: <AppstoreOutlined />,
             label: '회원가입 요청',
         },
@@ -45,7 +46,11 @@ const Header = () => {
         <CustomSider width={300}>
             <Logo>SOS</Logo>
             <ImageContainer>
-                <Avatar size={150} icon={<UserOutlined />} style={{ backgroundColor: '#f1f1f1' }} />
+                <img
+                    src={SOSLogo}
+                    alt="SOS Logo"
+                    style={{margin: '16px', width: '50%', height: '50%', objectFit: 'contain'}}
+                />
             </ImageContainer>
             <Name>관리자</Name>
             <Menu

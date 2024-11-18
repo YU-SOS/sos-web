@@ -234,7 +234,7 @@ const SignupHospital = () => {
                   validator: () =>
                       form.getFieldValue('imageUrl')
                           ? Promise.resolve()
-                          : Promise.reject(new Error('대표 이미지를 업로드해주세요.')),
+                          : Promise.reject(),
                 },
               ]}
           >
@@ -246,7 +246,7 @@ const SignupHospital = () => {
                 showUploadList={false}
                 maxCount={1}
             >
-              {!imageFile && <Button icon={<UploadOutlined />}>이미지 업로드</Button>}
+              {<Button icon={<UploadOutlined />}>이미지 업로드</Button>}
             </Upload>
 
             {imageUrl && (

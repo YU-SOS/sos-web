@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, Menu, List, Typography, Card, Button, Modal, Image, Tag, Input, message } from 'antd';
+import { Layout, List, Typography, Card, Button, Modal, Image, Tag, message } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import { getRegistrationList, getRegistrationDetails, approveRegistration } from '../../api/adminAPI';
 import {useNavigate} from "react-router-dom";
-import useKakaoLoader from "../../api/signup/useKakaoLoader";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 
-const { Sider, Content, Header } = Layout;
+const { Content, Header } = Layout;
 const { Title } = Typography;
 
 const RegistrationList = () => {
@@ -158,18 +157,17 @@ const RegistrationList = () => {
                                 </div>
                                 <div>
                                     <Title level={4} style={{marginTop: '5px', marginBottom: '2px'}}>병원명</Title>
-                                    <p style={{marginLeft: '10px'}}>{selectedRequest.name}</p>
+                                    <p style={{marginLeft: '5px'}}>{selectedRequest.name}</p>
 
                                     <Title level={4} style={{marginTop: '7px', marginBottom: '2px'}}>주소</Title>
-                                    <p style={{marginLeft: '10px'}}>{selectedRequest.address}</p>
+                                    <p style={{marginLeft: '5px'}}>{selectedRequest.address}</p>
 
                                     <Title level={4} style={{marginTop: '7px', marginBottom: '2px'}}>전화번호</Title>
-                                    <p style={{marginLeft: '10px'}}>{selectedRequest.telephoneNumber}</p>
+                                    <p style={{marginLeft: '5px'}}>{selectedRequest.telephoneNumber}</p>
 
                                     <Title level={4} style={{marginTop: '7px', marginBottom: '2px'}}>카테고리</Title>
                                     {selectedRequest.categories?.map((category) => (
                                         <Tag color="green" key={category}>
-                                            {/*카테고리 조회가 들어갈부ㅂㄴ*/}
                                             {category}
                                         </Tag>
                                     ))}
