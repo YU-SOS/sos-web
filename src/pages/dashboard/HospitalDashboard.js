@@ -5,11 +5,13 @@ import './HospitalDashboard.css';
 import Reqeust from '../hospital/Reqeust'; 
 import Reception from '../hospital/Reception';
 import List from '../hospital/List';
+import { getHospitalDetails } from '../../api/hospitalAPI'; // Import the API function
 import base64 from "base-64";
 
 const HospitalDashboard = () => {
     const [activeComponent, setActiveComponent] = useState('Reqeust'); // Default to Reqeust view
     const [hospitalSub, setHospitalSub] = useState(null); // Store the decoded 'sub' value
+    const [hospitalDetails, setHospitalDetails] = useState(null); // Store hospital details
     const navigate = useNavigate(); // Initialize navigation hook
 
     useEffect(() => {
@@ -39,6 +41,21 @@ const HospitalDashboard = () => {
         }
     }, []);
 
+    useEffect(() => {
+        if (hospitalSub) {
+            const fetchHospitalDetails = async () => {
+                try {
+                    const response = await getHospitalDetails(hospitalSub); // Fetch hospital details
+                    setHospitalDetails(response.data); // Store the hospital details in state
+                } catch (error) {
+                    console.error('Failed to fetch hospital details:', error);
+                }
+            };
+
+            fetchHospitalDetails();
+        }
+    }, [hospitalSub]); // Fetch hospital details when hospitalSub is available
+
     const handleLogout = () => {
         localStorage.removeItem('accessToken'); // Remove token from localStorage
         alert('로그아웃 성공!'); // Show logout success alert
@@ -48,27 +65,30 @@ const HospitalDashboard = () => {
     const renderMainContent = () => {
         switch (activeComponent) {
             case 'Reqeust':
-                return <Reqeust hospitalSub={hospitalSub} />; // Pass hospitalSub as a prop
+                return <Reqeust hospitalSub={hospitalSub} />; 
             case 'Reception':
-                return <Reception />;
+                return <Reception hospitalSub={hospitalSub} />;
             case 'List':
-                return <List />;
+                return <List hospitalSub={hospitalSub} />;
             default:
                 return null;
         }
     };
-    
 
     return (
         <div className="hospital-dashboard">
             <div className="hospital-sidebar">
                 <div className="hospital-logo">SOS</div>
                 <div className="hospital-image">
-                    <img src="" alt="" className="hospital-image-placeholder" />
+                    {hospitalDetails && hospitalDetails.imageUrl ? (
+                        <img src={hospitalDetails.imageUrl} alt={hospitalDetails.name} />
+                    ) : (
+                        <div className="hospital-image-placeholder">Image Not Available</div>
+                    )}
                 </div>
                 <div className="hospital-info">
-                    <div className="hospital-name">영남대병원</div>
-                    <div className="hospital-address">대구광역시 남구 현충로 170 테스트 주소</div>
+                    <div className="hospital-name">{hospitalDetails ? hospitalDetails.name : 'Loading...'}</div>
+                    <div className="hospital-address">{hospitalDetails ? hospitalDetails.address : ''}</div>
                 </div>
 
                 <div className="hospital-menu">

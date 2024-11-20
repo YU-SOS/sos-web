@@ -1,26 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import './List.css'; // Add your styling here
+import { getHospitalDetails } from '../../api/hospitalAPI'; // Import the API function
 
-const List = () => {
-    const [hospitalName, setHospitalName] = useState('');
+const List = ({ hospitalSub }) => {
+    const [hospitalDetails, setHospitalDetails] = useState(null); // Updated to store hospital details
     const [patients, setPatients] = useState([]);
 
     useEffect(() => {
-        const fetchHospitalName = async () => {
+        if (!hospitalSub) {
+            console.error('No hospital identifier (sub) provided');
+            return;
+        }
+
+        // Fetch hospital data
+        const fetchHospitalData = async () => {
             try {
-                const API_URL = process.env.REACT_APP_BASE_URL;
-                const response = await fetch(`${API_URL}api/auth/user`);
-                const data = await response.json();
-                setHospitalName(data.hospitalName || '');
+                const response = await getHospitalDetails(hospitalSub); // Fetch hospital details
+                setHospitalDetails(response.data); // Store hospital details
             } catch (error) {
-                console.error('Error fetching hospital name:', error);
+                console.error('Error fetching hospital details:', error);
             }
         };
 
+        // Fetch patients data
         const fetchPatients = async () => {
             try {
-                const API_URL = process.env.REACT_APP_BASE_URL; 
-                const response = await fetch(`${API_URL}api/hospital/patients`); 
+                const API_URL = process.env.REACT_APP_BASE_URL;
+                const response = await fetch(`${API_URL}api/hospital/patients`);
                 const data = await response.json();
                 setPatients(data.patients || []);
             } catch (error) {
@@ -28,17 +34,17 @@ const List = () => {
             }
         };
 
-        fetchHospitalName();
+        fetchHospitalData();
         fetchPatients();
-    }, []);
+    }, [hospitalSub]);
 
     return (
-        <div className="reception-container">
+        <div className="list-container">
             {/* Header Section */}
             <header className="request-header">
                 <div className="header-content">
-                접수 상세 내역 - {hospitalName || '병원 이름 불러오는 중'}
-                <span className="status-indicator"></span>
+                    응급실 목록 화면 - {hospitalDetails ? hospitalDetails.name : '병원 이름 불러오는 중'}
+                    <span className="status-indicator"></span>
                 </div>
             </header>
             <hr className="header-line" />

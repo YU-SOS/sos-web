@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import './Reqeust.css';
-import getAuthAxios from '../../api/authAxios';
+import { getHospitalDetails, getAmbulanceDetails, getPatientDetails } from '../../api/hospitalAPI';
 
-const Reqeust = ({ hospitalSub }) => {
-    const [hospitalName, setHospitalName] = useState('');
+
+const Reqeust = ({ hospitalSub, receptionId }) => {
+    const [hospitalDetails, setHospitalDetails] = useState(null);
     const [ambulanceInfo, setAmbulanceInfo] = useState({
         name: '',
         address: '',
@@ -12,29 +13,27 @@ const Reqeust = ({ hospitalSub }) => {
     const [patients, setPatients] = useState([]);
 
     useEffect(() => {
-        if (!hospitalSub) {
-            console.error('No hospital identifier (sub) provided');
+        if (!hospitalSub || !receptionId) {
+            console.error('Hospital identifier (sub) or Reception ID is missing.');
             return;
         }
 
-        const authAxios = getAuthAxios(); // Use the authorized axios instance
-
-        const fetchHospitalName = async () => {
+        const fetchHospitalData = async () => {
             try {
-                const response = await authAxios.get(`/hospital/${hospitalSub}`);
-                setHospitalName(response.data.hospitalName || ''); // Set the hospital name
+                const response = await getHospitalDetails(hospitalSub); // Fetch hospital details
+                setHospitalDetails(response.data); // Store hospital details
             } catch (error) {
-                console.error('Error fetching hospital name:', error);
+                console.error('Error fetching hospital details:', error);
             }
         };
 
         const fetchAmbulanceInfo = async () => {
             try {
-                const response = await authAxios.get(`/ambulance/${hospitalSub}`);
+                const response = await getAmbulanceDetails(hospitalSub);
                 setAmbulanceInfo({
                     name: response.data.name || 'Unknown Ambulance',
                     address: response.data.address || 'Unknown Address',
-                    phone: response.data.phone || 'Unknown Phone',
+                    phone: response.data.telephoneNumber || 'Unknown Phone',
                 });
             } catch (error) {
                 console.error('Error fetching ambulance info:', error);
@@ -42,24 +41,29 @@ const Reqeust = ({ hospitalSub }) => {
         };
 
         const fetchPatients = async () => {
+            if (!hospitalSub) {
+                console.error('Hospital identifier (hospitalSub) is missing.');
+                return;
+            }
+        
             try {
-                const response = await authAxios.get(`/hospital/${hospitalSub}`);
-                setPatients(response.data.patients || []);
+                const response = await getPatientDetails(hospitalSub); // Use hospitalSub as the hospitalId
+                setPatients(response.data || []); // Assuming response.data contains the list of patients
             } catch (error) {
                 console.error('Error fetching patients:', error);
             }
         };
 
-        fetchHospitalName();
+        fetchHospitalData();
         fetchAmbulanceInfo();
         fetchPatients();
-    }, [hospitalSub]); // Re-run the effect when hospitalSub changes
+    }, [hospitalSub, receptionId]);
 
     return (
         <div className="request-container">
             <header className="request-header">
                 <div className="header-content">
-                    병원 종합 상황 정보 대시보드 - {hospitalName || '병원 이름 불러오는 중'}
+                    병원 종합 상황 정보 대시보드 - {hospitalDetails ? hospitalDetails.name : '병원 이름 불러오는 중'}
                     <span className="status-indicator"></span>
                 </div>
             </header>

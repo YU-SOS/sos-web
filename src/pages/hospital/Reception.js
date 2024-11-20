@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import './Reception.css'; 
+import './Reception.css';
+import { getHospitalDetails } from '../../api/hospitalAPI'; // Import the API function
 
-const Reception = () => {
-    const [hospitalName, setHospitalName] = useState('');
+const Reception = ({ hospitalSub }) => {
+    const [hospitalDetails, setHospitalDetails] = useState(null); // Updated to store hospital details
     const [ambulanceInfo, setAmbulanceInfo] = useState({
         name: '',
         address: '',
@@ -13,22 +14,25 @@ const Reception = () => {
     const [currentMessage, setCurrentMessage] = useState(''); // State for input field
 
     useEffect(() => {
-        const fetchHospitalName = async () => {
+        if (!hospitalSub) {
+            console.error('No hospital identifier (sub) provided');
+            return;
+        }
+
+        // Reuse fetchHospitalData function
+        const fetchHospitalData = async () => {
             try {
-                const API_URL = process.env.REACT_APP_BASE_URL;
-                const response = await fetch(`${API_URL}api/auth/user`);
-                const data = await response.json();
-                setHospitalName(data.hospitalName || '');
+                const response = await getHospitalDetails(hospitalSub); // Fetch hospital details
+                setHospitalDetails(response.data); // Store hospital details
             } catch (error) {
-                console.error('Error fetching hospital name:', error);
+                console.error('Error fetching hospital details:', error);
             }
         };
-        
 
         const fetchAmbulanceInfo = async () => {
             try {
-                const API_URL = process.env.REACT_APP_BASE_URL; 
-                const response = await fetch(`${API_URL}api/ambulance/info`); 
+                const API_URL = process.env.REACT_APP_BASE_URL;
+                const response = await fetch(`${API_URL}api/ambulance/info`);
                 const data = await response.json();
                 setAmbulanceInfo({
                     name: data.name || 'Unknown Ambulance',
@@ -39,12 +43,11 @@ const Reception = () => {
                 console.error('Error fetching ambulance info:', error);
             }
         };
-        
 
         const fetchPatients = async () => {
             try {
-                const API_URL = process.env.REACT_APP_BASE_URL; 
-                const response = await fetch(`${API_URL}api/hospital/patients`); 
+                const API_URL = process.env.REACT_APP_BASE_URL;
+                const response = await fetch(`${API_URL}api/hospital/patients`);
                 const data = await response.json();
                 setPatients(data.patients || []);
             } catch (error) {
@@ -52,10 +55,10 @@ const Reception = () => {
             }
         };
 
-        fetchHospitalName();
+        fetchHospitalData(); // Use fetchHospitalData for hospital details
         fetchAmbulanceInfo();
         fetchPatients();
-    }, []);
+    }, [hospitalSub]);
 
     const handleSendMessage = () => {
         if (currentMessage.trim()) {
@@ -68,8 +71,8 @@ const Reception = () => {
         <div className="reception-container">
             <header className="request-header">
                 <div className="header-content">
-                접수 상세 내역 - {hospitalName || '병원 이름 불러오는 중'}
-                <span className="status-indicator"></span>
+                    접수 상세 내역 - {hospitalDetails ? hospitalDetails.name : '병원 이름 불러오는 중'}
+                    <span className="status-indicator"></span>
                 </div>
             </header>
             <hr className="header-line" />
