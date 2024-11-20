@@ -18,7 +18,7 @@ const SignupHospital = () => {
   const [address, setAddress] = useState('');
   const [telephoneNumber, setTelephoneNumber] = useState('');
   const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null); // 미리보기 상태
+  const [imagePreview, setImagePreview] = useState(null);
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
   const [categories, setCategories] = useState([]);

@@ -16,7 +16,7 @@ const Reception = () => {
         const fetchHospitalName = async () => {
             try {
                 const API_URL = process.env.REACT_APP_BASE_URL;
-                const response = await fetch(`${API_URL}/api/auth/user`);
+                const response = await fetch(`${API_URL}api/auth/user`);
                 const data = await response.json();
                 setHospitalName(data.hospitalName || '');
             } catch (error) {
@@ -28,7 +28,7 @@ const Reception = () => {
         const fetchAmbulanceInfo = async () => {
             try {
                 const API_URL = process.env.REACT_APP_BASE_URL; 
-                const response = await fetch(`${API_URL}/api/ambulance/info`); 
+                const response = await fetch(`${API_URL}api/ambulance/info`); 
                 const data = await response.json();
                 setAmbulanceInfo({
                     name: data.name || 'Unknown Ambulance',
@@ -44,7 +44,7 @@ const Reception = () => {
         const fetchPatients = async () => {
             try {
                 const API_URL = process.env.REACT_APP_BASE_URL; 
-                const response = await fetch(`${API_URL}/api/hospital/patients`); 
+                const response = await fetch(`${API_URL}api/hospital/patients`); 
                 const data = await response.json();
                 setPatients(data.patients || []);
             } catch (error) {

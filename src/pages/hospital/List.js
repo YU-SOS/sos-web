@@ -9,7 +9,7 @@ const List = () => {
         const fetchHospitalName = async () => {
             try {
                 const API_URL = process.env.REACT_APP_BASE_URL;
-                const response = await fetch(`${API_URL}/api/auth/user`);
+                const response = await fetch(`${API_URL}api/auth/user`);
                 const data = await response.json();
                 setHospitalName(data.hospitalName || '');
             } catch (error) {
@@ -20,7 +20,7 @@ const List = () => {
         const fetchPatients = async () => {
             try {
                 const API_URL = process.env.REACT_APP_BASE_URL; 
-                const response = await fetch(`${API_URL}/api/hospital/patients`); 
+                const response = await fetch(`${API_URL}api/hospital/patients`); 
                 const data = await response.json();
                 setPatients(data.patients || []);
             } catch (error) {

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './Reqeust.css';
+import getAuthAxios from '../../api/authAxios';
 
-const Reqeust = () => {
+const Reqeust = ({ hospitalSub }) => {
     const [hospitalName, setHospitalName] = useState('');
     const [ambulanceInfo, setAmbulanceInfo] = useState({
         name: '',
@@ -11,60 +12,58 @@ const Reqeust = () => {
     const [patients, setPatients] = useState([]);
 
     useEffect(() => {
+        if (!hospitalSub) {
+            console.error('No hospital identifier (sub) provided');
+            return;
+        }
+
+        const authAxios = getAuthAxios(); // Use the authorized axios instance
+
         const fetchHospitalName = async () => {
             try {
-                const API_URL = process.env.REACT_APP_BASE_URL;
-                const response = await fetch(`${API_URL}/api/auth/user`);
-                const data = await response.json();
-                setHospitalName(data.hospitalName || '');
+                const response = await authAxios.get(`/hospital/${hospitalSub}`);
+                setHospitalName(response.data.hospitalName || ''); // Set the hospital name
             } catch (error) {
                 console.error('Error fetching hospital name:', error);
             }
         };
-        
 
         const fetchAmbulanceInfo = async () => {
             try {
-                const API_URL = process.env.REACT_APP_BASE_URL; 
-                const response = await fetch(`${API_URL}/api/ambulance/info`); 
-                const data = await response.json();
+                const response = await authAxios.get(`/ambulance/${hospitalSub}`);
                 setAmbulanceInfo({
-                    name: data.name || 'Unknown Ambulance',
-                    address: data.address || 'Unknown Address',
-                    phone: data.phone || 'Unknown Phone',
+                    name: response.data.name || 'Unknown Ambulance',
+                    address: response.data.address || 'Unknown Address',
+                    phone: response.data.phone || 'Unknown Phone',
                 });
             } catch (error) {
                 console.error('Error fetching ambulance info:', error);
             }
         };
-        
 
         const fetchPatients = async () => {
             try {
-                const API_URL = process.env.REACT_APP_BASE_URL; 
-                const response = await fetch(`${API_URL}/api/hospital/patients`); 
-                const data = await response.json();
-                setPatients(data.patients || []);
+                const response = await authAxios.get(`/hospital/${hospitalSub}`);
+                setPatients(response.data.patients || []);
             } catch (error) {
                 console.error('Error fetching patients:', error);
             }
         };
-        
 
         fetchHospitalName();
         fetchAmbulanceInfo();
         fetchPatients();
-    }, []);
+    }, [hospitalSub]); // Re-run the effect when hospitalSub changes
 
     return (
         <div className="request-container">
             <header className="request-header">
-            <div className="header-content">
-                병원 종합 상황 정보 대시보드 - {hospitalName || '병원 이름 불러오는 중'}
-                <span className="status-indicator"></span>
-            </div>
-        </header>
-        <hr className="header-line" />
+                <div className="header-content">
+                    병원 종합 상황 정보 대시보드 - {hospitalName || '병원 이름 불러오는 중'}
+                    <span className="status-indicator"></span>
+                </div>
+            </header>
+            <hr className="header-line" />
             <div className="request-content">
                 <div className="request-info">
                     <div className="hospital-header">
@@ -102,21 +101,21 @@ const Reqeust = () => {
                             <div className="field small-field">
                                 <label>중증도</label>
                                 <div
-                                        className="severity-icon"
-                                        style={{
-                                            width: '20px',
-                                            height: '20px',
-                                            borderRadius: '50%',
-                                            backgroundColor:
-                                                patients.length > 0 && patients[0].status === 'red'
-                                                    ? '#ff0000' // Red for high severity
-                                                    : patients.length > 0 && patients[0].status === 'white'
-                                                    ? '#ffffff' // White for medium severity
-                                                    : '#808080', // Grey for low severity
-                                            border: '1px solid #ddd',
-                                        }}
-                                    ></div>
-                                </div>
+                                    className="severity-icon"
+                                    style={{
+                                        width: '20px',
+                                        height: '20px',
+                                        borderRadius: '50%',
+                                        backgroundColor:
+                                            patients.length > 0 && patients[0].status === 'red'
+                                                ? '#ff0000' // Red for high severity
+                                                : patients.length > 0 && patients[0].status === 'white'
+                                                ? '#ffffff' // White for medium severity
+                                                : '#808080', // Grey for low severity
+                                        border: '1px solid #ddd',
+                                    }}
+                                ></div>
+                            </div>
                         </div>
                         <div className="field">
                             <label>증상</label>
@@ -140,7 +139,6 @@ const Reqeust = () => {
                         <button className="reject-button">거절</button>
                     </div>
                 </div>
-                {/* Patient List */}
                 <div className="field patient-list-field">
                     <div className="patient-list">
                         {patients.length > 0 ? (
@@ -149,15 +147,15 @@ const Reqeust = () => {
                                     key={index}
                                     className={`patient-block ${patient.status}`}
                                     style={{
-                                        border: "1px solid #ccc",
-                                        padding: "10px",
-                                        marginBottom: "10px",
+                                        border: '1px solid #ccc',
+                                        padding: '10px',
+                                        marginBottom: '10px',
                                         backgroundColor:
-                                            patient.status === "red"
-                                                ? "#ffcccc"
-                                                : patient.status === "white"
-                                                ? "#ffffff"
-                                                : "#d3d3d3",
+                                            patient.status === 'red'
+                                                ? '#ffcccc'
+                                                : patient.status === 'white'
+                                                ? '#ffffff'
+                                                : '#d3d3d3',
                                     }}
                                 >
                                     <div><strong>Name:</strong> {patient.name}</div>
