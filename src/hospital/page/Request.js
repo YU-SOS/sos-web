@@ -5,7 +5,7 @@ import { getHospitalDetails, getAmbulanceDetails, getPatientDetails } from '../.
 const { Title } = Typography;
 const { TextArea } = Input;
 
-const Request = ({ hospitalSub, receptionId }) => {
+const Request = ({ hospitalid, receptionid }) => {
     const [hospitalDetails, setHospitalDetails] = useState(null);
     const [ambulanceInfo, setAmbulanceInfo] = useState({
         name: '',
@@ -15,24 +15,22 @@ const Request = ({ hospitalSub, receptionId }) => {
     const [patients, setPatients] = useState([]);
 
     useEffect(() => {
-        if (!hospitalSub || !receptionId) {
-            message.error('병원 식별자 또는 접수 ID가 없습니다.');
-            return;
-        }
 
-        const fetchHospitalData = async () => {
+        const fetchHospitalDetails = async () => {
             try {
-                const response = await getHospitalDetails(hospitalSub);
+                const response = await getHospitalDetails();
+                console.log('Hospital Details Response:', response.data); // 확인 코드 추가
                 setHospitalDetails(response.data);
             } catch (error) {
                 console.error('Error fetching hospital details:', error);
-                message.error('병원 정보를 불러오는 중 오류가 발생했습니다.');
+                message.error('병원 정보를 가져오는 중 오류가 발생했습니다.');
             }
         };
 
+
         const fetchAmbulanceInfo = async () => {
             try {
-                const response = await getAmbulanceDetails(hospitalSub);
+                const response = await getAmbulanceDetails(hospitalid);
                 setAmbulanceInfo({
                     name: response.data.name || 'Unknown Ambulance',
                     address: response.data.address || 'Unknown Address',
@@ -46,7 +44,7 @@ const Request = ({ hospitalSub, receptionId }) => {
 
         const fetchPatients = async () => {
             try {
-                const response = await getPatientDetails(hospitalSub);
+                const response = await getPatientDetails(hospitalid);
                 setPatients(response.data || []);
             } catch (error) {
                 console.error('Error fetching patients:', error);
@@ -54,10 +52,11 @@ const Request = ({ hospitalSub, receptionId }) => {
             }
         };
 
-        fetchHospitalData();
+        fetchHospitalDetails();
         fetchAmbulanceInfo();
         fetchPatients();
-    }, [hospitalSub, receptionId]);
+    }, [hospitalid, receptionid]);
+
 
     const renderSeverityTag = (status) => {
         switch (status) {
@@ -73,7 +72,7 @@ const Request = ({ hospitalSub, receptionId }) => {
     return (
         <Card>
             <Title level={3}>
-                병원 종합 상황 정보 대시보드 - {hospitalDetails ? hospitalDetails.name : '병원 이름 불러오는 중'}
+                병원 종합 상황 정보 대시보드 - {hospitalDetails?.data.name || '병원 이름 불러오는 중'}
             </Title>
             <Row gutter={[16, 16]}>
                 {/* 구급차 정보 */}

@@ -23,7 +23,7 @@ const HospitalDashboard = () => {
             }
 
             try {
-                const response = await getHospitalDetails(); // API call for hospital details
+                const response = await getHospitalDetails();
                 setHospitalDetails(response.data);
             } catch (error) {
                 console.error('Failed to fetch hospital details:', error);

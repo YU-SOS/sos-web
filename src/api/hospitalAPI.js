@@ -109,7 +109,7 @@ export const getAmbulanceDetails = async (ambulanceId) => {
                 Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
             },
         });
-        return response.data; // Return the API response
+        return response.data;
     } catch (error) {
         console.error('Error fetching ambulance details:', error.response || error);
         throw error;
