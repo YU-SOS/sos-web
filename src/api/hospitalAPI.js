@@ -2,7 +2,6 @@ import axios from 'axios';
 import {jwtDecode} from "jwt-decode";
 import {apiServer} from "../config/api";  // API 서버 주소
 
-// Axios 클라이언트 설정
 const apiClient = axios.create({
     baseURL: apiServer,
     headers: {
@@ -10,33 +9,31 @@ const apiClient = axios.create({
     }
 });
 
-// 로컬 스토리지에서 토큰 가져오기
 const getAuthToken = () => {
     return localStorage.getItem('accessToken');
 };
 
-// 병원 ID를 JWT 토큰에서 추출
-const getHospitalIdFromToken = () => {
+export const getHospitalIdFromToken = () => {
     const token = getAuthToken();
     if (!token) {
-        console.error('토큰이 없습니다.');
+        console.error('Access token not found.');
         return null;
     }
 
     try {
-        const decodedToken = jwtDecode(token);  // JWT 토큰을 디코딩
-        return decodedToken.sub;
+        const decodedToken = jwtDecode(token); // Decode the JWT
+        return decodedToken.sub; // Extract the hospital ID (sub)
     } catch (error) {
-        console.error('토큰 디코딩 중 오류 발생:', error);
+        console.error('Error decoding the token:', error);
         return null;
     }
 };
 
-// 병원 정보 조회 API
+// Fetch hospital details using the hospital ID
 export const getHospitalDetails = async () => {
     const hospitalId = getHospitalIdFromToken();
     if (!hospitalId) {
-        return Promise.reject(new Error('병원 ID를 가져오지 못했습니다.'));
+        return Promise.reject(new Error('Failed to retrieve hospital ID.'));
     }
 
     const token = getAuthToken();
@@ -47,7 +44,6 @@ export const getHospitalDetails = async () => {
     });
 };
 
-// 병원 정보 수정 API
 export const updateHospitalInfo = async (hospitalData) => {
     const hospitalId = getHospitalIdFromToken();
     if (!hospitalId) {
@@ -101,8 +97,47 @@ export const updateEmergencyStatus = async (emergencyStatus) => {
             });
         return response;
     } catch (error) {
-        // 서버 오류 메시지 출력
         console.error('응급실 상태 변경 중 오류 발생:', error.response ? error.response.data : error.message);
         throw error;
+    }
+};
+
+export const getAmbulanceDetails = async (ambulanceId) => {
+    try {
+        const response = await apiClient.get(`/ambulance/${ambulanceId}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+        });
+        return response.data; // Return the API response
+    } catch (error) {
+        console.error('Error fetching ambulance details:', error.response || error);
+        throw error;
+    }
+};
+
+export const getPatientDetails = async (hospitalId) => {
+    const token = localStorage.getItem('accessToken'); // Retrieve the token
+    if (!token) {
+        console.error("Token not found. Please log in.");
+        return;
+    }
+
+    // Validate the hospitalId
+    if (!hospitalId) {
+        console.error("Hospital ID is required.");
+        return;
+    }
+
+    try {
+        const response = await apiClient.get(`/hospital/${hospitalId}/patients`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+        return response.data; // Return the patient data
+    } catch (error) {
+        console.error("Error fetching patient details:", error.response || error);
+        throw error; // Rethrow the error for further handling
     }
 };

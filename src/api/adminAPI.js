@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { apiServer } from '../config/api';
-import {message} from "antd";
 
 const apiClient = axios.create({
     baseURL: apiServer,
@@ -19,7 +18,7 @@ export const getRegistrationList = (type) => {
         console.error("토큰이 없습니다. 로그인 후 시도하세요.");
         return;
     }
-    return apiClient.get(`/admin/registration`, {
+    return apiClient.get(`/admin/registrations`, {
         headers: {
             'Authorization': `Bearer ${token}`
         },

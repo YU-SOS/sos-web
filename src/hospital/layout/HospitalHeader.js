@@ -1,13 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout, Menu, message } from 'antd';
-import {AppstoreOutlined, HomeOutlined, LogoutOutlined} from '@ant-design/icons';
 import styled from 'styled-components';
+import { HomeOutlined, LogoutOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import SOSLogo from "../../pages/SOS_Logo.png";
+import { getHospitalDetails } from '../../api/hospitalAPI';
 
 const { Sider } = Layout;
 
-const Header = () => {
+const HospitalHeader = () => {
+    const [hospitalDetails, setHospitalDetails] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -17,16 +18,25 @@ const Header = () => {
         };
     }, []);
 
+    useEffect(() => {
+        const fetchHospitalDetails = async () => {
+            try {
+                const response = await getHospitalDetails();
+                setHospitalDetails(response.data);
+            } catch (error) {
+                console.error('Error fetching hospital details:', error);
+                message.error('병원 정보를 가져오는 중 오류가 발생했습니다.');
+            }
+        };
+
+        fetchHospitalDetails();
+    }, []);
+
     const menuItems = [
         {
-            key: 'admin/dashboard',
+            key: 'hospital/dashboard',
             icon: <HomeOutlined />,
             label: '대시보드',
-        },
-        {
-            key: 'admin/registration-list',
-            icon: <AppstoreOutlined />,
-            label: '회원가입 요청',
         },
         {
             key: 'logout',
@@ -40,7 +50,6 @@ const Header = () => {
             localStorage.removeItem('accessToken');
             message.success('로그아웃 성공!');
             navigate('/');
-
         } else {
             navigate(`/${key}`);
         }
@@ -51,16 +60,20 @@ const Header = () => {
             <Logo>SOS</Logo>
             <ImageContainer>
                 <img
-                    src={SOSLogo}
-                    alt="SOS Logo"
+                    src={hospitalDetails?.data.imageUrl || 'https://via.placeholder.com/120'}
+                    alt="병원 대표 이미지"
                     style={{
                         margin: '16px',
                         width: '200px',
                         height: '200px',
-                        objectFit: 'contain'}}
+                        borderRadius: '50%',
+                        border: '2px solid #fff',
+                        objectFit: 'contain',
+                    }}
                 />
             </ImageContainer>
-            <Name>관리자</Name>
+            <Name>{hospitalDetails?.data.name || ' '}</Name>
+            <SubInfo>{hospitalDetails?.data.address || ' '}</SubInfo>
             <Menu
                 theme="dark"
                 mode="inline"
@@ -108,4 +121,11 @@ const Name = styled.div`
     color: #fff;
 `;
 
-export default Header;
+const SubInfo = styled.div`
+    font-size: 14px;
+    color: #ccc;
+    text-align: center;
+    margin-bottom: 20px;
+`;
+
+export default HospitalHeader;

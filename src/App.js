@@ -3,17 +3,10 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Homepage from './pages/homepage';
 import Login from './pages/login/Login';
 import SignupHospital from './pages/signup/SignupHospital';
-import Layout from './layout/Layout';
-import Reqeust from './pages/hospital/Reqeust';
-import Reception from './pages/hospital/Reception';
-import ProtectedRoute from './components/ProtectedRoute';
-import AdminDashboard from './pages/dashboard/AdminDashboard';
-import HospitalDashboard from './pages/dashboard/HospitalDashboard';
-import HospitalInfoPage from './pages/hospital/HospitalInfoPage';  // 병원 정보 관리 페이지
-import EmergencyStatusPage from './pages/hospital/EmergencyStatusPage';  // 응급실 상태 관리 페이지
-import EmergencyReceptionPage from './pages/hospital/EmergencyReceptionPage';  // 응급실 방문 신청 목록 페이지
-import Dashboard from './admin/page/Dashboard.js';
+import AdminDashboard from './admin/page/AdminDashboard.js';
 import AdminLayout from './admin/layout/AdminLayout';
+import HospitalDashboard from './hospital/page/HospitalDashboard'
+import HospitalLayout from './hospital/layout/HospitalLayout';
 import GlobalStyle from './GlobalStyle.js';
 import RegistrationList from "./admin/page/AdminDashboardRegistrationList";
 
@@ -27,49 +20,12 @@ const App = () => {
                 <Route path="/signup/hospital" element={<SignupHospital />} />
 
                 <Route path='/admin' element ={ <AdminLayout />}>
-                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="dashboard" element={<AdminDashboard />} />
                     <Route path="registration-list" element={<RegistrationList />} />
-
                 </Route>
 
-                {/* 관리자 대시보드 내부 라우팅
-                <Route
-                    path="/admin/dashboard/*"
-                    element={
-                        <ProtectedRoute>
-                            <AdminDashboard />
-                        </ProtectedRoute>
-                    }
-                /> */}
-
-                {/* 병원 대시보드 내부 라우팅 */}
-                <Route
-                    path="/hospital/dashboard"
-                    element={
-                        <ProtectedRoute>
-                            <HospitalDashboard />
-                        </ProtectedRoute>
-                    }
-                >
-                    {/* 병원 정보 관리 페이지 */}
-                    <Route path="info" element={<HospitalInfoPage />} />
-                    {/* 응급실 상태 관리 페이지 */}
-                    <Route path="emergency-status" element={<EmergencyStatusPage />} />
-                    {/* 응급실 방문 신청 목록 페이지 */}
-                    <Route path="emergency-reception" element={<EmergencyReceptionPage />} />
-                </Route>
-
-                {/* 테스트 라우트 */}
-                <Route
-                    path='/test'
-                    element={
-                        <ProtectedRoute>
-                            <Layout />
-                        </ProtectedRoute>
-                    }
-                >
-                    <Route path='request' element={<Reqeust />} />
-                    <Route path='reception' element={<Reception />} />
+                <Route path='/hospital' element ={ <HospitalLayout />}>
+                    <Route path='dashboard' element={ <HospitalDashboard />} />
                 </Route>
             </Routes>
         </Router>
