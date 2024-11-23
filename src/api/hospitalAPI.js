@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {jwtDecode} from "jwt-decode";
-import {apiServer} from "../config/api";  // API 서버 주소
+import {apiServer} from "../config/api";
 
 const apiClient = axios.create({
     baseURL: apiServer,
@@ -9,7 +9,7 @@ const apiClient = axios.create({
     }
 });
 
-const getAuthToken = () => {
+export const getAuthToken = () => {
     return localStorage.getItem('accessToken');
 };
 
@@ -19,17 +19,15 @@ export const getHospitalIdFromToken = () => {
         console.error('Access token not found.');
         return null;
     }
-
     try {
-        const decodedToken = jwtDecode(token); // Decode the JWT
-        return decodedToken.sub; // Extract the hospital ID (sub)
+        const decodedToken = jwtDecode(token);
+        return decodedToken.sub;
     } catch (error) {
         console.error('Error decoding the token:', error);
         return null;
     }
 };
 
-// Fetch hospital details using the hospital ID
 export const getHospitalDetails = async () => {
     const hospitalId = getHospitalIdFromToken();
     if (!hospitalId) {
@@ -51,10 +49,13 @@ export const updateHospitalInfo = async (hospitalData) => {
     }
 
     const token = getAuthToken();
-    return apiClient.put(`/hospital/${hospitalId}`, hospitalData, {
+    return apiClient.put(`/hospital/${hospitalId}/emergencyStatus`, hospitalData, {
         headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
+        },
+        params: {
+            emergencyStatus : Boolean(hospitalData.emergencyStatus)
         }
     });
 };
@@ -80,7 +81,7 @@ export const updateEmergencyStatus = async (emergencyStatus) => {
         return Promise.reject(new Error('병원 ID를 가져오지 못했습니다.'));
     }
 
-    const token = getAuthToken();  // 로컬 스토리지에서 엑세스 토큰 가져오기
+    const token = getAuthToken();
 
     try {
         const response = await apiClient.put(
@@ -88,8 +89,7 @@ export const updateEmergencyStatus = async (emergencyStatus) => {
             null,
             {
                 headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                 },
                 params: {
                     emergencyStatus: emergencyStatus
@@ -97,7 +97,7 @@ export const updateEmergencyStatus = async (emergencyStatus) => {
             });
         return response;
     } catch (error) {
-        console.error('응급실 상태 변경 중 오류 발생:', error.response ? error.response.data : error.message);
+        console.error(error);
         throw error;
     }
 };
@@ -111,10 +111,28 @@ export const getAmbulanceDetails = async (ambulanceId) => {
         });
         return response.data;
     } catch (error) {
-        console.error('Error fetching ambulance details:', error.response || error);
+        console.error(error);
         throw error;
     }
 };
+
+export const updateReceptionStatus = async (receptionId, isApproved) => {
+    const token = getAuthToken();
+    try {
+        const response = await apiClient.put(
+            `/reception/${receptionId}`, { isApproved }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
+
 
 export const getPatientDetails = async (hospitalId) => {
     const token = localStorage.getItem('accessToken'); // Retrieve the token

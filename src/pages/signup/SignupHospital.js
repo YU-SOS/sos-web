@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Form, Input, Button, Checkbox, Upload, notification, Space, Image } from 'antd';
+import { ReactComponent as Logo } from '../../assets/svg/sos-logo-white.svg'
+import { Layout, Form, Input, Button, Checkbox, Upload, notification, Image } from 'antd';
 import { UploadOutlined, SearchOutlined } from '@ant-design/icons';
 import signupHospitalAPI from '../../api/signup/signupHospitalAPI';
 import dupCheckAPI from '../../api/duplicates/dupCheckAPI';
 import { storage } from '../../firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
+
+const { Header, Content } = Layout;
 
 const SignupHospital = () => {
   const [form] = Form.useForm();
@@ -75,7 +78,7 @@ const SignupHospital = () => {
         setMarkerPosition(newLocation);
         setLatitude(newLocation.lat);
         setLongitude(newLocation.lng);
-        notification.success({ message: '검색된 위치로 부드럽게 이동했습니다.' });
+        notification.success({ message: '검색된 위치로 이동하였습니다.' });
       } else {
         notification.error({ message: '검색 결과가 없습니다.' });
       }
@@ -106,12 +109,6 @@ const SignupHospital = () => {
     } else {
       notification.error({ message: '이미지 파일을 업로드할 수 없습니다.' });
     }
-  };
-
-
-  const handleRemoveImage = () => {
-    setImageFile(null);
-    setImageUrl('');
   };
 
   // 대표 이미지 업로드
@@ -169,106 +166,57 @@ const SignupHospital = () => {
 
 
   return (
-      <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', borderRadius: '10px' }}>
-        <h1 style={{ textAlign: 'center' }}>병원 회원가입</h1>
-        <Form form={form} layout="vertical" onFinish={handleFinish}>
-          <Form.Item name="id" label="ID" rules={[{ required: true, message: '아이디를 입력하세요.' }]}>
-            <Space>
-              <Input placeholder="아이디" onChange={() => setIsIdChecked(false)} />
-              <Button onClick={handleIdCheck}>중복 검사</Button>
-            </Space>
-          </Form.Item>
-          <Form.Item name="password" label="비밀번호" rules={[{ required: true, message: '비밀번호를 입력하세요.' }]}>
-            <Input.Password placeholder="비밀번호" />
-          </Form.Item>
-          <Form.Item name="name" label="병원 이름" rules={[{ required: true, message: '병원 이름을 입력하세요.' }]}>
-            <Input placeholder="병원 이름" />
-          </Form.Item>
-          <Form.Item name='address' label="주소" rules={[{ required: true, message: '주소를 입력하세요.' }]}>
-            <Space>
-              <Input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="주소" />
-              <Button icon={<SearchOutlined />} onClick={handleSearch}>주소 검색</Button>
-            </Space>
-          </Form.Item>
-          <div>위도: {latitude} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 경도: {longitude}</div>
-          <Map
-              center={mapCenter}
-              style={{ width: '100%', height: '350px', marginBottom: '20px' }}
-              level={3}
-              onClick={handleMapClick}
-              onCreate={(map) => setMapInstance(map)}
-          >
-            <MapMarker position={markerPosition} />
-          </Map>
-          <Form.Item label="전화번호" name="telephoneNumber" rules={[{ required: true, message: '전화번호를 입력하세요.' }]}>
-            <Input placeholder="전화번호" />
-          </Form.Item>
-          <Form.Item
-              name="categories"
-              label="카테고리 선택"
-              rules={[
-                {
-                  required: true,
-                  message: '카테고리를 최소 하나 이상 선택해주세요.',
-                },
-                {
-                  validator: (_, value) =>
-                      value && value.length > 0
-                          ? Promise.resolve()
-                          : Promise.reject(),
-                },
-              ]}
-          >
-            <Checkbox.Group options={categoryOptions} />
-          </Form.Item>
-
-          <Form.Item
-              label="대표 이미지"
-              name="imageUrl"
-              rules={[
-                {
-                  required: true,
-                  message: '대표 이미지를 업로드해주세요.',
-                },
-                {
-                  validator: () =>
-                      form.getFieldValue('imageUrl')
-                          ? Promise.resolve()
-                          : Promise.reject(),
-                },
-              ]}
-          >
-            <Upload
-                beforeUpload={() => false}
-                onChange={handleImageChange}
-                onRemove={handleRemoveImage}
-                listType="picture"
-                showUploadList={false}
-                maxCount={1}
-            >
-              {<Button icon={<UploadOutlined />}>이미지 업로드</Button>}
-            </Upload>
-
-            {imageUrl && (
-                <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                  <Image
-                      src={imageUrl}
-                      alt="대표 이미지"
-                      width={200}
-                      height={200}
-                      style={{ objectFit: 'cover', borderRadius: '10px' }}
-                      preview={false}
-                  />
-                  <div style={{ fontSize: '12px', color: '#888' }}>{imageFile?.name}</div>
-                </div>
-            )}
-          </Form.Item>
-
-          <Button type="primary" htmlType="submit" block loading={isUploading}>
-            회원가입 요청
-          </Button>
-        </Form>
-      </div>
+      <Layout style={{ minHeight: '100vh' }}>
+        <Header
+            style={{ background: '#001529', padding: '0 20px', display: 'flex', alignItems: 'center' }}>
+          <Logo />
+        </Header>
+        <Content style={{ padding: '20px', display: 'flex', justifyContent: 'center', background: '#f0f2f5' }}>
+          <div style={{ maxWidth: '600px', width: '100%', padding: '20px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', borderRadius: '10px', background: '#fff' }}>
+            <h1 style={{ fontSize: 'larger', textAlign: 'center', marginBottom: 20 }}>병원 회원가입</h1>
+            <Form form={form} layout="horizontal" onFinish={handleFinish} labelCol={{ span: 5 }} wrapperCol={{ span: 16 }}>
+              <Form.Item name="id" label="ID" rules={[{ required: true, message: '아이디를 입력하세요.' }]}>
+                <Input.Search placeholder="아이디" enterButton="중복검사" onSearch={handleIdCheck} />
+              </Form.Item>
+              <Form.Item name="password" label="비밀번호" rules={[{ required: true, message: '비밀번호를 입력하세요.' }]}>
+                <Input.Password placeholder="비밀번호" />
+              </Form.Item>
+              <Form.Item name="name" label="병원 이름" rules={[{ required: true, message: '병원 이름을 입력하세요.' }]}>
+                <Input placeholder="병원 이름" />
+              </Form.Item>
+              <Form.Item name="address" label="주소" rules={[{ required: true, message: '주소를 입력하세요.' }]}>
+                <Input.Search placeholder="주소" enterButton="검색" />
+              </Form.Item>
+              <Form.Item label="지도">
+                <Map center={mapCenter} style={{ width: '100%', height: '350px' }} level={3} onClick={handleMapClick}>
+                  <MapMarker position={markerPosition} />
+                </Map>
+              </Form.Item>
+              <Form.Item name="telephoneNumber" label="전화번호" rules={[{ required: true, message: '전화번호를 입력하세요.' }]}>
+                <Input placeholder="전화번호" />
+              </Form.Item>
+              <Form.Item name="categories" label="카테고리 선택" rules={[{ required: true, message: '카테고리를 선택해주세요.' }]}>
+                <Checkbox.Group options={categoryOptions} />
+              </Form.Item>
+              <Form.Item label="대표 이미지" name="imageUrl" rules={[{ required: true, message: '대표 이미지를 업로드해주세요.' }]}>
+                <Upload beforeUpload={() => false} onChange={handleImageChange} listType="picture" showUploadList={false} maxCount={1}>
+                  <Button icon={<UploadOutlined />}>이미지 업로드</Button>
+                </Upload>
+                {imageUrl && (
+                    <div style={{ marginTop: '10px' }}>
+                      <Image src={imageUrl} alt="대표 이미지" width={200} height={200} style={{ objectFit: 'cover', borderRadius: '10px' }} />
+                    </div>
+                )}
+              </Form.Item>
+              <Form.Item wrapperCol={{ span: 24 }}>
+                <Button type="primary" htmlType="submit" block loading={isUploading}>
+                  회원가입 요청
+                </Button>
+              </Form.Item>
+            </Form>
+          </div>
+        </Content>
+      </Layout>
   );
 };
 

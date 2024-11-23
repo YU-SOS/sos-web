@@ -1,25 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import './Reception.css';
-import { getHospitalDetails } from '../../api/hospitalAPI'; // Import the API function
+import './Reqeust.css';
+import { getHospitalDetails, getAmbulanceDetails, getPatientDetails } from '../../api/hospitalAPI';
 
-const Reception = ({ hospitalSub }) => {
-    const [hospitalDetails, setHospitalDetails] = useState(null); // Updated to store hospital details
+
+const Reqeust = ({ hospitalSub, receptionId }) => {
+    const [hospitalDetails, setHospitalDetails] = useState(null);
     const [ambulanceInfo, setAmbulanceInfo] = useState({
         name: '',
         address: '',
         phone: '',
     });
     const [patients, setPatients] = useState([]);
-    const [messages, setMessages] = useState([]); // State to store messages
-    const [currentMessage, setCurrentMessage] = useState(''); // State for input field
 
     useEffect(() => {
-        if (!hospitalSub) {
-            console.error('No hospital identifier (sub) provided');
+        if (!hospitalSub || !receptionId) {
+            console.error('Hospital identifier (sub) or Reception ID is missing.');
             return;
         }
 
-        // Reuse fetchHospitalData function
         const fetchHospitalData = async () => {
             try {
                 const response = await getHospitalDetails(hospitalSub); // Fetch hospital details
@@ -31,13 +29,11 @@ const Reception = ({ hospitalSub }) => {
 
         const fetchAmbulanceInfo = async () => {
             try {
-                const API_URL = process.env.REACT_APP_BASE_URL;
-                const response = await fetch(`${API_URL}api/ambulance/info`);
-                const data = await response.json();
+                const response = await getAmbulanceDetails(hospitalSub);
                 setAmbulanceInfo({
-                    name: data.name || 'Unknown Ambulance',
-                    address: data.address || 'Unknown Address',
-                    phone: data.phone || 'Unknown Phone',
+                    name: response.data.name || 'Unknown Ambulance',
+                    address: response.data.address || 'Unknown Address',
+                    phone: response.data.telephoneNumber || 'Unknown Phone',
                 });
             } catch (error) {
                 console.error('Error fetching ambulance info:', error);
@@ -45,39 +41,35 @@ const Reception = ({ hospitalSub }) => {
         };
 
         const fetchPatients = async () => {
+            if (!hospitalSub) {
+                console.error('Hospital identifier (hospitalSub) is missing.');
+                return;
+            }
+        
             try {
-                const API_URL = process.env.REACT_APP_BASE_URL;
-                const response = await fetch(`${API_URL}api/hospital/patients`);
-                const data = await response.json();
-                setPatients(data.patients || []);
+                const response = await getPatientDetails(hospitalSub); // Use hospitalSub as the hospitalId
+                setPatients(response.data || []); // Assuming response.data contains the list of patients
             } catch (error) {
                 console.error('Error fetching patients:', error);
             }
         };
 
-        fetchHospitalData(); // Use fetchHospitalData for hospital details
+        fetchHospitalData();
         fetchAmbulanceInfo();
         fetchPatients();
-    }, [hospitalSub]);
-
-    const handleSendMessage = () => {
-        if (currentMessage.trim()) {
-            setMessages([...messages, { text: currentMessage, timestamp: new Date() }]);
-            setCurrentMessage('');
-        }
-    };
+    }, [hospitalSub, receptionId]);
 
     return (
-        <div className="reception-container">
+        <div className="request-container">
             <header className="request-header">
                 <div className="header-content">
-                    접수 상세 내역 - {hospitalDetails ? hospitalDetails.name : '병원 이름 불러오는 중'}
+                    병원 종합 상황 정보 대시보드 - {hospitalDetails ? hospitalDetails.name : '병원 이름 불러오는 중'}
                     <span className="status-indicator"></span>
                 </div>
             </header>
             <hr className="header-line" />
-            <div className="reception-content">
-                <div className="reception-info">
+            <div className="request-content">
+                <div className="request-info">
                     <div className="hospital-header">
                         <div className="hospital-title">{ambulanceInfo.name}</div>
                         <div className="hospital-subtitle">
@@ -120,10 +112,10 @@ const Reception = ({ hospitalSub }) => {
                                         borderRadius: '50%',
                                         backgroundColor:
                                             patients.length > 0 && patients[0].status === 'red'
-                                                ? '#ff0000'
+                                                ? '#ff0000' // Red for high severity
                                                 : patients.length > 0 && patients[0].status === 'white'
-                                                ? '#ffffff'
-                                                : '#808080',
+                                                ? '#ffffff' // White for medium severity
+                                                : '#808080', // Grey for low severity
                                         border: '1px solid #ddd',
                                     }}
                                 ></div>
@@ -146,28 +138,38 @@ const Reception = ({ hospitalSub }) => {
                             <input type="text" />
                         </div>
                     </div>
-                </div>
-                <div className="chat-interface">
-                    <div className="message-list">
-                        {messages.map((message, index) => (
-                            <div key={index} className="message">
-                                <div className="message-text">{message.text}</div>
-                                <div className="message-timestamp">
-                                    {message.timestamp.toLocaleString()}
-                                </div>
-                            </div>
-                        ))}
+                    <div className="action-buttons">
+                        <button className="accept-button">수락</button>
+                        <button className="reject-button">거절</button>
                     </div>
-                    <div className="message-input-container">
-                        <textarea
-                            className="message-input"
-                            placeholder="메시지 입력하세요..."
-                            value={currentMessage}
-                            onChange={(e) => setCurrentMessage(e.target.value)}
-                        ></textarea>
-                        <button className="send-button" onClick={handleSendMessage}>
-                            보내기
-                        </button>
+                </div>
+                <div className="field patient-list-field">
+                    <div className="patient-list">
+                        {patients.length > 0 ? (
+                            patients.map((patient, index) => (
+                                <div
+                                    key={index}
+                                    className={`patient-block ${patient.status}`}
+                                    style={{
+                                        border: '1px solid #ccc',
+                                        padding: '10px',
+                                        marginBottom: '10px',
+                                        backgroundColor:
+                                            patient.status === 'red'
+                                                ? '#ffcccc'
+                                                : patient.status === 'white'
+                                                ? '#ffffff'
+                                                : '#d3d3d3',
+                                    }}
+                                >
+                                    <div><strong>Name:</strong> {patient.name}</div>
+                                    <div><strong>Age:</strong> {patient.age}</div>
+                                    <div><strong>Gender:</strong> {patient.gender}</div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="no-patients">환자 데이터가 없습니다</div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -175,4 +177,4 @@ const Reception = ({ hospitalSub }) => {
     );
 };
 
-export default Reception;
+export default Reqeust;

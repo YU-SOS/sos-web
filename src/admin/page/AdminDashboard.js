@@ -13,7 +13,6 @@ const AdminDashboard = () => {
     const [ambulanceRequests, setAmbulanceRequests] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    // 통계 데이터 불러오기
     const fetchStatistics = async () => {
         setLoading(true);
         try {
@@ -42,7 +41,6 @@ const AdminDashboard = () => {
         navigate('/admin/registration-list');
     };
 
-    // 컴포넌트 마운트 시 데이터 불러오기
     useEffect(() => {
         fetchStatistics();
         fetchData();
@@ -57,12 +55,14 @@ const AdminDashboard = () => {
                 <Row gutter={16}>
                     <Col span={16}>
                         <Card title="회원가입 요청 목록">
-                            <div style={{ marginBottom: '20px' }}>
+                            <div style={{
+                                marginBottom: '20px',
+                            }}>
                                 <Title level={4}>병원</Title>
                                 <List
                                     size="small"
                                     bordered
-                                    dataSource={hospitalRequests.slice(0, 4)}
+                                    dataSource={hospitalRequests.slice(0, 10)}
                                     renderItem={(item) => (
                                         <List.Item>
                                             <List.Item.Meta
@@ -70,6 +70,11 @@ const AdminDashboard = () => {
                                             />
                                         </List.Item>
                                     )}
+                                    style={{
+                                        minHeight: '192px',
+                                        maxHeight: '192px',
+                                        overflowY: 'auto',
+                                    }}
                                 />
                                 <Button
                                     type="link"
@@ -92,6 +97,11 @@ const AdminDashboard = () => {
                                             />
                                         </List.Item>
                                     )}
+                                    style={{
+                                        minHeight: '191px',
+                                        maxHeight: '191px',
+                                        overflowY: 'auto',
+                                    }}
                                 />
                                 <Button
                                     type="link"

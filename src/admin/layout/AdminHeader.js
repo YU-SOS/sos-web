@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Layout, Menu, message } from 'antd';
-import {AppstoreOutlined, HomeOutlined, LogoutOutlined} from '@ant-design/icons';
+import { AppstoreOutlined, HomeOutlined, LogoutOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import SOSLogo from "../../pages/SOS_Logo.png";
@@ -28,11 +28,6 @@ const Header = () => {
             icon: <AppstoreOutlined />,
             label: '회원가입 요청',
         },
-        {
-            key: 'logout',
-            icon: <LogoutOutlined />,
-            label: '로그아웃',
-        },
     ];
 
     const onMenuClick = ({ key }) => {
@@ -40,7 +35,6 @@ const Header = () => {
             localStorage.removeItem('accessToken');
             message.success('로그아웃 성공!');
             navigate('/');
-
         } else {
             navigate(`/${key}`);
         }
@@ -57,7 +51,8 @@ const Header = () => {
                         margin: '16px',
                         width: '200px',
                         height: '200px',
-                        objectFit: 'contain'}}
+                        objectFit: 'contain',
+                    }}
                 />
             </ImageContainer>
             <Name>관리자</Name>
@@ -66,8 +61,14 @@ const Header = () => {
                 mode="inline"
                 items={menuItems}
                 onClick={onMenuClick}
-                style={{ backgroundColor: '#353535', color: '#fff' }}
+                style={{ backgroundColor: '#353535', color: '#fff', flex: 1 }}
             />
+            <LogoutContainer>
+                <LogoutButton onClick={() => onMenuClick({ key: 'logout' })}>
+                    <LogoutOutlined style={{ marginRight: '8px' }} />
+                    로그아웃
+                </LogoutButton>
+            </LogoutContainer>
         </CustomSider>
     );
 };
@@ -75,7 +76,11 @@ const Header = () => {
 const CustomSider = styled(Sider)`
     background-color: #353535 !important;
     color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
     position: relative;
+    height: 100vh; /* 화면 전체 높이 */
 `;
 
 const Logo = styled.div`
@@ -107,5 +112,41 @@ const Name = styled.div`
     font-weight: 600;
     color: #fff;
 `;
+
+const LogoutContainer = styled.div`
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: #404040;
+`;
+
+const LogoutButton = styled.div`
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 250px;
+    padding: 16px 0;
+    text-align: center;
+    background-color: #d32f2f;
+    color: #fff;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 8px; /* 둥근 버튼 모양 */
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+
+    &:hover {
+        background-color: #b71c1c; /* Hover 시 더 어두운 빨간색 */
+        transform: translateX(-50%) scale(1.05); /* Hover 시 살짝 커짐 */
+    }
+
+    &:active {
+        background-color: #c62828; /* 클릭 시 중간 색상 */
+        transform: translateX(-50%) scale(0.95); /* 클릭 시 약간 작아짐 */
+    }
+`;
+
 
 export default Header;
