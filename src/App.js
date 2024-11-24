@@ -13,6 +13,7 @@ import List from "./hospital/page/List";
 import Reception from "./hospital/page/Reception";
 import Request from "./hospital/page/Request";
 import Profile from "./hospital/page/HospitalProfile";
+import GuestReception from './pages/reception/guest/GuestReception';
 
 const App = () => {
     return (
@@ -22,6 +23,7 @@ const App = () => {
                 <Route path="/" element={<Homepage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup/hospital" element={<SignupHospital />} />
+                <Route path="/reception/:receptionNumber/guest" element={<GuestReception />} />
 
                 <Route path='/admin' element ={ <AdminLayout />}>
                     <Route path="dashboard" element={<AdminDashboard />} />
