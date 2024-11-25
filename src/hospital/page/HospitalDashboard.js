@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, List, Card, Typography, message, Row, Col, Input, Avatar, Button, Empty, Switch,  } from 'antd';
+import { Layout, List, Card, Typography, message, Row, Col, Input, Avatar, Button, Empty, Switch, Modal } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
-import { getEmergencyReceptionList, getHospitalDetails, updateHospitalInfo, updateReceptionStatus } from '../../api/hospitalAPI';
+import { getEmergencyReceptionList, getHospitalDetails, updateHospitalStatus, updateReceptionStatus } from '../../api/hospitalAPI';
 
 const { Header, Content } = Layout;
 const { Title, Text } = Typography;
@@ -17,6 +17,9 @@ const Dashboard = () => {
             const response = await getHospitalDetails();
             console.log(response.data);
             setHospitalDetails(response.data);
+
+            const status = response.data?.data?.emergencyRoomStatus;
+            setEmergencyStatus(status || false); // API 값에 따라 초기 상태 설정
         } catch (error) {
             console.error(error);
             message.error('병원 정보를 가져오는 중 오류가 발생했습니다.');
@@ -27,15 +30,19 @@ const Dashboard = () => {
         try {
             const response = await getEmergencyReceptionList();
             const data = response.data.data.content;
-            setRequests(data || []);
+
+            const pendingRequests = data.filter((request) => request.receptionStatus === "PENDING");
+
+            setRequests(pendingRequests || []); // 필터링된 데이터를 상태에 저장
         } catch (error) {
             message.error('데이터를 불러오는 중 오류가 발생했습니다.');
         }
     };
 
+
     const handleEmergencyStatusToggle = async (checked) => {
         try {
-            await updateHospitalInfo({ emergencyStatus: checked }); // API 호출
+            await updateHospitalStatus({ emergencyStatus: checked }); // API 호출
             setEmergencyStatus(checked); // 상태 업데이트
         } catch (error) {
             console.error(error);
@@ -58,6 +65,32 @@ const Dashboard = () => {
 
         const { id } = selectedRequest;
 
+        if (!isApproved) {
+            Modal.confirm({
+                title: '거절 확인',
+                content: (
+                    <>
+                        정말로 이 요청을 거절하시겠습니까?
+                        <br />
+                        요청을 거절하면 되돌릴 수 없습니다.
+                    </>
+                ),
+                okText: '예',
+                cancelText: '아니오',
+                onOk: async () => {
+                    try {
+                        const result = await updateReceptionStatus(id, isApproved);
+                        message.success(result.message || '요청이 성공적으로 처리되었습니다.');
+                        fetchReceptionData();
+                        setSelectedRequest(null);
+                    } catch (error) {
+                        message.error('요청 처리 중 오류가 발생했습니다.');
+                    }
+                },
+            });
+            return;
+        }
+
         try {
             const result = await updateReceptionStatus(id, isApproved);
             if (isApproved) {
@@ -78,6 +111,23 @@ const Dashboard = () => {
         if (gender === 'male') return '남자';
         if (gender === 'female') return '여자';
         return '알 수 없음';
+    };
+
+    const getSeverityColor = (severity) => {
+        switch (severity) {
+            case "IMMEDIATE":
+                return "red";
+            case "EMERGENCY":
+                return "orange";
+            case "URGENT":
+                return "yellow";
+            case "SEMI_URGENT":
+                return "green";
+            case "NON_URGEN":
+                return "gray";
+            default:
+                return "lightgray";
+        }
     };
 
     useEffect(() => {
@@ -113,7 +163,7 @@ const Dashboard = () => {
             <Content style={{padding: '20px'}}>
                 <Row gutter={[16, 16]}>
                     <Col span={16}>
-                        <Card style={{height: '100%'}}>
+                        <Card>
                             {selectedRequest ? (
                                 <div>
                                     <Row align="middle" gutter={[16, 16]} style={{marginBottom: '20px'}}>
@@ -182,13 +232,21 @@ const Dashboard = () => {
                                             <Text strong>중증도</Text>
                                         </Col>
                                         <Col span={8}>
-                                            <Input
-                                                value={selectedRequest.receptionStatus || '정보 없음'}
-                                                readOnly
-                                            />
+                                            <div style={{display: "flex", alignItems: "center", gap: "10px"}}>
+                                                <div
+                                                    style={{
+                                                        width: "20px",
+                                                        height: "20px",
+                                                        border: "2px solid #d9d9d9",
+                                                        borderRadius: "50%",
+                                                        backgroundColor: getSeverityColor(selectedRequest.patient?.severity),
+                                                    }}
+                                                />
+                                                <Text>{selectedRequest.patient?.severity || "정보 없음"}</Text>
+                                            </div>
                                         </Col>
                                     </Row>
-                                    <Row gutter={[16, 16]} style={{ marginBottom: '16px' }}>
+                                    <Row gutter={[16, 16]} style={{marginBottom: '16px'}}>
                                         <Col span={4}>
                                             <Text strong>증상</Text>
                                         </Col>
@@ -295,7 +353,22 @@ const Dashboard = () => {
                                                     style={{ width: 50, height: 50, borderRadius: '50%', marginLeft: '10px' }}
                                                 />
                                             }
-                                            title={`환자: ${item.patient?.name || '정보 없음'}`}
+                                            title={
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                    <Text>{`환자: ${item.patient?.name || '정보 없음'}`}</Text>
+                                                    <div
+                                                        style={{
+                                                            marginLeft: 'auto',
+                                                            marginRight: 3,
+                                                            width: '18px',
+                                                            height: '18px',
+                                                            border: '1px solid #d9d9d9',
+                                                            borderRadius: '50%',
+                                                            backgroundColor: getSeverityColor(item.patient?.severity),
+                                                        }}
+                                                    />
+                                                </div>
+                                            }
                                             description={`나이: ${item.patient?.age || 'N/A'} | 성별: ${getGenderLabel(item.patient?.gender)}`}
                                         />
                                     </List.Item>

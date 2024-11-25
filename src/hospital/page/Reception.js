@@ -1,37 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import { Layout, List, Card, Typography, message, Row, Col, Button } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
-import { getReceptionDetails } from '../../api/hospitalAPI'; // 특정 리셉션 상세 정보 API 호출 함수
+import { getEmergencyReceptionList } from '../../api/hospitalAPI';
+import { useNavigate } from 'react-router-dom';
 
 const { Header, Content } = Layout;
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 const AcceptedReceptions = () => {
     const [acceptedRequests, setAcceptedRequests] = useState([]);
     const [selectedRequest, setSelectedRequest] = useState(null);
+    const navigate = useNavigate();
 
     const fetchAcceptedReceptions = async () => {
         try {
-            // 로컬스토리지에서 ID 배열 가져오기
-            const storedIds = JSON.parse(localStorage.getItem('acceptedReceptions')) || [];
-
-            // 저장된 ID로 데이터 가져오기
-            const responses = await Promise.all(storedIds.map((id) => getReceptionDetails(id)));
-            const data = responses.map((response) => response.data);
-            setAcceptedRequests(data); // 상태에 저장
+            const response = await getEmergencyReceptionList(); // API 호출
+            const allRequests = response.data?.data?.content || []; // API 데이터 접근
+            const filteredRequests = allRequests.filter(
+                (request) => request.receptionStatus === 'MOVE' && 'ARRIVAL'
+            );
+            setAcceptedRequests(filteredRequests); // 상태에 저장
         } catch (error) {
+            console.error(error);
             message.error('수락된 요청 목록을 가져오는 중 오류가 발생했습니다.');
         }
     };
 
-    // 특정 요청을 클릭했을 때 동작
     const handleAcceptedRequestClick = (item) => {
-        setSelectedRequest(item);
-        message.success(`선택된 요청: ${item.patient?.name || '정보 없음'}`);
+        navigate(`/hospital/reception/${item.id}`); // 클릭된 항목의 ID를 URL에 포함하여 네비게이트
     };
 
+    // 컴포넌트가 마운트될 때 데이터 로드
     useEffect(() => {
-        fetchAcceptedReceptions(); // 컴포넌트 마운트 시 데이터 로드
+        fetchAcceptedReceptions();
     }, []);
 
     const getGenderLabel = (gender) => {
@@ -63,7 +64,7 @@ const AcceptedReceptions = () => {
                                     </Button>
                                 </div>
                             }
-                            style={{ height: '100%', display: 'flex', flexDirection: 'column' }} // 높이와 레이아웃 설정
+                            style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                         >
                             <List
                                 dataSource={acceptedRequests}

@@ -1,23 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, List, Typography, Card, Button, Modal, Image, Tag, message } from 'antd';
+import { Layout, List, Typography, Card, Button, Modal, Image, message } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import { getRegistrationList, getRegistrationDetails, approveRegistration } from '../../api/adminAPI';
-import {useNavigate} from "react-router-dom";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 
 const { Content, Header } = Layout;
 const { Title } = Typography;
 
 const RegistrationList = () => {
-    const navigate = useNavigate();
     const [hospitalRequests, setHospitalRequests] = useState([]);
     const [ambulanceRequests, setAmbulanceRequests] = useState([]);
     const [selectedRequest, setSelectedRequest] = useState(null);
     const [showDetail, setShowDetail] = useState(false);
     const [loading, setLoading] = useState(false);
-    // const [rejectReason, setRejectReason] = useState('');
 
-    // 데이터 불러오기
     const fetchData = async () => {
         try {
             const hospitalResponse = await getRegistrationList('hospital');
@@ -29,7 +25,6 @@ const RegistrationList = () => {
         }
     };
 
-    // 상세 정보 불러오기
     const fetchDetails = async (id, type) => {
         setLoading(true);
         try {
@@ -44,7 +39,6 @@ const RegistrationList = () => {
         }
     };
 
-    // 승인/거절 처리
     const handleApproval = async (isApproved) => {
         if (!selectedRequest) return;
         setLoading(true);
@@ -112,7 +106,6 @@ const RegistrationList = () => {
                         </Card>
                     </div>
 
-                    {/* 모달창 */}
                     <Modal
                         visible={showDetail}
                         title="회원가입 요청 상세 정보"
@@ -164,19 +157,10 @@ const RegistrationList = () => {
 
                                     <Title level={4} style={{marginTop: '7px', marginBottom: '2px'}}>전화번호</Title>
                                     <p style={{marginLeft: '5px'}}>{selectedRequest.telephoneNumber}</p>
-
-                                    <Title level={4} style={{marginTop: '7px', marginBottom: '2px'}}>카테고리</Title>
-                                    {selectedRequest.categories?.map((category) => (
-                                        <Tag color="green" key={category}>
-                                            {category}
-                                        </Tag>
-                                    ))}
                                 </div>
-
                             </div>
                         )}
                     </Modal>
-
                 </Content>
             </Layout>
         </Layout>

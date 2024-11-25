@@ -31,7 +31,7 @@ export const getHospitalIdFromToken = () => {
 export const getHospitalDetails = async () => {
     const hospitalId = getHospitalIdFromToken();
     if (!hospitalId) {
-        return Promise.reject(new Error('Failed to retrieve hospital ID.'));
+        return Promise.reject(new Error('병원 ID를 가져오지 못했습니다.'));
     }
 
     const token = getAuthToken();
@@ -42,7 +42,7 @@ export const getHospitalDetails = async () => {
     });
 };
 
-export const updateHospitalInfo = async (hospitalData) => {
+export const updateHospitalStatus = async (hospitalData) => {
     const hospitalId = getHospitalIdFromToken();
     if (!hospitalId) {
         return Promise.reject(new Error('병원 ID를 가져오지 못했습니다.'));
@@ -56,6 +56,21 @@ export const updateHospitalInfo = async (hospitalData) => {
         },
         params: {
             emergencyStatus : Boolean(hospitalData.emergencyStatus)
+        }
+    });
+};
+
+export const updateHospitalInfo = async (hospitalData) => {
+    const hospitalId = getHospitalIdFromToken();
+    if (!hospitalId) {
+        return Promise.reject(new Error('병원 ID를 가져오지 못했습니다.'));
+    }
+
+    const token = getAuthToken();
+    return apiClient.put(`/hospital/${hospitalId}`, hospitalData, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
         }
     });
 };
@@ -75,50 +90,17 @@ export const getEmergencyReceptionList = async () => {
     });
 };
 
-export const getReceptionDetails = async () => {
-    const hospitalId = getHospitalIdFromToken();
-    if (!hospitalId) {
-        return Promise.reject(new Error('병원 ID를 가져오지 못했습니다.'));
-    }
-
+export const getReceptionDetails = async (receptionId) => {
     const token = getAuthToken();
-    return apiClient.get(`/hospital/${hospitalId}/reception`, {
+    return apiClient.get(`/reception/${receptionId}`, {
         headers: {
             'Authorization': `Bearer ${token}`
         }
     });
 };
 
-export const updateEmergencyStatus = async (emergencyStatus) => {
-    const hospitalId = getHospitalIdFromToken();
-    if (!hospitalId) {
-        return Promise.reject(new Error('병원 ID를 가져오지 못했습니다.'));
-    }
-
-    const token = getAuthToken();
-
-    try {
-        const response = await apiClient.put(
-            `/hospital/${hospitalId}/emergencyStatus`,
-            null,
-            {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-                },
-                params: {
-                    emergencyStatus: emergencyStatus
-                },
-            });
-        return response;
-    } catch (error) {
-        console.error(error);
-        throw error;
-    }
-};
-
 export const updateReceptionStatus = async (receptionId, isApproved) => {
     const token = getAuthToken();
-    console.log(isApproved);
     try {
         const response = await apiClient.put(
             `/reception/${receptionId}`, { isApproved }, {
@@ -132,4 +114,17 @@ export const updateReceptionStatus = async (receptionId, isApproved) => {
         console.error(error);
         throw error;
     }
+};
+
+export const sendComments = async (receptionId, message) => {
+    const token = getAuthToken();
+    return apiClient.post(
+        `/reception/${receptionId}/comment`,
+        { description: message },
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        }
+    );
 };

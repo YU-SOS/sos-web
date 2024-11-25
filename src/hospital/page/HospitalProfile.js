@@ -75,7 +75,7 @@ const HospitalProfilePage = () => {
 
             const updatedData = {
                 ...values,
-                imageUrl: finalImageUrl, // 최종 URL
+                imageUrl: finalImageUrl,
                 location: { latitude, longitude },
             };
 
@@ -261,15 +261,15 @@ const HospitalProfilePage = () => {
                                         )}
                                         <input
                                             type="file"
-                                            ref={fileInputRef} // 파일 입력 요소 참조
-                                            style={{ display: 'none' }} // 화면에서 숨김
+                                            ref={fileInputRef}
+                                            style={{ display: 'none' }}
                                             accept="image/*"
                                             onChange={handleImageChange}
                                         />
                                         {!imageUrl && (
                                             <Button
                                                 icon={<UploadOutlined />}
-                                                onClick={handleImageClick} // 버튼 클릭으로도 파일 선택 트리거
+                                                onClick={handleImageClick}
                                             >
                                                 이미지 업로드
                                             </Button>
@@ -281,7 +281,6 @@ const HospitalProfilePage = () => {
 
                         </Row>
                         <Row>
-                            {/* 지도 */}
                             <Col span={24}>
                                 <Map
                                     center={mapCenter}
