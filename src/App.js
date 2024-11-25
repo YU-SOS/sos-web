@@ -12,6 +12,7 @@ import RegistrationList from "./admin/page/AdminDashboardRegistrationList";
 import Reception from "./hospital/page/Reception";
 import Profile from "./hospital/page/HospitalProfile";
 import GuestReception from './pages/reception/guest/GuestReception';
+import ReceptionDetails from "./hospital/page/ReceptionDetails";
 
 const App = () => {
     return (
@@ -32,6 +33,7 @@ const App = () => {
                     <Route path='dashboard' element={ <HospitalDashboard />} />
                     <Route path='profile' element={ <Profile />} />
                     <Route path='reception' element={ <Reception /> } />
+                    <Route path="reception/:id" element={<ReceptionDetails />} />
                 </Route>
             </Routes>
         </Router>

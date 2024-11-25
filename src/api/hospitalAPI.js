@@ -75,6 +75,20 @@ export const getEmergencyReceptionList = async () => {
     });
 };
 
+export const getReceptionDetails = async () => {
+    const hospitalId = getHospitalIdFromToken();
+    if (!hospitalId) {
+        return Promise.reject(new Error('병원 ID를 가져오지 못했습니다.'));
+    }
+
+    const token = getAuthToken();
+    return apiClient.get(`/hospital/${hospitalId}/reception`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+};
+
 export const updateEmergencyStatus = async (emergencyStatus) => {
     const hospitalId = getHospitalIdFromToken();
     if (!hospitalId) {
@@ -102,20 +116,6 @@ export const updateEmergencyStatus = async (emergencyStatus) => {
     }
 };
 
-export const getAmbulanceDetails = async (ambulanceId) => {
-    try {
-        const response = await apiClient.get(`/ambulance/${ambulanceId}`, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-            },
-        });
-        return response.data;
-    } catch (error) {
-        console.error(error);
-        throw error;
-    }
-};
-
 export const updateReceptionStatus = async (receptionId, isApproved) => {
     const token = getAuthToken();
     try {
@@ -130,32 +130,5 @@ export const updateReceptionStatus = async (receptionId, isApproved) => {
     } catch (error) {
         console.error(error);
         throw error;
-    }
-};
-
-
-export const getPatientDetails = async (hospitalId) => {
-    const token = localStorage.getItem('accessToken'); // Retrieve the token
-    if (!token) {
-        console.error("Token not found. Please log in.");
-        return;
-    }
-
-    // Validate the hospitalId
-    if (!hospitalId) {
-        console.error("Hospital ID is required.");
-        return;
-    }
-
-    try {
-        const response = await apiClient.get(`/hospital/${hospitalId}/patients`, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
-        });
-        return response.data; // Return the patient data
-    } catch (error) {
-        console.error("Error fetching patient details:", error.response || error);
-        throw error; // Rethrow the error for further handling
     }
 };

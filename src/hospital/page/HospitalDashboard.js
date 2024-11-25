@@ -60,6 +60,12 @@ const Dashboard = () => {
 
         try {
             const result = await updateReceptionStatus(id, isApproved);
+            if (isApproved) {
+                const storedIds = JSON.parse(localStorage.getItem('acceptedReceptions')) || [];
+                const updatedIds = [...storedIds, id];
+                localStorage.setItem('acceptedReceptions', JSON.stringify(updatedIds));
+            }
+
             message.success(result.message || '요청이 성공적으로 처리되었습니다.');
             fetchReceptionData();
             setSelectedRequest(null);
@@ -78,8 +84,8 @@ const Dashboard = () => {
         fetchReceptionData();
         fetchHospitalDetails();
         const interval = setInterval(() => {
-            fetchReceptionData(); // 1시간(3600000ms)마다 목록 갱신
-        }, 1000);
+            fetchReceptionData();
+        }, 30000);
 
         return () => clearInterval(interval);
     }, []);
