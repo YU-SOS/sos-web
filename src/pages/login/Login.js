@@ -35,9 +35,11 @@ const Login = () => {
         } else {
           navigate('/admin/dashboard');
         }
-      } else if (result.status === 403) {
+      } else if (result.status === 403 && result.message('GUEST')) {
+        notification.error({ message: '로그인 실패', description: '승인 대기 중입니다.' });
+      } else if (result.status === 403 && result.message('BLACKLIST')) {
         notification.error({ message: '로그인 실패', description: '블랙리스트된 사용자입니다.' });
-      } else if (result.status === 404) {
+      } else if (result.status === 401) {
         notification.error({ message: '로그인 실패', description: 'ID 또는 비밀번호를 확인하세요.' });
       } else {
         notification.error({ message: '로그인 실패', description: '다시 시도해주세요.' });

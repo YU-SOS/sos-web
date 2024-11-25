@@ -74,6 +74,7 @@ const HospitalHeader = () => {
         <CustomSider width={300}>
             <Logo>SOS</Logo>
             <ImageContainer>
+
                 <img
                     src={hospitalDetails?.data.imageUrl || 'https://via.placeholder.com/120'}
                     alt="병원 대표 이미지"
@@ -82,7 +83,7 @@ const HospitalHeader = () => {
                         height: '200px',
                         borderRadius: '50%',
                         border: '2px solid #fff',
-                        objectFit: 'contain',
+                        objectFit: 'pointer',
                     }}
                 />
             </ImageContainer>
