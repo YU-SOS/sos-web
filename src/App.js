@@ -9,9 +9,7 @@ import HospitalDashboard from './hospital/page/HospitalDashboard'
 import HospitalLayout from './hospital/layout/HospitalLayout';
 import GlobalStyle from './GlobalStyle.js';
 import RegistrationList from "./admin/page/AdminDashboardRegistrationList";
-import List from "./hospital/page/List";
 import Reception from "./hospital/page/Reception";
-import Request from "./hospital/page/Request";
 import Profile from "./hospital/page/HospitalProfile";
 import GuestReception from './pages/reception/guest/GuestReception';
 
@@ -33,9 +31,7 @@ const App = () => {
                 <Route path='/hospital' element ={ <HospitalLayout />}>
                     <Route path='dashboard' element={ <HospitalDashboard />} />
                     <Route path='profile' element={ <Profile />} />
-                    <Route path='list' element={ <List /> } />
                     <Route path='reception' element={ <Reception /> } />
-                    <Route path='request' element={ <Request /> } />
                 </Route>
             </Routes>
         </Router>

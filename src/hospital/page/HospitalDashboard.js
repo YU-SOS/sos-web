@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, List, Card, Typography, message, Row, Col, Input, Avatar, Button, Empty, Switch } from 'antd';
+import { Layout, List, Card, Typography, message, Row, Col, Input, Avatar, Button, Empty, Switch,  } from 'antd';
+import { ReloadOutlined } from '@ant-design/icons';
 import { getEmergencyReceptionList, getHospitalDetails, updateHospitalInfo, updateReceptionStatus } from '../../api/hospitalAPI';
 
 const { Header, Content } = Layout;
@@ -76,6 +77,11 @@ const Dashboard = () => {
     useEffect(() => {
         fetchReceptionData();
         fetchHospitalDetails();
+        const interval = setInterval(() => {
+            fetchReceptionData(); // 1시간(3600000ms)마다 목록 갱신
+        }, 1000);
+
+        return () => clearInterval(interval);
     }, []);
 
     return (
@@ -250,7 +256,20 @@ const Dashboard = () => {
                     </Col>
 
                     <Col span={8}>
-                        <Card title="응급실 접수 요청 목록" style={{ height: '100%' }}>
+                        <Card title={
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span>응급실 접수 요청 목록</span>
+                                <Button
+                                    type="default"
+                                    icon={<ReloadOutlined />}
+                                    onClick={fetchReceptionData}
+                                >
+                                    새로고침
+                                </Button>
+                            </div>
+                        }
+                              style={{ height: '100%' }}
+                        >
                             <List
                                 dataSource={requests}
                                 renderItem={(item) => (

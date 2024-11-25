@@ -39,24 +39,14 @@ const HospitalHeader = () => {
             label: '대시보드',
         },
         {
-            key: 'hospital/profile',
-            icon: <AppstoreOutlined />,
-            label: '병원 정보 수정',
-        },
-        {
-            key: 'hospital/list',
-            icon: <AppstoreOutlined />,
-            label: '응급실 목록 화면',
-        },
-        {
-            key: 'hospital/request',
-            icon: <AppstoreOutlined />,
-            label: '병원 종합 상황 정보 대시보드',
-        },
-        {
             key: 'hospital/reception',
             icon: <AppstoreOutlined />,
             label: '접수 상세 내역',
+        },
+        {
+            key: 'hospital/profile',
+            icon: <AppstoreOutlined />,
+            label: '병원 정보 수정',
         },
     ];
 
