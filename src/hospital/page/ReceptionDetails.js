@@ -185,7 +185,6 @@ const ReceptionDetails = () => {
                         </Card>
                     </Col>
 
-                    {/* 채팅창 */}
                     <Col span={8} style={{ height: "100%" }}>
                         <Card title="채팅" style={{ height: "100%", display: "flex", flexDirection: "column" }}>
                             <List
@@ -200,7 +199,8 @@ const ReceptionDetails = () => {
                                 )}
                                 style={{  flex: 1,
                                     overflowY: "auto",
-                                    maxHeight: "55%",
+                                    maxHeight: 480,
+                                    minHeight: 480,
                                     borderBottom: "1px solid #f0f0f0", }}
                             />
                             <Input.TextArea

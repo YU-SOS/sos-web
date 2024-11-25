@@ -6,8 +6,6 @@ import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../firebase';
 
-
-
 const { Title } = Typography;
 
 const HospitalProfilePage = () => {
@@ -24,7 +22,6 @@ const HospitalProfilePage = () => {
     const categoryOptions = ['산부인과', '정형외과', '흉부외과', '화상외과', '내과'];
     const fileInputRef = useRef(null);
     const [imageFile, setImageFile] = useState(null);
-
 
     const fetchHospitalDetails = async () => {
         try {
@@ -114,7 +111,6 @@ const HospitalProfilePage = () => {
             notification.error({ message: '주소를 입력하세요.' });
             return;
         }
-
         ps.keywordSearch(address, (data, status) => {
             if (status === window.kakao.maps.services.Status.OK) {
                 const newLocation = {
@@ -126,7 +122,6 @@ const HospitalProfilePage = () => {
                 if (mapInstance) {
                     mapInstance.panTo(newCenter);
                 }
-
                 setMapCenter(newLocation);
                 setMarkerPosition(newLocation);
                 setLatitude(newLocation.lat);
