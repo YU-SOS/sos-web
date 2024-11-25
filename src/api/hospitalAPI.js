@@ -118,6 +118,7 @@ export const updateEmergencyStatus = async (emergencyStatus) => {
 
 export const updateReceptionStatus = async (receptionId, isApproved) => {
     const token = getAuthToken();
+    console.log(isApproved);
     try {
         const response = await apiClient.put(
             `/reception/${receptionId}`, { isApproved }, {

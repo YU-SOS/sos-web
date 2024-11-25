@@ -29,11 +29,11 @@ const ReceptionDetails = () => {
             try {
                 const token = getAuthToken();
                 const response = await apiClient.post(`/reception/${id}/comment`, {
+                    description: currentMessage,
+                },{
                     headers: {
                         'Authorization': `Bearer ${token}`
-                    },
-                    description: currentMessage,
-                });
+                    }});
 
                 if (response.status === 201) {
                     setMessages((prev) => [
