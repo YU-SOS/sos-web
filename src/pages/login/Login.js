@@ -63,7 +63,7 @@ const Login = () => {
             overflow: 'hidden',
           }}
       >
-        <div style={{ width: '400px', padding: '20px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', borderRadius: '10px', backgroundColor: '#fff' }}>
+        <div style={{ width: '400px', height: '450px', padding: '20px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', borderRadius: '10px', backgroundColor: '#fff' }}>
           <div style={{ textAlign: 'center', marginBottom: '20px' }}>
             <img src={SOSLogo} alt="SOS Logo" style={{ width: '200px', height: '150px', objectFit: 'contain' }} />
           </div>

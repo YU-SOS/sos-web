@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ReactComponent as Logo } from '../../assets/svg/sos-logo-white.svg'
+import { ReactComponent as Logo } from '../../assets/svg/sos-logo-white.svg';
 import { Layout, Form, Input, Button, Checkbox, Upload, notification, Image } from 'antd';
-import { UploadOutlined, SearchOutlined } from '@ant-design/icons';
+import { UploadOutlined } from '@ant-design/icons';
 import signupHospitalAPI from '../../api/signup/signupHospitalAPI';
 import dupCheckAPI from '../../api/duplicates/dupCheckAPI';
 import { storage } from '../../firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
+import { Tooltip } from 'antd';
 
 const { Header, Content } = Layout;
 
@@ -25,8 +26,10 @@ const SignupHospital = () => {
   const [markerPosition, setMarkerPosition] = useState({ lat: 35.8358302, lng: 128.7521449 });
   const [mapInstance, setMapInstance] = useState(null);
   const categoryOptions = ['산부인과', '정형외과', '흉부외과', '화상외과', '내과'];
+  const [tooltipVisible, setTooltipVisible] = useState(false);
 
-  // id 중복 확인
+
+  // ID 중복 확인
   const handleIdCheck = async () => {
     const id = form.getFieldValue('id');
     if (!id) {
@@ -85,7 +88,7 @@ const SignupHospital = () => {
     });
   };
 
-  // 대표 이미지 설정
+  // 지도 클릭 이벤트
   const handleMapClick = (map, mouseEvent) => {
     const lat = mouseEvent.latLng.getLat();
     const lng = mouseEvent.latLng.getLng();
@@ -119,23 +122,22 @@ const SignupHospital = () => {
 
     return new Promise((resolve, reject) => {
       uploadTask.on(
-          'state_changed',
-          null,
-          (error) => {
-            notification.error({ message: '이미지 업로드 실패.' });
-            setIsUploading(false);
-            reject(error);
-          },
-          async () => {
-            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            notification.success({ message: '이미지 업로드 성공.' });
-            setIsUploading(false);
-            resolve(downloadURL);
-          }
+        'state_changed',
+        null,
+        (error) => {
+          notification.error({ message: '이미지 업로드 실패.' });
+          setIsUploading(false);
+          reject(error);
+        },
+        async () => {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          notification.success({ message: '이미지 업로드 성공.' });
+          setIsUploading(false);
+          resolve(downloadURL);
+        }
       );
     });
   };
-
 
   // 회원가입 요청
   const handleFinish = async (values) => {
@@ -164,59 +166,186 @@ const SignupHospital = () => {
     }
   };
 
-
   return (
-      <Layout style={{ minHeight: '100vh' }}>
-        <Header
-            style={{ background: '#001529', padding: '0 20px', display: 'flex', alignItems: 'center' }}>
-          <Logo />
-        </Header>
-        <Content style={{ padding: '20px', display: 'flex', justifyContent: 'center', background: '#f0f2f5' }}>
-          <div style={{ maxWidth: '600px', width: '100%', padding: '20px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', borderRadius: '10px', background: '#fff' }}>
-            <h1 style={{ fontSize: 'larger', textAlign: 'center', marginBottom: 20 }}>병원 회원가입</h1>
-            <Form form={form} layout="horizontal" onFinish={handleFinish} labelCol={{ span: 5 }} wrapperCol={{ span: 16 }}>
-              <Form.Item name="id" label="ID" rules={[{ required: true, message: '아이디를 입력하세요.' }]}>
-                <Input.Search placeholder="아이디" enterButton="중복검사" onSearch={handleIdCheck} />
-              </Form.Item>
-              <Form.Item name="password" label="비밀번호" rules={[{ required: true, message: '비밀번호를 입력하세요.' }]}>
-                <Input.Password placeholder="비밀번호" />
-              </Form.Item>
-              <Form.Item name="name" label="병원 이름" rules={[{ required: true, message: '병원 이름을 입력하세요.' }]}>
-                <Input placeholder="병원 이름" />
-              </Form.Item>
-              <Form.Item name="address" label="주소" rules={[{ required: true, message: '주소를 입력하세요.' }]}>
-                <Input.Search placeholder="주소" enterButton="검색" />
-              </Form.Item>
-              <Form.Item label="지도">
-                <Map center={mapCenter} style={{ width: '100%', height: '350px' }} level={3} onClick={handleMapClick}>
-                  <MapMarker position={markerPosition} />
-                </Map>
-              </Form.Item>
-              <Form.Item name="telephoneNumber" label="전화번호" rules={[{ required: true, message: '전화번호를 입력하세요.' }]}>
-                <Input placeholder="전화번호" />
-              </Form.Item>
-              <Form.Item name="categories" label="카테고리 선택" rules={[{ required: true, message: '카테고리를 선택해주세요.' }]}>
-                <Checkbox.Group options={categoryOptions} />
-              </Form.Item>
-              <Form.Item label="대표 이미지" name="imageUrl" rules={[{ required: true, message: '대표 이미지를 업로드해주세요.' }]}>
-                <Upload beforeUpload={() => false} onChange={handleImageChange} listType="picture" showUploadList={false} maxCount={1}>
-                  <Button icon={<UploadOutlined />}>이미지 업로드</Button>
-                </Upload>
-                {imageUrl && (
-                    <div style={{ marginTop: '10px' }}>
-                      <Image src={imageUrl} alt="대표 이미지" width={200} height={200} style={{ objectFit: 'cover', borderRadius: '10px' }} />
-                    </div>
-                )}
-              </Form.Item>
-              <Form.Item wrapperCol={{ span: 24 }}>
-                <Button type="primary" htmlType="submit" block loading={isUploading}>
-                  회원가입 요청
+    <Layout style={{ minHeight: '100vh' }}>
+      <Header
+        style={{ background: '#001529', padding: '0 20px', display: 'flex', alignItems: 'center' }}
+      >
+        <Logo />
+      </Header>
+      <Content
+        style={{
+          padding: '20px',
+          display: 'flex',
+          justifyContent: 'center',
+          background: '#f0f2f5',
+        }}
+      >
+        <div
+          style={{
+            maxWidth: '600px',
+            width: '100%',
+            padding: '20px',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+            borderRadius: '10px',
+            background: '#fff',
+          }}
+        >
+          <h1 style={{ fontSize: '20px', fontWeight: 'bold', textAlign: 'center', marginBottom: 20 }}>병원 회원가입</h1>
+          <Form
+            form={form}
+            layout="horizontal"
+            onFinish={handleFinish}
+            labelCol={{ span: 5 }}
+            wrapperCol={{ span: 16 }}
+          >
+            <Form.Item
+              name="id"
+              label="ID"
+              rules={[
+                { required: true, message: '아이디를 입력하세요.' },
+                {
+                  validator: (_, value) =>
+                    value && /^[0-9]+$/.test(value)
+                      ? Promise.reject(new Error('숫자만 입력할 수 없습니다.'))
+                      : Promise.resolve(),
+                },
+              ]}
+            >
+              <Tooltip
+                title="공백 또는 숫자만 입력할 수 없습니다."
+                visible={tooltipVisible} 
+                placement="bottom"
+                color="red"
+              >
+                <Input.Search
+                  placeholder="아이디"
+                  enterButton="중복검사"
+                  onSearch={(value) => {
+                    if (/^[0-9]+$/.test(value)) {
+                      setTooltipVisible(true);
+                      setTimeout(() => setTooltipVisible(false), 5000);
+                      return;
+                    }
+                    handleIdCheck(value);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === ' ') {
+                      e.preventDefault(); 
+                      setTooltipVisible(true); 
+                      setTimeout(() => setTooltipVisible(false), 5000);
+                    }
+                  }}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\s+/g, ''); 
+                    if (/^[0-9]+$/.test(value)) {
+                      setTooltipVisible(true);
+                      setTimeout(() => setTooltipVisible(false), 5000);
+                    }
+                    form.setFieldsValue({ id: value });
+                  }}
+                  onPaste={(e) => {
+                    const pastedText = e.clipboardData.getData('text');
+                    if (pastedText.includes(' ') || /^[0-9]+$/.test(pastedText)) {
+                      e.preventDefault(); 
+                      setTooltipVisible(true); 
+                      setTimeout(() => setTooltipVisible(false), 5000); 
+                    }
+                  }}
+                  onBlur={() => setTooltipVisible(false)} 
+                />
+              </Tooltip>
+            </Form.Item>
+
+            <Form.Item
+              name="password"
+              label="비밀번호"
+              rules={[{ required: true, message: '비밀번호를 입력하세요.' }]}
+            >
+              <Input.Password placeholder="비밀번호" disabled={!isIdChecked} />
+            </Form.Item>
+            <Form.Item
+              name="name"
+              label="병원 이름"
+              rules={[{ required: true, message: '병원 이름을 입력하세요.' }]}
+            >
+              <Input placeholder="병원 이름" disabled={!isIdChecked} />
+            </Form.Item>
+            <Form.Item
+              name="address"
+              label="주소"
+              rules={[{ required: true, message: '주소를 입력하세요.' }]}
+            >
+              <Input.Search placeholder="주소" enterButton="검색" disabled={!isIdChecked} />
+            </Form.Item>
+            <Form.Item label="지도">
+              <Map
+                center={mapCenter}
+                style={{ width: '100%', height: '350px' }}
+                level={3}
+                onClick={handleMapClick}
+              >
+                <MapMarker position={markerPosition} />
+              </Map>
+            </Form.Item>
+            <Form.Item
+              name="telephoneNumber"
+              label="전화번호"
+              rules={[{ required: true, message: '전화번호를 입력하세요.' }]}
+            >
+              <Input placeholder="전화번호" disabled={!isIdChecked} />
+            </Form.Item>
+            <Form.Item
+              name="categories"
+              label="카테고리 선택"
+              rules={[{ required: true, message: '카테고리를 선택해주세요.' }]}
+            >
+              <Checkbox.Group options={categoryOptions} disabled={!isIdChecked} />
+            </Form.Item>
+            <Form.Item
+              label="대표 이미지"
+              name="imageUrl"
+              rules={[{ required: true, message: '대표 이미지를 업로드해주세요.' }]}
+            >
+              <Upload
+                beforeUpload={() => false}
+                onChange={handleImageChange}
+                listType="picture"
+                showUploadList={false}
+                maxCount={1}
+                disabled={!isIdChecked}
+              >
+                <Button icon={<UploadOutlined />} disabled={!isIdChecked}>
+                  이미지 업로드
                 </Button>
-              </Form.Item>
-            </Form>
-          </div>
-        </Content>
-      </Layout>
+              </Upload>
+              {imageUrl && (
+                <div style={{ marginTop: '10px' }}>
+                  <Image
+                    src={imageUrl}
+                    alt="대표 이미지"
+                    width={200}
+                    height={200}
+                    style={{ objectFit: 'cover', borderRadius: '10px' }}
+                  />
+                </div>
+              )}
+            </Form.Item>
+            <Form.Item wrapperCol={{ span: 24 }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                block
+                loading={isUploading}
+                disabled={!isIdChecked}
+              >
+                회원가입 요청
+              </Button>
+            </Form.Item>
+          </Form>
+        </div>
+      </Content>
+    </Layout>
   );
 };
 
