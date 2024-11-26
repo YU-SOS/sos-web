@@ -1,11 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react';
-import {Form, Input, Button, Card, Typography, Checkbox, Row, Col, message, Image, notification} from 'antd';
+import { Layout, Form, Input, Button, Card, Typography, Checkbox, Row, Col, message, Image, notification } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { getHospitalDetails, updateHospitalInfo } from '../../api/hospitalAPI';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../firebase';
+import { getHospitalDetails, updateHospitalInfo } from '../../api/hospitalAPI';
 
+const { Header, Content } = Layout;
 const { Title } = Typography;
 
 const HospitalProfilePage = () => {
@@ -150,8 +151,13 @@ const HospitalProfilePage = () => {
     }, []);
 
     return (
-        <div style={{ display: 'flex', height: '100vh' }}>
-            <div style={{ width: '90%', padding: '20px' }}>
+        <Layout style={{ height: '100vh' }}>
+            <Header style={{ background: '#fff', padding: '20px' }}>
+                <Title level={3} style={{ margin: 0 }}>
+                    병원 정보 수정
+                </Title>
+            </Header>
+            <Content style={{ padding: '20px' }}>
                 <Card
                     style={{
                         height: '100%',
@@ -159,9 +165,6 @@ const HospitalProfilePage = () => {
                         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                     }}
                 >
-                    <Title level={3} style={{ textAlign: 'left', marginBottom: '20px' }}>
-                        병원 정보 수정
-                    </Title>
                     <Form form={form} layout="vertical" onFinish={handleUpdate}>
                         <Row gutter={16}>
                             <Col span={16}>
@@ -235,7 +238,7 @@ const HospitalProfilePage = () => {
                                             <span
                                                 style={{ fontWeight: 'bold' }}
                                             >대표 이미지</span>
-                                            (이미지 클릭 시 수정 가능)
+                                            <span> (이미지 클릭 시 수정 가능)</span>
                                         </span>
                                     }
                                 >
@@ -248,6 +251,7 @@ const HospitalProfilePage = () => {
                                                 height={210}
                                                 style={{
                                                     borderRadius: '10px',
+                                                    border: '1px solid #d9d9d9',
                                                     cursor: 'pointer',
                                                 }}
                                                 onClick={handleImageClick}
@@ -271,7 +275,6 @@ const HospitalProfilePage = () => {
                                         )}
                                     </div>
                                 </Form.Item>
-
                             </Col>
 
                         </Row>
@@ -279,7 +282,7 @@ const HospitalProfilePage = () => {
                             <Col span={24}>
                                 <Map
                                     center={mapCenter}
-                                    style={{ width: '100%', height: '350px', marginBottom: '20px' }}
+                                    style={{ width: '100%', height: '425px', marginBottom: '20px', border: '1px solid #d9d9d9' }}
                                     level={3}
                                     onClick={handleMapClick}
                                     onCreate={(map) => setMapInstance(map)}
@@ -295,8 +298,8 @@ const HospitalProfilePage = () => {
                         </Form.Item>
                     </Form>
                 </Card>
-            </div>
-        </div>
+            </Content>
+        </Layout>
     );
 };
 

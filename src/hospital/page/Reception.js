@@ -48,64 +48,79 @@ const AcceptedReceptions = () => {
                     응급실 접수 수락 목록
                 </Title>
             </Header>
-            <Content style={{ padding: '20px' }}>
-                <Row gutter={[16, 16]}>
-                    <Col span={24}>
-                        <Card
-                            title={
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span>수락된 요청 목록</span>
-                                    <Button
-                                        type="default"
-                                        icon={<ReloadOutlined />}
-                                        onClick={fetchAcceptedReceptions}
-                                    >
-                                        새로고침
-                                    </Button>
-                                </div>
-                            }
-                            style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+            <Content style={{ padding: '20px', height: 'calc(100vh - 64px)', overflow: 'auto' }}>
+    <Row gutter={[16, 16]} style={{ height: '100%' }}>
+        <Col span={24} style={{ height: '100%' }}>
+            <Card
+                title={
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ fontSize: '20px', fontWeight: 'bold' }}>수락된 요청 목록</span>
+                        {/*
+                        <Button
+                            type="default"
+                            icon={<ReloadOutlined />}
+                            onClick={fetchAcceptedReceptions}
                         >
-                            <List
-                                dataSource={acceptedRequests}
-                                renderItem={(item) => (
-                                    <List.Item
-                                        onClick={() => handleAcceptedRequestClick(item)}
+                            새로고침
+                        </Button>*/}
+                        <Button
+                            type="primary"
+                            icon={<ReloadOutlined />}
+                            onClick={fetchAcceptedReceptions}
+                        >
+                            새로고침
+                        </Button>
+                    </div>
+                }
+                style={{
+                    height: '100%',
+                    borderRadius: '10px',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                }}
+            >
+                <List
+                    dataSource={acceptedRequests}
+                    renderItem={(item) => (
+                        <List.Item
+                            onClick={() => handleAcceptedRequestClick(item)}
+                            style={{
+                                cursor: 'pointer',
+                                backgroundColor: selectedRequest?.id === item.id ? '#e6f7ff' : 'transparent',
+                                borderRadius: '5px',
+                                marginBottom: '10px',
+                            }}
+                        >
+                            <List.Item.Meta
+                                avatar={
+                                    <img
+                                        src={item.ambulance?.imageUrl}
+                                        alt="구급차"
                                         style={{
-                                            cursor: 'pointer',
-                                            backgroundColor: selectedRequest?.id === item.id ? '#e6f7ff' : 'transparent',
-                                            borderRadius: '5px',
-                                            marginBottom: '10px',
+                                            width: 50,
+                                            height: 50,
+                                            borderRadius: '50%',
+                                            marginLeft: '10px',
                                         }}
-                                    >
-                                        <List.Item.Meta
-                                            avatar={
-                                                <img
-                                                    src={item.ambulance?.imageUrl}
-                                                    alt="구급차"
-                                                    style={{
-                                                        width: 50,
-                                                        height: 50,
-                                                        borderRadius: '50%',
-                                                        marginLeft: '10px',
-                                                    }}
-                                                />
-                                            }
-                                            title={`환자: ${item.patient?.name || '정보 없음'}`}
-                                            description={`나이: ${item.patient?.age || 'N/A'} | 성별: ${getGenderLabel(item.patient?.gender)}`}
-                                        />
-                                    </List.Item>
-                                )}
-                                style={{
-                                    flex: 1,
-                                    overflowY: 'auto',
-                                    minHeight: '600px',
-                                }}
+                                    />
+                                }
+                                title={`환자: ${item.patient?.name || '정보 없음'}`}
+                                description={`나이: ${item.patient?.age || 'N/A'} | 성별: ${getGenderLabel(item.patient?.gender)}`}
                             />
-                        </Card>
-                    </Col>
-                </Row>
-            </Content>
+                        </List.Item>
+                    )}
+                    style={{
+                        flex: 1,
+                        overflowY: 'auto',
+                        minHeight: '600px',
+                    }}
+                />
+            </Card>
+        </Col>
+    </Row>
+</Content>
+
         </Layout>
     );
 };

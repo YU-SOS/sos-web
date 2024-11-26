@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { Layout, Card, List, Input, Button, Avatar, Typography, Empty, Row, Col, message } from "antd";
 import { getReceptionDetails, sendComments } from "../../api/hospitalAPI";
@@ -11,6 +11,7 @@ const ReceptionDetails = () => {
     const [receptionData, setReceptionData] = useState(null);
     const [comments, setComments] = useState([]);
     const [currentComments, setCurrentComments] = useState("");
+    const listRef = useRef(null);
 
     const fetchReceptionDetails = async () => {
         try {
@@ -43,12 +44,26 @@ const ReceptionDetails = () => {
                 setComments((prev) => [...prev, newComment]);
                 setCurrentComments("");
                 message.success("메시지를 성공적으로 전송했습니다.");
+
+                if (listRef.current) {
+                    listRef.current.scrollTop = listRef.current.scrollHeight;
+                }
             } catch (error) {
                 console.error("메시지 전송 실패:", error);
                 message.error("메시지 전송 중 오류가 발생했습니다.");
             }
         }
     };
+
+    useEffect(() => {
+        fetchReceptionDetails();
+    }, [id]);
+
+    useEffect(() => {
+        if (listRef.current) {
+            listRef.current.scrollTop = listRef.current.scrollHeight;
+        }
+    }, [comments]);
 
     const getSeverityColor = (severity) => {
         switch (severity) {
@@ -66,10 +81,6 @@ const ReceptionDetails = () => {
                 return "lightgray";
         }
     };
-
-    useEffect(() => {
-        fetchReceptionDetails();
-    }, [id]);
 
     if (!receptionData) {
         return <Empty description="리셉션 세부 정보가 없습니다." />;
@@ -186,29 +197,41 @@ const ReceptionDetails = () => {
                     </Col>
 
                     <Col span={8} style={{ height: "100%" }}>
-                        <Card title="채팅" style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+                        <Card
+                            title={
+                                <span style={{ fontSize: '20px', fontWeight: 'bold' }}>
+                                    코멘트
+                                </span>
+                            }
+                            style={{ height: "100%", display: "flex", flexDirection: "column" }}
+                        >
                             <List
                                 dataSource={comments}
                                 renderItem={(item) => (
                                     <List.Item key={item.id}>
                                         <List.Item.Meta
-                                            title={item.content}
+                                            title={
+                                                <span style={{ wordBreak: "break-word" }}>{item.content}</span>
+                                            }
                                             description={new Date(item.createdAt).toLocaleString()}
                                         />
                                     </List.Item>
                                 )}
-                                style={{  flex: 1,
+                                style={{
+                                    flex: 1,
                                     overflowY: "auto",
-                                    maxHeight: 480,
-                                    minHeight: 480,
-                                    borderBottom: "1px solid #f0f0f0", }}
+                                    maxHeight: 550,
+                                    minHeight: 550,
+                                    borderBottom: "1px solid #f0f0f0",
+                                }}
+                                ref={listRef}
                             />
                             <Input.TextArea
                                 value={currentComments}
                                 onChange={(e) => setCurrentComments(e.target.value)}
                                 rows={3}
                                 placeholder="메시지를 입력하세요..."
-                                style={{ overflowY: "auto",marginTop: "10px" }}
+                                style={{ overflowY: "auto", marginTop: "10px" }}
                             />
                             <Button
                                 type="primary"
@@ -219,6 +242,7 @@ const ReceptionDetails = () => {
                             </Button>
                         </Card>
                     </Col>
+
                 </Row>
             </Content>
         </Layout>
