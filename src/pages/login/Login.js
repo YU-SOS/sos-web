@@ -77,13 +77,29 @@ const Login = () => {
               >
                 <Form.Item
                     name="id"
-                    rules={[{ required: true, message: '아이디를 입력하세요.' }]}
+                    rules={[
+                      { required: true, message: '아이디를 입력하세요.' },
+                      {
+                        validator: (_, value) =>
+                            value && (/\s/.test(value) || /^[0-9]+$/.test(value))
+                                ? Promise.reject(new Error('아이디에 공백 문자 또는 숫자만 입력할 수 없습니다.'))
+                                : Promise.resolve(),
+                      },
+                    ]}
                 >
-                  <Input size="large" prefix={<UserOutlined />} placeholder="병원 아이디" />
+                  <Input size="large" prefix={<UserOutlined />} placeholder={role === 'HOS' ? "병원 아이디" : "관리자 아이디"} />
                 </Form.Item>
                 <Form.Item
                     name="password"
-                    rules={[{ required: true, message: '비밀번호를 입력하세요.' }]}
+                    rules={[
+                      { required: true, message: '비밀번호를 입력하세요.' },
+                      {
+                        validator: (_, value) =>
+                            value && /\s/.test(value)
+                                ? Promise.reject(new Error('비밀번호에 공백 문자를 포함할 수 없습니다.'))
+                                : Promise.resolve(),
+                      },
+                    ]}
                 >
                   <Input.Password size="large" prefix={<LockOutlined />} placeholder="비밀번호" />
                 </Form.Item>
@@ -106,13 +122,29 @@ const Login = () => {
               >
                 <Form.Item
                     name="id"
-                    rules={[{ required: true, message: '관리자 아이디를 입력하세요.' }]}
+                    rules={[
+                      { required: true, message: '아이디를 입력하세요.' },
+                      {
+                        validator: (_, value) =>
+                            value && (/\s/.test(value) || /^[0-9]+$/.test(value))
+                                ? Promise.reject(new Error('아이디에 공백 문자 또는 숫자만 입력할 수 없습니다.'))
+                                : Promise.resolve(),
+                      },
+                    ]}
                 >
                   <Input size="large" prefix={<UserOutlined />} placeholder="관리자 아이디" />
                 </Form.Item>
                 <Form.Item
                     name="password"
-                    rules={[{ required: true, message: '비밀번호를 입력하세요.' }]}
+                    rules={[
+                      { required: true, message: '비밀번호를 입력하세요.' },
+                      {
+                        validator: (_, value) =>
+                            value && /\s/.test(value)
+                                ? Promise.reject(new Error('비밀번호에 공백 문자를 포함할 수 없습니다.'))
+                                : Promise.resolve(),
+                      },
+                    ]}
                 >
                   <Input.Password size="large" prefix={<LockOutlined />} placeholder="비밀번호" />
                 </Form.Item>

@@ -282,7 +282,7 @@ const HospitalProfilePage = () => {
                             <Col span={24}>
                                 <Map
                                     center={mapCenter}
-                                    style={{ width: '100%', height: '425px', marginBottom: '20px', border: '1px solid #d9d9d9' }}
+                                        style={{ width: '100%', height: '340px', marginBottom: '20px', border: '1px solid #d9d9d9' }}
                                     level={3}
                                     onClick={handleMapClick}
                                     onCreate={(map) => setMapInstance(map)}

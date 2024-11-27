@@ -141,6 +141,10 @@ const SignupHospital = () => {
 
   // 회원가입 요청
   const handleFinish = async (values) => {
+    if (!imageFile) {
+      notification.error({ message: '대표 이미지를 업로드해주세요.' });
+      return;
+    }
     try {
       const downloadURL = await uploadImage();
 
@@ -213,7 +217,7 @@ const SignupHospital = () => {
               ]}
             >
               <Tooltip
-                title="공백 또는 숫자만 입력할 수 없습니다."
+                title="공백이 포함되거나 숫자로만 구성된 ID는 사용할 수 없습니다."
                 visible={tooltipVisible} 
                 placement="bottom"
                 color="red"
@@ -260,23 +264,53 @@ const SignupHospital = () => {
             <Form.Item
               name="password"
               label="비밀번호"
-              rules={[{ required: true, message: '비밀번호를 입력하세요.' }]}
+              rules={[
+                { required: true, message: '비밀번호를 입력하세요.' },
+                { pattern: /^\S+$/, message: '비밀번호에 공백 문자를 포함할 수 없습니다.' }
+              ]}
             >
-              <Input.Password placeholder="비밀번호" disabled={!isIdChecked} />
+              <Input.Password
+                  placeholder="비밀번호"
+                  disabled={!isIdChecked}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\s+/g, '');
+                    form.setFieldsValue({ password: value });
+                  }}
+              />
             </Form.Item>
             <Form.Item
               name="name"
               label="병원 이름"
-              rules={[{ required: true, message: '병원 이름을 입력하세요.' }]}
+              rules={[
+                { required: true, message: '병원 이름을 입력하세요.' },
+                {
+                  validator: (_, value) =>
+                      value && (value.trim() === '' || /^[0-9]+$/.test(value))
+                          ? Promise.reject(new Error('병원 이름에 공백 문자 또는 숫자만 입력할 수 없습니다.'))
+                          : Promise.resolve(),
+                }
+              ]}
             >
               <Input placeholder="병원 이름" disabled={!isIdChecked} />
             </Form.Item>
             <Form.Item
               name="address"
               label="주소"
-              rules={[{ required: true, message: '주소를 입력하세요.' }]}
+              rules={[
+                { required: true, message: '주소를 입력하세요.' },
+                {
+                  validator: (_, value) =>
+                      value && (value.trim() === '' || /^[0-9]+$/.test(value))
+                          ? Promise.reject(new Error('주소에 공백 문자 또는 숫자만 입력할 수 없습니다.'))
+                          : Promise.resolve(),
+                },
+              ]}
             >
-              <Input.Search placeholder="주소" enterButton="검색" disabled={!isIdChecked} />
+              <Input.Search
+                  placeholder="주소"
+                  enterButton="검색"
+                  disabled={!isIdChecked}
+              />
             </Form.Item>
             <Form.Item label="지도">
               <Map
@@ -291,14 +325,31 @@ const SignupHospital = () => {
             <Form.Item
               name="telephoneNumber"
               label="전화번호"
-              rules={[{ required: true, message: '전화번호를 입력하세요.' }]}
+              rules={[
+                { required: true, message: '전화번호를 입력하세요.' },
+                {
+                  pattern: /^[0-9\-]+$/,
+                  message: '전화번호는 숫자와 하이픈(-)만 입력할 수 있습니다.',
+                },
+              ]}
             >
-              <Input placeholder="전화번호" disabled={!isIdChecked} />
+              <Input
+                  placeholder="전화번호"
+                  disabled={!isIdChecked}
+              />
             </Form.Item>
             <Form.Item
               name="categories"
               label="카테고리 선택"
-              rules={[{ required: true, message: '카테고리를 선택해주세요.' }]}
+              rules={[
+                { required: true, message: '카테고리를 선택해주세요.' },
+                {
+                  validator: (_, value) =>
+                      Array.isArray(value) && value.length === 0
+                          ? Promise.reject(new Error())
+                          : Promise.resolve(),
+                },
+              ]}
             >
               <Checkbox.Group options={categoryOptions} disabled={!isIdChecked} />
             </Form.Item>

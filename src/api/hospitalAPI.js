@@ -116,6 +116,15 @@ export const updateReceptionStatus = async (receptionId, isApproved) => {
     }
 };
 
+export const updateReceptionStatueArrival = async (receptionId) => {
+    const token = getAuthToken();
+    return apiClient.put(`/reception/${receptionId}/arrival`, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        }
+    });
+};
+
 export const sendComments = async (receptionId, message) => {
     const token = getAuthToken();
     return apiClient.post(

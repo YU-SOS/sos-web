@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import { Layout, Card, List, Input, Button, Avatar, Typography, Empty, Row, Col, message } from "antd";
-import { getReceptionDetails, sendComments } from "../../api/hospitalAPI";
+import {getReceptionDetails, sendComments, updateReceptionStatueArrival} from "../../api/hospitalAPI";
 
 const { Header, Content } = Layout;
 const { Title, Text } = Typography;
 
 const ReceptionDetails = () => {
+    const navigate = useNavigate();
     const { id } = useParams();
     const [receptionData, setReceptionData] = useState(null);
     const [comments, setComments] = useState([]);
@@ -52,6 +53,17 @@ const ReceptionDetails = () => {
                 console.error("메시지 전송 실패:", error);
                 message.error("메시지 전송 중 오류가 발생했습니다.");
             }
+        }
+    };
+
+    const handleArrival = async () => {
+        try {
+            await updateReceptionStatueArrival(id);
+            message.success("구급대가 병원에 도착했습니다.");
+            navigate('/hospital/reception');
+        } catch (error) {
+            console.error("구급대 병원 도착 처리 실패:", error);
+            message.error("구급대 병원 도착 처리 중 오류가 발생했습니다.");
         }
     };
 
@@ -191,6 +203,17 @@ const ReceptionDetails = () => {
                                 </Col>
                                 <Col span={21}>
                                     <Input.TextArea rows={6} value={patient?.medication || "정보 없음"} readOnly />
+                                </Col>
+                            </Row>
+                            <Row justify="end" gutter={[16, 16]}>
+                                <Col>
+                                    <Button
+                                        type="primary"
+                                        style={{ backgroundColor: '#6c96f7' }}
+                                        onClick={handleArrival}
+                                    >
+                                        구급대 병원 도착
+                                    </Button>
                                 </Col>
                             </Row>
                         </Card>
