@@ -2,19 +2,28 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import {styled} from 'styled-components';
 import apiClient from '../../../api/apiClient';
+import Loading from '../../../components/Loading';
 
 const GuestReception = () => {
 
     const { receptionNumber } = useParams();
-    const [ reception, setReception ] = useState();
+    const [ hospital, setHospital ] = useState();
+    const [ ambulance, setAmbulance] = useState();
+    const [ patient, setPatient] = useState();
+    const [ isLoading, setIsLoading ] = useState(true);
 
     useEffect(() => {
-        const fetchReception = () => {
+        const fetchReception = async () => {
             try {
-                const response = apiClient.get(`/reception/${receptionNumber}/guest`);
+                const response = await apiClient.get(`/reception/${receptionNumber}/guest`);
 
-                console.log(response);
-                setReception(response.data);
+                console.log(response.data);
+                console.log(response.data.data);
+                setHospital(response.data.data.hospital);
+                setAmbulance(response.data.data.ambulance);
+                setPatient(response.data.data.patient);
+
+                setIsLoading(false);
             } catch(err) {
                 console.error(err);
             }
@@ -22,11 +31,14 @@ const GuestReception = () => {
 
         fetchReception();
 
-        console.log(receptionNumber);
-    })
+    },[])
+
+    if(isLoading){
+      return <LoadingWrapper> <Loading/> </LoadingWrapper>
+    }
 
     return (
-        <Wrapper>
+          <Wrapper>
             <Header>SOS</Header>
             <Map>Map</Map>
 
@@ -38,17 +50,17 @@ const GuestReception = () => {
 
                 <Container>
                     <Category>병원명</Category>
-                    <p>영남대학교 병원</p>
+                    <p>{hospital.name}</p>
                 </Container>
 
                 <Container>
                     <Category>병원 주소</Category>
-                    <p>대구 달서구 중동 574-2</p>
+                    <p>{hospital.address}</p>
                 </Container>
 
                 <Container>
                     <Category>병원 전화번호</Category>
-                    <p>053-123-4567</p>
+                    <p>{hospital.telephoneNumber}</p>
                 </Container>
 
                 <StyledHr/>
@@ -59,28 +71,38 @@ const GuestReception = () => {
 
                 <Container>
                     <Category>이름</Category>
-                    <p>홍길동</p>
+                    <p>{patient.name}</p>
                 </Container>
 
                 <Container>
                     <Category>나이</Category>
-                    <p>24</p>
+                    <p>{patient.age}</p>
                 </Container>
 
                 <Container>
                     <Category>전화번호</Category>
-                    <p>010-1234-5678</p>
+                    <p>{patient.phoneNumber}</p>
                 </Container>
 
                 <Container>
                     <Category>증상</Category>
-                    <p>코로나 후유증</p>
+                    <p>{patient.symptom}</p>
                 </Container>
 
             </Content>
         </Wrapper>
+
     )
 }
+
+const LoadingWrapper = styled.div`
+  display : flex;
+  width : 100%;
+  height : 100%;
+  justify-content : center;
+  align-items : center;
+`
+
 
 const Wrapper = styled.div`
   width : 100vw;
