@@ -2,8 +2,9 @@ import React from 'react';
 import { Card, Typography, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import SOSLogo from '../pages/SOS_Logo.png';
+import styled from 'styled-components';
 
-const { Title, Paragraph } = Typography;
+const { Paragraph } = Typography;
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ const HomePage = () => {
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
             }}
         >
-          <Title level={1}>SOS</Title>
+          <Title>SOS</Title>
           <Paragraph>
             의료진 파업, 병상 부족 등의 문제를 해결하기 위해 고안된 서비스 <br/>
             구급대 - 병원 간 커뮤니케이션 플랫폼 SOS 입니다.
@@ -45,5 +46,12 @@ const HomePage = () => {
       </div>
   );
 };
+
+const Title = styled.div`
+  font-size : 40px;
+  font-weight : 600;
+  font-family : "Pretendard Variable";
+
+`
 
 export default HomePage;

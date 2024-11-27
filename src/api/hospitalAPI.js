@@ -118,7 +118,7 @@ export const updateReceptionStatus = async (receptionId, isApproved) => {
 
 export const updateReceptionStatueArrival = async (receptionId) => {
     const token = getAuthToken();
-    return apiClient.put(`/reception/${receptionId}/arrival`, {
+    return apiClient.put(`/reception/${receptionId}/arrival`, {}, {
         headers: {
             'Authorization': `Bearer ${token}`,
         }
