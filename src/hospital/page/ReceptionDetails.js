@@ -265,8 +265,8 @@ const ReceptionDetails = () => {
                                 style={{
                                     flex: 1,
                                     overflowY: "auto",
-                                    maxHeight: 550,
-                                    minHeight: 550,
+                                    maxHeight: 480,
+                                    minHeight: 480,
                                     borderBottom: "1px solid #f0f0f0",
                                 }}
                                 ref={listRef}
