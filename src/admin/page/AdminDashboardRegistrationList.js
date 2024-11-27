@@ -121,22 +121,22 @@ const RegistrationList = () => {
                         ]}
                     >
                         {selectedRequest && (
-                            <div style={{display: 'flex', flexDirection: 'column', gap: '20px'}}>
-                                <div style={{display: 'flex', flexDirection: 'row', gap: '20px'}}>
-                                    <div style={{flex: 1}}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                                <div style={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
+                                    <div style={{ flex: 1 }}>
                                         <Image
                                             src={selectedRequest.imageUrl || 'https://via.placeholder.com/200'}
                                             alt="대표 이미지"
-                                            style={{width: '100%', height: '200px', borderRadius: '8px'}}
+                                            style={{ width: '100%', height: '200px', borderRadius: '8px' }}
                                         />
                                     </div>
-                                    <div style={{flex: 1}}>
+                                    <div style={{ flex: 1 }}>
                                         <Map
                                             center={{
                                                 lat: parseFloat(selectedRequest.location.latitude),
                                                 lng: parseFloat(selectedRequest.location.longitude),
                                             }}
-                                            style={{width: '100%', height: '200px', borderRadius: '8px'}}
+                                            style={{ width: '100%', height: '200px', borderRadius: '8px' }}
                                             level={3}
                                         >
                                             <MapMarker
@@ -150,14 +150,14 @@ const RegistrationList = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <Title level={4} style={{marginTop: '5px', marginBottom: '2px'}}>병원명</Title>
-                                    <p style={{marginLeft: '5px'}}>{selectedRequest.name}</p>
+                                    <Title level={4} style={{ marginTop: '5px', marginBottom: '2px' }}>병원명</Title>
+                                    <p style={{ marginLeft: '5px' }}>{selectedRequest.name}</p>
 
-                                    <Title level={4} style={{marginTop: '7px', marginBottom: '2px'}}>주소</Title>
-                                    <p style={{marginLeft: '5px'}}>{selectedRequest.address}</p>
+                                    <Title level={4} style={{ marginTop: '7px', marginBottom: '2px' }}>주소</Title>
+                                    <p style={{ marginLeft: '5px' }}>{selectedRequest.address}</p>
 
-                                    <Title level={4} style={{marginTop: '7px', marginBottom: '2px'}}>전화번호</Title>
-                                    <p style={{marginLeft: '5px'}}>{selectedRequest.telephoneNumber}</p>
+                                    <Title level={4} style={{ marginTop: '7px', marginBottom: '2px' }}>전화번호</Title>
+                                    <p style={{ marginLeft: '5px' }}>{selectedRequest.telephoneNumber}</p>
                                 </div>
                             </div>
                         )}

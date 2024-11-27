@@ -161,168 +161,168 @@ const Dashboard = () => {
                     />
                 </div>
             </Header>
-            <Content style={{padding: '20px', height: 'calc(100vh - 64px)', overflow: 'auto' }}>
+            <Content style={{ padding: '20px', height: 'calc(100vh - 64px)', overflow: 'auto' }}>
                 <Row gutter={[16, 16]} style={{ height: '100%' }}>
                     <Col span={16} style={{ height: '100%' }}>
-                    <Card
-                        style={{
-                            height: '100%',
-                            borderRadius: '10px',
-                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-                        }}
-                    >
-            {selectedRequest ? (
-                <div>
-            <Row align="middle" gutter={[16, 16]} style={{ marginBottom: '4px' }}>
-                <Col span={4}>
-                    <Text strong>접수번호</Text>
-                </Col>
-                <Col span={3}>
-                    <Input value={selectedRequest.number || '정보 없음'} readOnly /> 
-                </Col>
-            </Row>
-            <Row align="middle" gutter={[16, 16]} style={{ marginBottom: '20px' }}>
-                <Col span={4}>
-                    <Avatar
-                        src={selectedRequest.ambulance?.imageUrl}
-                        size={100}
-                        style={{ backgroundColor: '#f0f0f0' }}
-                    />
-                </Col>
-                <Col span={10}>
-                    <Title level={4}>{selectedRequest.ambulance?.name || '구급대 이름 없음'}</Title>
-                    <Text>&nbsp;{selectedRequest.ambulance?.address || '주소 정보 없음'}</Text>
-                    <br />
-                    <Text>&nbsp;{selectedRequest.ambulance?.telephoneNumber || '연락처 정보 없음'}</Text>
-                </Col>
-                <Col
-                    span={1}
-                    style={{ textAlign: 'center', borderRight: '1px solid #d9d9d9', height: '100%' }}
-                >
-                    <div style={{ height: '100%' }}></div>
-                </Col>
-                <Col span={8}>
-                    <Title level={4}>선탑 구급대원</Title>
-                    <Text>
-                        &nbsp;&nbsp;
-                        <span style={{ fontWeight: 'bold' }}>이름: </span>
-                        {selectedRequest?.paramedicRes?.name || '정보 없음'}
-                    </Text>
-                    <br />
-                    <Text>
-                        &nbsp;&nbsp;
-                        <span style={{ fontWeight: 'bold' }}>전화번호 : </span>
-                        {selectedRequest?.paramedicRes?.phoneNumber || '정보 없음'}
-                    </Text>
-                </Col>
-            </Row>
-            <Row gutter={[16, 16]} style={{ marginBottom: '16px' }}>
-                <Col span={4}>
-                    <Text strong>환자 이름</Text>
-                </Col>
-                <Col span={8}>
-                    <Input value={selectedRequest.patient?.name || '정보 없음'} readOnly />
-                </Col>
-                <Col span={4}>
-                    <Text strong>나이</Text>
-                </Col>
-                <Col span={8}>
-                    <Input value={selectedRequest.patient?.age || '정보 없음'} readOnly />
-                </Col>
-            </Row>
-            <Row gutter={[16, 16]} style={{ marginBottom: '16px' }}>
-                <Col span={4}>
-                    <Text strong>성별</Text>
-                </Col>
-                <Col span={8}>
-                    <Input value={getGenderLabel(selectedRequest.patient?.gender)} readOnly />
-                </Col>
-                <Col span={4}>
-                    <Text strong>중증도</Text>
-                </Col>
-                <Col span={8}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <div
+                        <Card
                             style={{
-                                width: '20px',
-                                height: '20px',
-                                border: '2px solid #d9d9d9',
-                                borderRadius: '50%',
-                                backgroundColor: getSeverityColor(selectedRequest.patient?.severity),
+                                height: '100%',
+                                borderRadius: '10px',
+                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
                             }}
-                        />
-                        <Text>{selectedRequest.patient?.severity || '정보 없음'}</Text>
-                    </div>
-                </Col>
-            </Row>
-            <Row gutter={[16, 16]} style={{ marginBottom: '16px' }}>
-                <Col span={4}>
-                    <Text strong>증상</Text>
-                </Col>
-                <Col span={20}>
-                    <Input.TextArea
-                        value={selectedRequest.patient?.reference || '정보 없음'}
-                        readOnly
-                    />
-                </Col>
-            </Row>
-            <Row gutter={[16, 16]} style={{ marginBottom: '16px' }}>
-                <Col span={4}>
-                    <Text strong>복용약</Text>
-                </Col>
-                <Col span={20}>
-                    <Input.TextArea
-                        value={selectedRequest.patient?.medication || '정보 없음'}
-                        readOnly
-                    />
-                </Col>
-            </Row>
-            <Row gutter={[16, 16]} style={{ marginBottom: '16px' }}>
-                <Col span={4}>
-                    <Text strong>특이사항</Text>
-                </Col>
-                <Col span={20}>
-                    <Input.TextArea
-                        value={selectedRequest.patient?.reference || '정보 없음'}
-                        readOnly
-                    />
-                </Col>
-            </Row>
-            <Row gutter={[16, 16]} style={{ marginBottom: '16px' }}>
-                <Col span={4}>
-                    <Text strong>전화번호</Text>
-                </Col>
-                <Col span={20}>
-                    <Input value={selectedRequest.patient?.phoneNumber || '정보 없음'} readOnly />
-                </Col>
-            </Row>
-            <Row justify="end" gutter={[32, 16]}>
-                <Col>
-                    <Button
-                        type="primary"
-                        style={{ backgroundColor: '#52c41a' }}
-                        onClick={() => handleDecision(true)}
-                    >
-                        수락
-                    </Button>
-                </Col>
-                <Col>
-                    <Button
-                        type="primary"
-                        danger
-                        onClick={() => handleDecision(false)}
-                    >
-                        거절
-                    </Button>
-                </Col>
-            </Row>
-        </div>
-    ) : (
-        <>
-            <Empty style={{fontSize: '16px' }} description="환자를 선택하세요." />
-        </>
-    )}
-</Card>
+                        >
+                            {selectedRequest ? (
+                                <div>
+                                    <Row align="middle" gutter={[16, 16]} style={{ marginBottom: '4px' }}>
+                                        <Col span={4}>
+                                            <Text strong>접수번호</Text>
+                                        </Col>
+                                        <Col span={3}>
+                                            <Input value={selectedRequest.number || '정보 없음'} readOnly />
+                                        </Col>
+                                    </Row>
+                                    <Row align="middle" gutter={[16, 16]} style={{ marginBottom: '20px' }}>
+                                        <Col span={4}>
+                                            <Avatar
+                                                src={selectedRequest.ambulance?.imageUrl}
+                                                size={100}
+                                                style={{ backgroundColor: '#f0f0f0' }}
+                                            />
+                                        </Col>
+                                        <Col span={10}>
+                                            <Title level={4}>{selectedRequest.ambulance?.name || '구급대 이름 없음'}</Title>
+                                            <Text>&nbsp;{selectedRequest.ambulance?.address || '주소 정보 없음'}</Text>
+                                            <br />
+                                            <Text>&nbsp;{selectedRequest.ambulance?.telephoneNumber || '연락처 정보 없음'}</Text>
+                                        </Col>
+                                        <Col
+                                            span={1}
+                                            style={{ textAlign: 'center', borderRight: '1px solid #d9d9d9', height: '100%' }}
+                                        >
+                                            <div style={{ height: '100%' }}></div>
+                                        </Col>
+                                        <Col span={8}>
+                                            <Title level={4}>선탑 구급대원</Title>
+                                            <Text>
+                                                &nbsp;&nbsp;
+                                                <span style={{ fontWeight: 'bold' }}>이름: </span>
+                                                {selectedRequest?.paramedicRes?.name || '정보 없음'}
+                                            </Text>
+                                            <br />
+                                            <Text>
+                                                &nbsp;&nbsp;
+                                                <span style={{ fontWeight: 'bold' }}>전화번호 : </span>
+                                                {selectedRequest?.paramedicRes?.phoneNumber || '정보 없음'}
+                                            </Text>
+                                        </Col>
+                                    </Row>
+                                    <Row gutter={[16, 16]} style={{ marginBottom: '16px' }}>
+                                        <Col span={4}>
+                                            <Text strong>환자 이름</Text>
+                                        </Col>
+                                        <Col span={8}>
+                                            <Input value={selectedRequest.patient?.name || '정보 없음'} readOnly />
+                                        </Col>
+                                        <Col span={4}>
+                                            <Text strong>나이</Text>
+                                        </Col>
+                                        <Col span={8}>
+                                            <Input value={selectedRequest.patient?.age || '정보 없음'} readOnly />
+                                        </Col>
+                                    </Row>
+                                    <Row gutter={[16, 16]} style={{ marginBottom: '16px' }}>
+                                        <Col span={4}>
+                                            <Text strong>성별</Text>
+                                        </Col>
+                                        <Col span={8}>
+                                            <Input value={getGenderLabel(selectedRequest.patient?.gender)} readOnly />
+                                        </Col>
+                                        <Col span={4}>
+                                            <Text strong>중증도</Text>
+                                        </Col>
+                                        <Col span={8}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                <div
+                                                    style={{
+                                                        width: '20px',
+                                                        height: '20px',
+                                                        border: '2px solid #d9d9d9',
+                                                        borderRadius: '50%',
+                                                        backgroundColor: getSeverityColor(selectedRequest.patient?.severity),
+                                                    }}
+                                                />
+                                                <Text>{selectedRequest.patient?.severity || '정보 없음'}</Text>
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                    <Row gutter={[16, 16]} style={{ marginBottom: '16px' }}>
+                                        <Col span={4}>
+                                            <Text strong>증상</Text>
+                                        </Col>
+                                        <Col span={20}>
+                                            <Input.TextArea
+                                                value={selectedRequest.patient?.reference || '정보 없음'}
+                                                readOnly
+                                            />
+                                        </Col>
+                                    </Row>
+                                    <Row gutter={[16, 16]} style={{ marginBottom: '16px' }}>
+                                        <Col span={4}>
+                                            <Text strong>복용약</Text>
+                                        </Col>
+                                        <Col span={20}>
+                                            <Input.TextArea
+                                                value={selectedRequest.patient?.medication || '정보 없음'}
+                                                readOnly
+                                            />
+                                        </Col>
+                                    </Row>
+                                    <Row gutter={[16, 16]} style={{ marginBottom: '16px' }}>
+                                        <Col span={4}>
+                                            <Text strong>특이사항</Text>
+                                        </Col>
+                                        <Col span={20}>
+                                            <Input.TextArea
+                                                value={selectedRequest.patient?.reference || '정보 없음'}
+                                                readOnly
+                                            />
+                                        </Col>
+                                    </Row>
+                                    <Row gutter={[16, 16]} style={{ marginBottom: '16px' }}>
+                                        <Col span={4}>
+                                            <Text strong>전화번호</Text>
+                                        </Col>
+                                        <Col span={20}>
+                                            <Input value={selectedRequest.patient?.phoneNumber || '정보 없음'} readOnly />
+                                        </Col>
+                                    </Row>
+                                    <Row justify="end" gutter={[32, 16]}>
+                                        <Col>
+                                            <Button
+                                                type="primary"
+                                                style={{ backgroundColor: '#52c41a' }}
+                                                onClick={() => handleDecision(true)}
+                                            >
+                                                수락
+                                            </Button>
+                                        </Col>
+                                        <Col>
+                                            <Button
+                                                type="primary"
+                                                danger
+                                                onClick={() => handleDecision(false)}
+                                            >
+                                                거절
+                                            </Button>
+                                        </Col>
+                                    </Row>
+                                </div>
+                            ) : (
+                                <>
+                                    <Empty style={{ fontSize: '16px' }} description="환자를 선택하세요." />
+                                </>
+                            )}
+                        </Card>
 
                     </Col>
 
@@ -347,9 +347,11 @@ const Dashboard = () => {
                                 </Button>
                             </div>
                         }
-                              style={{ height: '100%',
+                            style={{
+                                height: '100%',
                                 borderRadius: '10px',
-                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)' }}
+                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                            }}
                         >
                             <List
                                 dataSource={requests}
