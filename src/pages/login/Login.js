@@ -46,7 +46,7 @@ const Login = () => {
       }
     } catch (error) {
       console.error(error);
-      notification.error({ message: '오류', description: '현재 게스트 상태로 로그인되어 있습니다. 병원 계정은 승인 대기 중입니다.' });
+      notification.error({ message: '오류', description: '로그인 중 오류가 발생했습니다. 다시 시도해주세요.' });
     } finally {
       setLoading(false);
     }
@@ -82,7 +82,7 @@ const Login = () => {
                       {
                         validator: (_, value) =>
                             value && (/\s/.test(value) || /^[0-9]+$/.test(value))
-                            ? Promise.reject(new Error('아이디는 공백 없이 문자와 숫자를 조합해 입력해주세요.'))
+                                ? Promise.reject(new Error('아이디에 공백 문자 또는 숫자만 입력할 수 없습니다.'))
                                 : Promise.resolve(),
                       },
                     ]}

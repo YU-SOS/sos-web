@@ -218,7 +218,7 @@ const SignupHospital = () => {
             >
               <Tooltip
                 title="공백이 포함되거나 숫자로만 구성된 ID는 사용할 수 없습니다."
-                visible={tooltipVisible}
+                visible={tooltipVisible} 
                 placement="bottom"
                 color="red"
               >
@@ -235,13 +235,13 @@ const SignupHospital = () => {
                   }}
                   onKeyDown={(e) => {
                     if (e.key === ' ') {
-                      e.preventDefault();
-                      setTooltipVisible(true);
+                      e.preventDefault(); 
+                      setTooltipVisible(true); 
                       setTimeout(() => setTooltipVisible(false), 5000);
                     }
                   }}
                   onChange={(e) => {
-                    const value = e.target.value.replace(/\s+/g, '');
+                    const value = e.target.value.replace(/\s+/g, ''); 
                     if (/^[0-9]+$/.test(value)) {
                       setTooltipVisible(true);
                       setTimeout(() => setTooltipVisible(false), 5000);
@@ -251,12 +251,12 @@ const SignupHospital = () => {
                   onPaste={(e) => {
                     const pastedText = e.clipboardData.getData('text');
                     if (pastedText.includes(' ') || /^[0-9]+$/.test(pastedText)) {
-                      e.preventDefault();
-                      setTooltipVisible(true);
-                      setTimeout(() => setTooltipVisible(false), 5000);
+                      e.preventDefault(); 
+                      setTooltipVisible(true); 
+                      setTimeout(() => setTooltipVisible(false), 5000); 
                     }
                   }}
-                  onBlur={() => setTooltipVisible(false)}
+                  onBlur={() => setTooltipVisible(false)} 
                 />
               </Tooltip>
             </Form.Item>
@@ -270,12 +270,12 @@ const SignupHospital = () => {
               ]}
             >
               <Input.Password
-                placeholder="비밀번호"
-                disabled={!isIdChecked}
-                onChange={(e) => {
-                  const value = e.target.value.replace(/\s+/g, '');
-                  form.setFieldsValue({ password: value });
-                }}
+                  placeholder="비밀번호"
+                  disabled={!isIdChecked}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\s+/g, '');
+                    form.setFieldsValue({ password: value });
+                  }}
               />
             </Form.Item>
             <Form.Item
@@ -285,9 +285,9 @@ const SignupHospital = () => {
                 { required: true, message: '병원 이름을 입력하세요.' },
                 {
                   validator: (_, value) =>
-                    value && (value.trim() === '' || /^[0-9]+$/.test(value))
-                      ? Promise.reject(new Error('병원 이름에 공백 문자 또는 숫자만 입력할 수 없습니다.'))
-                      : Promise.resolve(),
+                      value && (value.trim() === '' || /^[0-9]+$/.test(value))
+                          ? Promise.reject(new Error('병원 이름에 공백 문자 또는 숫자만 입력할 수 없습니다.'))
+                          : Promise.resolve(),
                 }
               ]}
             >
@@ -337,8 +337,8 @@ const SignupHospital = () => {
               ]}
             >
               <Input
-                placeholder="전화번호"
-                disabled={!isIdChecked}
+                  placeholder="전화번호"
+                  disabled={!isIdChecked}
               />
             </Form.Item>
             <Form.Item
@@ -348,9 +348,9 @@ const SignupHospital = () => {
                 { required: true, message: '카테고리를 선택해주세요.' },
                 {
                   validator: (_, value) =>
-                    Array.isArray(value) && value.length === 0
-                      ? Promise.reject(new Error())
-                      : Promise.resolve(),
+                      Array.isArray(value) && value.length === 0
+                          ? Promise.reject(new Error())
+                          : Promise.resolve(),
                 },
               ]}
             >
