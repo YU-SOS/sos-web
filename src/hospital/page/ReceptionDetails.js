@@ -162,7 +162,7 @@ const ReceptionDetails = () => {
                                 <Col span={2}>
                                     <Text strong>성별</Text>
                                 </Col>
-                                <Col span={4}>
+                                <Col span={3}>
                                     <Input
                                         style={{ width: "80%" }}
                                         value={
@@ -175,7 +175,7 @@ const ReceptionDetails = () => {
                                         readOnly
                                     />
                                 </Col>
-                                <Col span={6} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                <Col span={7} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                     <Text strong>중증도</Text>
                                     <div
                                         style={{
