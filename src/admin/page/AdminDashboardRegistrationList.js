@@ -95,6 +95,7 @@ const RegistrationList = () => {
                                     <List.Item
                                         actions={[<RightOutlined />]}
                                         onClick={() => fetchDetails(item.id, 'ambulance')}
+                                        style={{ cursor: 'pointer' }}
                                     >
                                         <List.Item.Meta
                                             title={<strong>{item.name}</strong>}

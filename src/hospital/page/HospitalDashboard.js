@@ -175,10 +175,10 @@ const Dashboard = () => {
                 <div>
             <Row align="middle" gutter={[16, 16]} style={{ marginBottom: '4px' }}>
                 <Col span={4}>
-                    <Text strong>접수 번호</Text>
+                    <Text strong>접수번호</Text>
                 </Col>
-                <Col span={4}>
-                    <Input value={selectedRequest.number || '정보 없음'} readOnly />
+                <Col span={3}>
+                    <Input value={selectedRequest.number || '정보 없음'} readOnly /> 
                 </Col>
             </Row>
             <Row align="middle" gutter={[16, 16]} style={{ marginBottom: '20px' }}>
@@ -296,7 +296,7 @@ const Dashboard = () => {
                     <Input value={selectedRequest.patient?.phoneNumber || '정보 없음'} readOnly />
                 </Col>
             </Row>
-            <Row justify="end" gutter={[16, 16]}>
+            <Row justify="end" gutter={[32, 16]}>
                 <Col>
                     <Button
                         type="primary"
@@ -319,7 +319,7 @@ const Dashboard = () => {
         </div>
     ) : (
         <>
-            <Empty style={{fontSize: '16px' }} description="오른쪽에서 환자를 선택하세요." />
+            <Empty style={{fontSize: '16px' }} description="환자를 선택하세요." />
         </>
     )}
 </Card>
@@ -329,7 +329,7 @@ const Dashboard = () => {
                     <Col span={8}>
                         <Card title={
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <span style={{ fontSize: '18px', fontWeight: 'bold' }}>응급실 접수 요청 목록</span>
+                                <span style={{ fontSize: '20px', fontWeight: 'bold' }}>응급실 접수 요청 목록</span>
                                 {/*
                                 <Button
                                     type="default"
@@ -386,7 +386,7 @@ const Dashboard = () => {
                                                     />
                                                 </div>
                                             }
-                                            description={`나이: ${item.patient?.age || 'N/A'} | 성별: ${getGenderLabel(item.patient?.gender)}`}
+                                            description={`나이: ${item.patient?.age || 'N/A'} | 성별: ${getGenderLabel(item.patient?.gender)} | 증상: ${item.patient?.reference}`}
                                         />
                                     </List.Item>
                                 )}

@@ -300,18 +300,21 @@ const SignupHospital = () => {
                 { required: true, message: '주소를 입력하세요.' },
                 {
                   validator: (_, value) =>
-                      value && (value.trim() === '' || /^[0-9]+$/.test(value))
-                          ? Promise.reject(new Error('주소에 공백 문자 또는 숫자만 입력할 수 없습니다.'))
-                          : Promise.resolve(),
+                    value && (value.trim() === '' || /^[0-9]+$/.test(value))
+                      ? Promise.reject(new Error('주소에 공백 문자 또는 숫자만 입력할 수 없습니다.'))
+                      : Promise.resolve(),
                 },
               ]}
             >
               <Input.Search
-                  placeholder="주소"
-                  enterButton="검색"
-                  disabled={!isIdChecked}
+                placeholder="주소"
+                enterButton="검색"
+                onSearch={handleSearch} // This connects the search input to the handleSearch function
+                disabled={!isIdChecked}
+                onChange={(e) => setAddress(e.target.value)} // Update the address state as the user types
               />
             </Form.Item>
+
             <Form.Item label="지도">
               <Map
                 center={mapCenter}
