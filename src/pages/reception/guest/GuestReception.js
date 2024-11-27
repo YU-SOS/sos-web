@@ -1,49 +1,68 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import {styled} from 'styled-components';
+import { styled } from 'styled-components';
 import apiClient from '../../../api/apiClient';
 import Loading from '../../../components/Loading';
+import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 const GuestReception = () => {
-
     const { receptionNumber } = useParams();
-    const [ hospital, setHospital ] = useState();
-    const [ ambulance, setAmbulance] = useState();
-    const [ patient, setPatient] = useState();
-    const [ isLoading, setIsLoading ] = useState(true);
+    const [hospital, setHospital] = useState();
+    const [ambulance, setAmbulance] = useState();
+    const [patient, setPatient] = useState();
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchReception = async () => {
             try {
                 const response = await apiClient.get(`/reception/${receptionNumber}/guest`);
+                const data = response.data.data;
 
-                console.log(response.data);
-                console.log(response.data.data);
-                setHospital(response.data.data.hospital);
-                setAmbulance(response.data.data.ambulance);
-                setPatient(response.data.data.patient);
+                console.log(data);
+                setHospital(data.hospital);
+                setAmbulance(data.ambulance);
+                setPatient(data.patient);
 
                 setIsLoading(false);
-            } catch(err) {
+            } catch (err) {
                 console.error(err);
             }
-        }
+        };
 
         fetchReception();
+    }, [receptionNumber]);
 
-    },[])
-
-    if(isLoading){
-      return <LoadingWrapper> <Loading/> </LoadingWrapper>
+    if (isLoading) {
+        return (
+            <LoadingWrapper>
+                <Loading />
+            </LoadingWrapper>
+        );
     }
 
     return (
-          <Wrapper>
+        <Wrapper>
             <Header>SOS</Header>
-            <Map>Map</Map>
+            <MapContainer>
+                <Map
+                    center={{
+                        lat: parseFloat(hospital.location.latitude),
+                        lng: parseFloat(hospital.location.longitude),
+                    }}
+                    style={{ width: '100%', height: '100%' }}
+                    level={3}
+                >
+                    <MapMarker
+                        position={{
+                            lat: parseFloat(hospital.location.latitude),
+                            lng: parseFloat(hospital.location.longitude),
+                        }}
+                    >
+                    </MapMarker>
+                </Map>
+            </MapContainer>
 
             <Content>
-
                 <SubTitleContainer>
                     <SubTitle>병원 정보</SubTitle>
                 </SubTitleContainer>
@@ -63,7 +82,7 @@ const GuestReception = () => {
                     <p>{hospital.telephoneNumber}</p>
                 </Container>
 
-                <StyledHr/>
+                <StyledHr />
 
                 <SubTitleContainer>
                     <SubTitle>환자 정보</SubTitle>
@@ -88,91 +107,80 @@ const GuestReception = () => {
                     <Category>증상</Category>
                     <p>{patient.symptom}</p>
                 </Container>
-
             </Content>
         </Wrapper>
-
-    )
-}
+    );
+};
 
 const LoadingWrapper = styled.div`
-  display : flex;
-  width : 100%;
-  height : 100%;
-  justify-content : center;
-  align-items : center;
-`
-
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+`;
 
 const Wrapper = styled.div`
-  width : 100vw;
-  height : 100vh;
-`
+    width: 100vw;
+    height: 100vh;
+`;
 
 const Header = styled.div`
-  height : 60px;
-  border-bottom : 0.5px solid #dfdfdf;
-  display : flex;
-  align-items : center;
-  box-sizing : border-box;
-  padding : 0 15px;
-  font-family : "Jockey One", sans-serif;
-  font-size : 35px;
-  font-weight : 600;
-`
+    height: 60px;
+    border-bottom: 0.5px solid #dfdfdf;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 0 15px;
+    font-family: 'Jockey One', sans-serif;
+    font-size: 35px;
+    font-weight: 600;
+`;
 
-const Map = styled.div`
-  background-color : #ddd;
-  height : 200px;
-`
+const MapContainer = styled.div`
+    width: 100%;
+    height: 200px;
+`;
 
 const Content = styled.div`
-  box-sizing : border-box;
-  padding : 15px;
-  display : flex;
-  flex-direction : column;
-`
+    box-sizing: border-box;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+`;
 
 const Container = styled.div`
-  width : 100%;
-  display : flex;
-  justify-content : space-between;
-  align-items : center;
-  margin-bottom : 10px;
-`
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+`;
 
 const SubTitleContainer = styled.div`
-  display : flex;
-  justify-content : end;
-`
+    display: flex;
+    justify-content: end;
+`;
 
 const SubTitle = styled.p`
-  font-size : 25px;
-  font-weight : 600;
-  padding : 0 0 3px 0;
-  margin-bottom : 20px;
-  text-align : right;
-  border-bottom : 1px solid #dfdfdf;
-`
+    font-size: 25px;
+    font-weight: 600;
+    padding: 0 0 3px 0;
+    margin-bottom: 20px;
+    text-align: right;
+    border-bottom: 1px solid #dfdfdf;
+`;
 
 const Category = styled.div`
-  font-size : 20px;
-  font-weight : 600;
-`
+    font-size: 20px;
+    font-weight: 600;
+`;
 
 const StyledHr = styled.div`
-  height : 0.2px;
-  background-color : #d1d1d1;
-  margin-top : 20px;
-  margin-bottom : 20px;
-`
+    height: 0.2px;
+    background-color: #d1d1d1;
+    margin-top: 20px;
+    margin-bottom: 20px;
+`;
 
-const Notice = styled.div`
-  height : 200px;
-  color : #d1d1d1;
-  display : flex;
-  justify-content : center;
-  align-items : end;
-`
-
-export default GuestReception
+export default GuestReception;

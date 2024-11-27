@@ -66,7 +66,12 @@ const AdminDashboard = () => {
                                     renderItem={(item) => (
                                         <List.Item>
                                             <List.Item.Meta
-                                                title={<strong>{item.name}</strong>}
+                                                title={
+                                                    <span>
+                                                        <strong>{item.name}</strong> &nbsp;
+                                                        <span style={{ color: '#888' }}>{item.address}</span>
+                                                    </span>
+                                                }
                                             />
                                         </List.Item>
                                     )}
@@ -93,7 +98,12 @@ const AdminDashboard = () => {
                                     renderItem={(item) => (
                                         <List.Item>
                                             <List.Item.Meta
-                                                title={<strong>{item.name}</strong>}
+                                                title={
+                                                    <span>
+                                                        <strong>{item.name}</strong> &nbsp;
+                                                        <span style={{ color: '#888' }}>{item.address}</span>
+                                                    </span>
+                                                }
                                             />
                                         </List.Item>
                                     )}

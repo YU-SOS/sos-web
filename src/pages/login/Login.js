@@ -26,8 +26,7 @@ const Login = () => {
       } else {
         result = await loginAdminAPI({ adminId: id, password });
       }
-
-      if (result.status === 200) {
+        if (result.status === 200) {
         notification.success({ message: '로그인 성공!', description: '환영합니다.' });
         if (role === 'HOS') {
           localStorage.setItem('HospitalDoctorLoggedIn', true);
@@ -35,17 +34,20 @@ const Login = () => {
         } else {
           navigate('/admin/dashboard');
         }
-      } else if (result.status === 403 && result.message('GUEST')) {
-        notification.error({ message: '로그인 실패', description: '승인 대기 중입니다.' });
-      } else if (result.status === 403 && result.message('BLACKLIST')) {
-        notification.error({ message: '로그인 실패', description: '블랙리스트된 사용자입니다.' });
-      } else if (result.status === 401) {
-        notification.error({ message: '로그인 실패', description: 'ID 또는 비밀번호를 확인하세요.' });
+      } else if (result.status === 403) {
+            let message = result.message;
+            console.log(result.message);
+          if (message == 'GUEST') {
+              notification.error({ message: '로그인 실패', description: '승인 대기 중입니다.' });
+          } else if (message == '블랙리스트된 사용자입니다.') {
+              notification.error({ message: '로그인 실패', description: '블랙리스트된 사용자입니다.' });
+          } else {
+              notification.error({ message: '로그인 실패', description: '접근이 거부되었습니다.' });
+          }
       } else {
-        notification.error({ message: '로그인 실패', description: '다시 시도해주세요.' });
+          notification.error({ message: '로그인 실패', description: '다시 시도해주세요.' });
       }
     } catch (error) {
-      console.error(error);
       notification.error({ message: '오류', description: '로그인 중 오류가 발생했습니다. 다시 시도해주세요.' });
     } finally {
       setLoading(false);
@@ -82,7 +84,7 @@ const Login = () => {
                       {
                         validator: (_, value) =>
                             value && (/\s/.test(value) || /^[0-9]+$/.test(value))
-                                ? Promise.reject(new Error('아이디에 공백 문자 또는 숫자만 입력할 수 없습니다.'))
+                                ? Promise.reject(new Error('아이디는 공백 없이 문자와 숫자를 조합해 입력해주세요.'))
                                 : Promise.resolve(),
                       },
                     ]}

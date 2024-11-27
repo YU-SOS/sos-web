@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getStorage } from "firebase/storage"; // Storage 모듈 추가
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCs8wSlxzP2EXajNYOGniY4mjy-43YKYgY",
@@ -12,8 +12,7 @@ const firebaseConfig = {
     measurementId: "G-Y82RVKEJNC",
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const storage = getStorage(app); // Storage 초기화
+const storage = getStorage(app);
 
 export { app, storage };

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Layout, Menu, message } from 'antd';
 import styled from 'styled-components';
 import {AppstoreOutlined, HomeOutlined, LogoutOutlined} from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { getHospitalDetails } from '../../api/hospitalAPI';
 
 const { Sider } = Layout;
@@ -10,6 +10,7 @@ const { Sider } = Layout;
 const HospitalHeader = () => {
     const [hospitalDetails, setHospitalDetails] = useState(null);
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         document.body.style.overflow = 'hidden';
@@ -84,6 +85,7 @@ const HospitalHeader = () => {
                 mode="inline"
                 items={menuItems}
                 onClick={onMenuClick}
+                selectedKeys={[location.pathname.replace('/', '')]}
                 style={{ backgroundColor: '#353535', color: '#fff', flex: 1 }}
             />
             <LogoutButton onClick={() => onMenuClick({ key: 'logout' })}>

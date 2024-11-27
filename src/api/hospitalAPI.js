@@ -120,7 +120,7 @@ export const updateReceptionStatueArrival = async (receptionId) => {
     const token = getAuthToken();
     return apiClient.put(
         `/reception/${receptionId}/arrival`,
-        {}, // Empty request body
+        {},
         {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -128,7 +128,6 @@ export const updateReceptionStatueArrival = async (receptionId) => {
         }
     );
 };
-
 
 export const sendComments = async (receptionId, message) => {
     const token = getAuthToken();

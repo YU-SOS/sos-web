@@ -83,7 +83,10 @@ const SignupHospital = () => {
         setLongitude(newLocation.lng);
         notification.success({ message: '검색된 위치로 이동하였습니다.' });
       } else {
-        notification.error({ message: '검색 결과가 없습니다.' });
+        notification.error({
+          message: '검색 결과가 없습니다.',
+          description: '정확한 주소를 입력해주세요.',
+        });
       }
     });
   };
@@ -145,15 +148,18 @@ const SignupHospital = () => {
       notification.error({ message: '대표 이미지를 업로드해주세요.' });
       return;
     }
+    if (isUploading) {
+      notification.warning({ message: '이미지 업로드 중입니다. 잠시만 기다려주세요.' });
+      return;
+    }
+    setIsUploading(true);
     try {
       const downloadURL = await uploadImage();
-
       const payload = {
         ...values,
         imageUrl: downloadURL,
         location: { latitude, longitude },
       };
-
       const result = await signupHospitalAPI(payload);
 
       if (result.status === 201) {
@@ -167,6 +173,8 @@ const SignupHospital = () => {
     } catch (error) {
       notification.error({ message: '회원가입 중 오류가 발생했습니다.' });
       console.error('회원가입 오류:', error);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -387,11 +395,11 @@ const SignupHospital = () => {
             </Form.Item>
             <Form.Item wrapperCol={{ span: 24 }}>
               <Button
-                type="primary"
-                htmlType="submit"
-                block
-                loading={isUploading}
-                disabled={!isIdChecked}
+                  type="primary"
+                  htmlType="submit"
+                  block
+                  loading={isUploading}
+                  disabled={!isIdChecked || isUploading}
               >
                 회원가입 요청
               </Button>
