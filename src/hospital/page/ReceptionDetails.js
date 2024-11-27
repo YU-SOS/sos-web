@@ -13,7 +13,7 @@ const ReceptionDetails = () => {
     const [comments, setComments] = useState([]);
     const [currentComments, setCurrentComments] = useState("");
     const [isTextAreaInvalid, setIsTextAreaInvalid] = useState(false);
-    const [isArrivalProcessed, setIsArrivalProcessed] = useState(false); // Track button state
+    const [isArrivalProcessed, setIsArrivalProcessed] = useState(false);
     const listRef = useRef(null);
 
     const fetchReceptionDetails = async () => {
@@ -63,29 +63,30 @@ const ReceptionDetails = () => {
     };
 
     const handleArrival = async () => {
-        if (isArrivalProcessed) return; // Prevent duplicate API calls
+        if (isArrivalProcessed) return; 
 
-        setIsArrivalProcessed(true); // Disable button immediately
+        setIsArrivalProcessed(true); 
 
         try {
             await updateReceptionStatueArrival(id);
             message.success("구급대가 병원에 도착했습니다.");
 
-            // Save processed ID in localStorage
             const processedArrivals = JSON.parse(localStorage.getItem("processedArrivals") || "[]");
             processedArrivals.push(id);
             localStorage.setItem("processedArrivals", JSON.stringify(processedArrivals));
+
+            navigate("/hospital/reception");
         } catch (error) {
             console.error("구급대 병원 도착 처리 실패:", error);
             message.error("구급대 병원 도착 처리 중 오류가 발생했습니다.");
-            setIsArrivalProcessed(false); // Re-enable button if API call fails
+            setIsArrivalProcessed(false); 
         }
     };
+
 
     useEffect(() => {
         fetchReceptionDetails();
 
-        // Check localStorage for processed status
         const processedArrivals = JSON.parse(localStorage.getItem("processedArrivals") || "[]");
         setIsArrivalProcessed(processedArrivals.includes(id));
     }, [id]);

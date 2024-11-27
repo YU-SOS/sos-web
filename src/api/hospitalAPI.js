@@ -1,6 +1,6 @@
 import axios from 'axios';
-import {jwtDecode} from "jwt-decode";
-import {apiServer} from "../config/api";
+import { jwtDecode } from "jwt-decode";
+import { apiServer } from "../config/api";
 
 const apiClient = axios.create({
     baseURL: apiServer,
@@ -55,7 +55,7 @@ export const updateHospitalStatus = async (hospitalData) => {
             'Content-Type': 'application/json',
         },
         params: {
-            emergencyStatus : Boolean(hospitalData.emergencyStatus)
+            emergencyStatus: Boolean(hospitalData.emergencyStatus)
         }
     });
 };
@@ -104,10 +104,10 @@ export const updateReceptionStatus = async (receptionId, isApproved) => {
     try {
         const response = await apiClient.put(
             `/reception/${receptionId}`, { isApproved }, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-            }
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+        }
         );
         return response.data;
     } catch (error) {

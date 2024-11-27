@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Layout, Menu, message } from 'antd';
 import styled from 'styled-components';
-import {AppstoreOutlined, HomeOutlined, LogoutOutlined} from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { AppstoreOutlined, HomeOutlined, LogoutOutlined } from '@ant-design/icons';
+import { useNavigate, useLocation } from 'react-router-dom'; // Import useLocation here
 import { getHospitalDetails } from '../../api/hospitalAPI';
 
 const { Sider } = Layout;
@@ -10,6 +10,7 @@ const { Sider } = Layout;
 const HospitalHeader = () => {
     const [hospitalDetails, setHospitalDetails] = useState(null);
     const navigate = useNavigate();
+    const location = useLocation(); // Use useLocation inside the component
 
     useEffect(() => {
         document.body.style.overflow = 'hidden';
@@ -64,7 +65,6 @@ const HospitalHeader = () => {
         <CustomSider width={300}>
             <Logo>SOS</Logo>
             <ImageContainer>
-
                 <img
                     src={hospitalDetails?.data.imageUrl || 'https://via.placeholder.com/120'}
                     alt="병원 대표 이미지"
@@ -84,6 +84,7 @@ const HospitalHeader = () => {
                 mode="inline"
                 items={menuItems}
                 onClick={onMenuClick}
+                selectedKeys={[location.pathname.replace('/', '')]} // Dynamically set selected menu item
                 style={{ backgroundColor: '#353535', color: '#fff', flex: 1 }}
             />
             <LogoutButton onClick={() => onMenuClick({ key: 'logout' })}>
