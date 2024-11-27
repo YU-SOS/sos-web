@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Layout, Card, List, Input, Button, Avatar, Typography, Empty, Row, Col, message } from "antd";
-import {getReceptionDetails, sendComments, updateReceptionStatueArrival} from "../../api/hospitalAPI";
+import { getReceptionDetails, sendComments, updateReceptionStatueArrival } from "../../api/hospitalAPI";
 
 const { Header, Content } = Layout;
 const { Title, Text } = Typography;
@@ -12,6 +12,8 @@ const ReceptionDetails = () => {
     const [receptionData, setReceptionData] = useState(null);
     const [comments, setComments] = useState([]);
     const [currentComments, setCurrentComments] = useState("");
+    const [isTextAreaInvalid, setIsTextAreaInvalid] = useState(false);
+    const [isArrivalProcessed, setIsArrivalProcessed] = useState(false); // Track button state
     const listRef = useRef(null);
 
     const fetchReceptionDetails = async () => {
@@ -32,43 +34,60 @@ const ReceptionDetails = () => {
     };
 
     const handleSendMessage = async () => {
-        if (currentComments.trim()) {
-            try {
-                await sendComments(id, currentComments);
+        if (!currentComments.trim()) {
+            setIsTextAreaInvalid(true);
+            return;
+        }
 
-                const newComment = {
-                    id: Date.now().toString(),
-                    content: currentComments,
-                    createdAt: new Date().toISOString(),
-                };
+        try {
+            await sendComments(id, currentComments);
 
-                setComments((prev) => [...prev, newComment]);
-                setCurrentComments("");
-                message.success("메시지를 성공적으로 전송했습니다.");
+            const newComment = {
+                id: Date.now().toString(),
+                content: currentComments,
+                createdAt: new Date().toISOString(),
+            };
 
-                if (listRef.current) {
-                    listRef.current.scrollTop = listRef.current.scrollHeight;
-                }
-            } catch (error) {
-                console.error("메시지 전송 실패:", error);
-                message.error("메시지 전송 중 오류가 발생했습니다.");
+            setComments((prev) => [...prev, newComment]);
+            setCurrentComments("");
+            setIsTextAreaInvalid(false);
+            message.success("메시지를 성공적으로 전송했습니다.");
+
+            if (listRef.current) {
+                listRef.current.scrollTop = listRef.current.scrollHeight;
             }
+        } catch (error) {
+            console.error("메시지 전송 실패:", error);
+            message.error("메시지 전송 중 오류가 발생했습니다.");
         }
     };
 
     const handleArrival = async () => {
+        if (isArrivalProcessed) return; // Prevent duplicate API calls
+
+        setIsArrivalProcessed(true); // Disable button immediately
+
         try {
             await updateReceptionStatueArrival(id);
             message.success("구급대가 병원에 도착했습니다.");
-            navigate('/hospital/reception');
+
+            // Save processed ID in localStorage
+            const processedArrivals = JSON.parse(localStorage.getItem("processedArrivals") || "[]");
+            processedArrivals.push(id);
+            localStorage.setItem("processedArrivals", JSON.stringify(processedArrivals));
         } catch (error) {
             console.error("구급대 병원 도착 처리 실패:", error);
             message.error("구급대 병원 도착 처리 중 오류가 발생했습니다.");
+            setIsArrivalProcessed(false); // Re-enable button if API call fails
         }
     };
 
     useEffect(() => {
         fetchReceptionDetails();
+
+        // Check localStorage for processed status
+        const processedArrivals = JSON.parse(localStorage.getItem("processedArrivals") || "[]");
+        setIsArrivalProcessed(processedArrivals.includes(id));
     }, [id]);
 
     useEffect(() => {
@@ -209,10 +228,15 @@ const ReceptionDetails = () => {
                                 <Col>
                                     <Button
                                         type="primary"
-                                        style={{ backgroundColor: '#6c96f7' }}
                                         onClick={handleArrival}
+                                        disabled={isArrivalProcessed}
+                                        style={{
+                                            backgroundColor: isArrivalProcessed ? "#d9d9d9" : undefined,
+                                            borderColor: isArrivalProcessed ? "#d9d9d9" : undefined,
+                                            color: isArrivalProcessed ? "#888" : undefined,
+                                        }}
                                     >
-                                        구급대 병원 도착
+                                        {isArrivalProcessed ? "이미 처리되었습니다" : "구급대 병원 도착"}
                                     </Button>
                                 </Col>
                             </Row>
@@ -251,10 +275,19 @@ const ReceptionDetails = () => {
                             />
                             <Input.TextArea
                                 value={currentComments}
-                                onChange={(e) => setCurrentComments(e.target.value)}
+                                onChange={(e) => {
+                                    setCurrentComments(e.target.value);
+                                    if (e.target.value.trim()) {
+                                        setIsTextAreaInvalid(false);
+                                    }
+                                }}
                                 rows={3}
                                 placeholder="메시지를 입력하세요..."
-                                style={{ overflowY: "auto", marginTop: "10px" }}
+                                style={{
+                                    overflowY: "auto",
+                                    marginTop: "10px",
+                                    borderColor: isTextAreaInvalid ? "red" : undefined,
+                                }}
                             />
                             <Button
                                 type="primary"
