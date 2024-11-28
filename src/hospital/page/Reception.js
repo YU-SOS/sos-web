@@ -46,18 +46,12 @@ const AcceptedReceptions = () => {
             case 'ARRIVAL':
                 return <Tag color="green">도착</Tag>;
             default:
-                return <Tag color="default">알 수 없음</Tag>
+                return <Tag color="default">알 수 없음</Tag>;
         }
     };
 
-    const getStatusLabel = (status) => {
-        if (status === 'MOVE') return '이동 중';
-        if (status === 'ARRIVAL') return '도착';
-        return '알 수 없음';
-    };
-
     return (
-        <Layout style={{ maxHeight: 'calc(100vh)' }}>
+        <Layout style={{ height: '100vh' }}>
             <Header
                 style={{
                     background: '#fff',
@@ -73,19 +67,21 @@ const AcceptedReceptions = () => {
             <Content
                 style={{
                     padding: '20px',
+                    background: '#f0f2f5',
                     display: 'flex',
                     flexDirection: 'column',
-                    overflow: 'hidden',
+                    height: 'calc(100vh - 64px)',
+                    overflow: 'auto',
                 }}
             >
                 <Row
                     gutter={[16, 16]}
                     style={{
                         flex: 1,
-                        overflow: 'hidden',
+                        display: 'flex',
                     }}
                 >
-                    <Col span={24} style={{ height: '100%' }}>
+                    <Col span={24}>
                         <Card
                             title={
                                 <div
@@ -108,78 +104,73 @@ const AcceptedReceptions = () => {
                                 </div>
                             }
                             style={{
+                                height: '100%',
+                                borderRadius: '10px',
+                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                                overflow: 'hidden',
                                 display: 'flex',
                                 flexDirection: 'column',
-                                maxHeight: '100%',
-                                overflow: 'hidden',
                             }}
                         >
-                            <div
+                            <List
+                                dataSource={acceptedRequests}
                                 style={{
                                     flex: 1,
+                                    overflowY: 'auto',
+                                    paddingRight: '10px',
                                 }}
-                            >
-                                <List
-                                    dataSource={acceptedRequests}
-                                    style={{
-                                        minHeight: '600px',
-                                        maxHeight: '600px',
-                                        overflowY: 'auto',
-                                        paddingRight: '10px',
-                                    }}
-                                    renderItem={(item) => (
-                                        <List.Item
-                                            onClick={() => handleAcceptedRequestClick(item)}
-                                            style={{
-                                                cursor: 'pointer',
-                                                backgroundColor: '#f6f8fa',
-                                                borderRadius: '10px',
-                                                marginBottom: '10px',
-                                                padding: '20px',
-                                                boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
-                                            }}
-                                        >
-                                            <Row gutter={[16, 16]} style={{ width: '100%' }}>
-                                                <Col span={4}>
-                                                    <img
-                                                        src={item.ambulance?.imageUrl}
-                                                        alt="구급차"
-                                                        style={{
-                                                            width: 100,
-                                                            height: 100,
-                                                            borderRadius: '10px',
-                                                            objectFit: 'cover',
-                                                            border: '2px solid #d9d9d9',
-                                                        }}
-                                                    />
-                                                </Col>
-                                                <Col span={20}>
-                                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                                        <Text style={{ fontSize: '16px', fontWeight: 'bold' }}>
-                                                            {`환자 이름: ${item.patient?.name || '정보 없음'}`}
-                                                        </Text>
-                                                        <Text style={{ color: '#999' }}>
-                                                            접수 번호: <strong>{item.number || 'N/A'}</strong>
-                                                        </Text>
-                                                    </div>
-                                                    <div style={{ marginTop: '5px' }}>
-                                                        {getStatusTag(item.receptionStatus)}
-                                                    </div>
-                                                    <div style={{ marginTop: '10px', color: '#555' }}>
-                                                        <Text>
-                                                            나이: {item.patient?.age || 'N/A'} | 성별: {getGenderLabel(item.patient?.gender)} | 증상:{' '}
-                                                            {item.patient?.reference || 'N/A'}
-                                                        </Text>
-                                                    </div>
-                                                    <div style={{ marginTop: '10px' }}>
-                                                        <Text>전화번호: {item.patient?.phoneNumber || 'N/A'}</Text>
-                                                    </div>
-                                                </Col>
-                                            </Row>
-                                        </List.Item>
-                                    )}
-                                />
-                            </div>
+                                renderItem={(item) => (
+                                    <List.Item
+                                        onClick={() => handleAcceptedRequestClick(item)}
+                                        style={{
+                                            cursor: 'pointer',
+                                            backgroundColor: '#f6f8fa',
+                                            borderRadius: '10px',
+                                            marginBottom: '10px',
+                                            padding: '20px',
+                                            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
+                                        }}
+                                    >
+                                        <Row gutter={[16, 16]} style={{ width: '100%' }}>
+                                            <Col span={4}>
+                                                <img
+                                                    src={item.ambulance?.imageUrl}
+                                                    alt="구급차"
+                                                    style={{
+                                                        width: 100,
+                                                        height: 100,
+                                                        borderRadius: '10px',
+                                                        objectFit: 'cover',
+                                                        border: '2px solid #d9d9d9',
+                                                    }}
+                                                />
+                                            </Col>
+                                            <Col span={20}>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                    <Text style={{ fontSize: '16px', fontWeight: 'bold' }}>
+                                                        {`환자 이름: ${item.patient?.name || '정보 없음'}`}
+                                                    </Text>
+                                                    <Text style={{ color: '#999' }}>
+                                                        접수 번호: <strong>{item.number || 'N/A'}</strong>
+                                                    </Text>
+                                                </div>
+                                                <div style={{ marginTop: '5px' }}>
+                                                    {getStatusTag(item.receptionStatus)}
+                                                </div>
+                                                <div style={{ marginTop: '10px', color: '#555' }}>
+                                                    <Text>
+                                                        나이: {item.patient?.age || 'N/A'} | 성별: {getGenderLabel(item.patient?.gender)} | 증상:{' '}
+                                                        {item.patient?.reference || 'N/A'}
+                                                    </Text>
+                                                </div>
+                                                <div style={{ marginTop: '10px' }}>
+                                                    <Text>전화번호: {item.patient?.phoneNumber || 'N/A'}</Text>
+                                                </div>
+                                            </Col>
+                                        </Row>
+                                    </List.Item>
+                                )}
+                            />
                         </Card>
                     </Col>
                 </Row>
