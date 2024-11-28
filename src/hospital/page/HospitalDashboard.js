@@ -391,7 +391,7 @@ const Dashboard = () => {
                                         onClick={() => handleRequestClick(item)}
                                         style={{
                                             cursor: 'pointer',
-                                            backgroundColor: selectedRequest?.id === item.id ? '#e6f7ff' : 'transparent', // 선택된 항목 강조
+                                            backgroundColor: selectedRequest?.id === item.id ? '#e6f7ff' : 'transparent',
                                             borderRadius: '5px',
                                         }}
                                     >
