@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, List, Card, Typography, message, Row, Col, Button } from 'antd';
+import { Layout, List, Card, Typography, message, Row, Col, Button, Tag } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 import { getEmergencyReceptionList } from '../../api/hospitalAPI';
 import { useNavigate } from 'react-router-dom';
@@ -15,9 +15,9 @@ const AcceptedReceptions = () => {
         try {
             const response = await getEmergencyReceptionList();
             const allRequests = response.data?.data?.content || [];
-            const filteredRequests = allRequests.filter(
-                (request) => request.receptionStatus === 'MOVE' || request.receptionStatus === 'ARRIVAL'
-            );
+            const filteredRequests = allRequests
+                .filter((request) => request.receptionStatus === 'MOVE' || request.receptionStatus === 'ARRIVAL')
+                .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)); // 시간순 정렬 (최근 것이 위로)
             setAcceptedRequests(filteredRequests);
         } catch (error) {
             console.error(error);
@@ -39,8 +39,25 @@ const AcceptedReceptions = () => {
         return '알 수 없음';
     };
 
+    const getStatusTag = (status) => {
+        switch (status) {
+            case 'MOVE':
+                return <Tag color="blue">이동 중</Tag>;
+            case 'ARRIVAL':
+                return <Tag color="green">도착</Tag>;
+            default:
+                return <Tag color="default">알 수 없음</Tag>
+        }
+    };
+
+    const getStatusLabel = (status) => {
+        if (status === 'MOVE') return '이동 중';
+        if (status === 'ARRIVAL') return '도착';
+        return '알 수 없음';
+    };
+
     return (
-        <Layout style={{ minHeight: '100vh - 64px' }}>
+        <Layout style={{ maxHeight: 'calc(100vh)' }}>
             <Header
                 style={{
                     background: '#fff',
@@ -58,14 +75,14 @@ const AcceptedReceptions = () => {
                     padding: '20px',
                     display: 'flex',
                     flexDirection: 'column',
-                    overflow: 'hidden', // 부모에서 스크롤 방지
+                    overflow: 'hidden',
                 }}
             >
                 <Row
                     gutter={[16, 16]}
                     style={{
-                        flex: 1, // 남은 공간을 채우도록 설정
-                        overflow: 'hidden', // 부모에서 스크롤 방지
+                        flex: 1,
+                        overflow: 'hidden',
                     }}
                 >
                     <Col span={24} style={{ height: '100%' }}>
@@ -78,9 +95,9 @@ const AcceptedReceptions = () => {
                                         alignItems: 'center',
                                     }}
                                 >
-                            <span style={{ fontSize: '18px', fontWeight: 'bold' }}>
-                                수락된 요청 목록
-                            </span>
+                                    <span style={{ fontSize: '18px', fontWeight: 'bold' }}>
+                                        수락된 요청 목록
+                                    </span>
                                     <Button
                                         type="primary"
                                         icon={<ReloadOutlined />}
@@ -93,20 +110,23 @@ const AcceptedReceptions = () => {
                             style={{
                                 display: 'flex',
                                 flexDirection: 'column',
-                                maxHeight: '100%', // 카드의 최대 높이를 부모에 맞게 제한
-                                overflow: 'hidden', // 내부에서 스크롤 제어
+                                maxHeight: '100%',
+                                overflow: 'hidden',
                             }}
                         >
                             <div
                                 style={{
                                     flex: 1,
-                                    maxHeight: 'calc(100vh - 150px)', // 헤더와 카드 제목 등을 제외한 가용 영역 설정
-                                    overflowY: 'auto', // 스크롤 활성화
-                                    paddingRight: '10px', // 스크롤바 여백
                                 }}
                             >
                                 <List
                                     dataSource={acceptedRequests}
+                                    style={{
+                                        minHeight: '600px',
+                                        maxHeight: '600px',
+                                        overflowY: 'auto',
+                                        paddingRight: '10px',
+                                    }}
                                     renderItem={(item) => (
                                         <List.Item
                                             onClick={() => handleAcceptedRequestClick(item)}
@@ -119,10 +139,7 @@ const AcceptedReceptions = () => {
                                                 boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
                                             }}
                                         >
-                                            <Row
-                                                gutter={[16, 16]}
-                                                style={{ width: '100%' }}
-                                            >
+                                            <Row gutter={[16, 16]} style={{ width: '100%' }}>
                                                 <Col span={4}>
                                                     <img
                                                         src={item.ambulance?.imageUrl}
@@ -137,59 +154,25 @@ const AcceptedReceptions = () => {
                                                     />
                                                 </Col>
                                                 <Col span={20}>
-                                                    <div
-                                                        style={{
-                                                            display: 'flex',
-                                                            justifyContent: 'space-between',
-                                                        }}
-                                                    >
-                                                        <Text
-                                                            style={{
-                                                                fontSize: '16px',
-                                                                fontWeight: 'bold',
-                                                            }}
-                                                        >
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                        <Text style={{ fontSize: '16px', fontWeight: 'bold' }}>
                                                             {`환자 이름: ${item.patient?.name || '정보 없음'}`}
                                                         </Text>
-                                                        <Text
-                                                            style={{
-                                                                color: '#999',
-                                                            }}
-                                                        >
-                                                            접수 번호:{' '}
-                                                            <strong>
-                                                                {item.number || 'N/A'}
-                                                            </strong>
+                                                        <Text style={{ color: '#999' }}>
+                                                            접수 번호: <strong>{item.number || 'N/A'}</strong>
                                                         </Text>
                                                     </div>
-                                                    <div
-                                                        style={{
-                                                            marginTop: '10px',
-                                                            color: '#555',
-                                                        }}
-                                                    >
+                                                    <div style={{ marginTop: '5px' }}>
+                                                        {getStatusTag(item.receptionStatus)}
+                                                    </div>
+                                                    <div style={{ marginTop: '10px', color: '#555' }}>
                                                         <Text>
-                                                            나이:{' '}
-                                                            {item.patient?.age || 'N/A'}{' '}
-                                                            | 성별:{' '}
-                                                            {getGenderLabel(
-                                                                item.patient?.gender
-                                                            )}{' '}
-                                                            | 증상:{' '}
-                                                            {item.patient?.reference ||
-                                                                'N/A'}
+                                                            나이: {item.patient?.age || 'N/A'} | 성별: {getGenderLabel(item.patient?.gender)} | 증상:{' '}
+                                                            {item.patient?.reference || 'N/A'}
                                                         </Text>
                                                     </div>
-                                                    <div
-                                                        style={{
-                                                            marginTop: '10px',
-                                                        }}
-                                                    >
-                                                        <Text>
-                                                            전화번호:{' '}
-                                                            {item.patient?.phoneNumber ||
-                                                                'N/A'}
-                                                        </Text>
+                                                    <div style={{ marginTop: '10px' }}>
+                                                        <Text>전화번호: {item.patient?.phoneNumber || 'N/A'}</Text>
                                                     </div>
                                                 </Col>
                                             </Row>
