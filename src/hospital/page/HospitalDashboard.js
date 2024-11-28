@@ -428,7 +428,7 @@ const Dashboard = () => {
                                                 <>
                                                     나이: {item.patient?.age || 'N/A'} | 성별: {getGenderLabel(item.patient?.gender)}
                                                     <br />
-                                                    증상: {item.patient?.reference}
+                                                    증상: {item.patient?.symptom}
                                                 </>
                                             }
 
