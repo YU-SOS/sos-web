@@ -211,7 +211,7 @@ const ReceptionDetails = () => {
                                     <Text strong>증상</Text>
                                 </Col>
                                 <Col span={21}>
-                                    <Input.TextArea rows={6} value={patient?.reference || "정보 없음"} readOnly />
+                                    <Input.TextArea rows={6} value={patient?.symptom || "정보 없음"} readOnly />
                                 </Col>
                             </Row>
                             <Row gutter={[16, 16]} style={{ marginBottom: "16px" }}>
@@ -219,7 +219,15 @@ const ReceptionDetails = () => {
                                     <Text strong>복용약</Text>
                                 </Col>
                                 <Col span={21}>
-                                    <Input.TextArea rows={6} value={patient?.medication || "정보 없음"} readOnly />
+                                    <Input.TextArea rows={5} value={patient?.medication || "정보 없음"} readOnly />
+                                </Col>
+                            </Row>
+                            <Row gutter={[16, 16]} style={{ marginBottom: "16px" }}>
+                                <Col span={3}>
+                                    <Text strong>특이사항</Text>
+                                </Col>
+                                <Col span={21}>
+                                    <Input.TextArea rows={6} value={patient?.reference || "정보 없음"} readOnly />
                                 </Col>
                             </Row>
                             <Row justify="end" gutter={[16, 16]}>
