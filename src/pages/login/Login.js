@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { Tabs, Form, Input, Button, notification } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import loginAdminAPI from '../../api/login/loginAdminAPI';
-import loginHospitalAPI from '../../api/login/loginHospitalAPI';
+import loginHospitalAPI, {newlogin} from '../../api/login/loginHospitalAPI';
 import SOSLogo from "../SOS_Logo.png";
+import loginHospital from "../../api/login/loginHospitalAPI";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const Login = () => {
     try {
       let result;
       if (role === 'HOS') {
-        result = await loginHospitalAPI(id, password, role);
+        result = await loginHospital(id, password, role);
       } else {
         result = await loginAdminAPI({ adminId: id, password });
       }
@@ -37,9 +38,9 @@ const Login = () => {
       } else if (result.status === 403) {
             let message = result.message;
             console.log(result.message);
-          if (message == 'GUEST') {
+          if (message === 'GUEST') {
               notification.error({ message: '로그인 실패', description: '승인 대기 중입니다.' });
-          } else if (message == '블랙리스트된 사용자입니다.') {
+          } else if (message == 'BLACKLIST') {
               notification.error({ message: '로그인 실패', description: '블랙리스트된 사용자입니다.' });
           } else {
               notification.error({ message: '로그인 실패', description: '접근이 거부되었습니다.' });

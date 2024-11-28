@@ -23,13 +23,20 @@ const loginHospital = async (id, password, role) => {
     };
   } catch (error) {
     console.error("Error response:", error.response ? error.response.data : error);
-    if (error.response && error.response.status === 403) {
+    if (error.response && error.response.status === 403 && error.response.data.message === 'GUEST') {
       return {
         status: 403,
-        message: "블랙리스트된 사용자입니다.",
+        message: "GUEST",
         userId: error.response.data.data
       };
-    } else if (error.response && error.response.status === 404) {
+    } else if (error.response && error.response.status === 403 & error.response.data.message === 'BLACKLIST') {
+      return {
+        status: 403,
+        message: "BLACKLIST",
+        userId: error.response.data.data
+      };
+    }
+    else if (error.response && error.response.status === 404) {
       return {
         status: 404,
         message: "사용자 조회 불가"

@@ -300,7 +300,7 @@ const Dashboard = () => {
                                         </Col>
                                         <Col span={20}>
                                             <Input.TextArea
-                                                value={selectedRequest.patient?.reference || '정보 없음'}
+                                                value={selectedRequest.patient?.symptom || '정보 없음'}
                                                 readOnly
                                             />
                                         </Col>
@@ -358,7 +358,7 @@ const Dashboard = () => {
                                 </div>
                             ) : (
                                 <>
-                                    <Empty style={{fontSize: '16px'}} description="환자를 선택하세요."/>
+                                    <Empty style={{fontSize: '16px'}} description="접수 요청을 선택하세요"/>
                                 </>
                             )}
                         </Card>
