@@ -74,6 +74,8 @@ const ReceptionDetails = () => {
             const processedArrivals = JSON.parse(localStorage.getItem("processedArrivals") || "[]");
             processedArrivals.push(id);
             localStorage.setItem("processedArrivals", JSON.stringify(processedArrivals));
+
+            navigate("/hospital/reception");
         } catch (error) {
             console.error("구급대 병원 도착 처리 실패:", error);
             message.error("구급대 병원 도착 처리 중 오류가 발생했습니다.");
