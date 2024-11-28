@@ -16,8 +16,7 @@ const AcceptedReceptions = () => {
             const response = await getEmergencyReceptionList();
             const allRequests = response.data?.data?.content || [];
             const filteredRequests = allRequests.filter(
-                (request) => request.receptionStatus === 'MOVE'
-                    // || request.receptionStatus === 'ARRIVAL'
+                (request) => request.receptionStatus === 'MOVE' // || request.receptionStatus === 'ARRIVAL'
             );
             setAcceptedRequests(filteredRequests);
         } catch (error) {
@@ -41,15 +40,13 @@ const AcceptedReceptions = () => {
     };
 
     return (
-        <Layout style={{ height: '100vh' }}>
+        <Layout style={{ minHeight: '100vh' }}>
             <Header style={{ background: '#fff', padding: '20px', display: 'flex', alignItems: 'center' }}>
-                <Title level={3} style={{ margin: 0 }}>
-                    응급실 접수 수락 목록
-                </Title>
+                <Title level={3} style={{ margin: 0 }}>응급실 접수 수락 목록</Title>
             </Header>
-            <Content style={{ padding: '20px', overflow: 'auto' }}>
-                <Row gutter={[16, 16]}>
-                    <Col span={24}>
+            <Content style={{ padding: '20px', display: 'flex', flexDirection: 'column', height: 'calc(100vh - 64px)' }}>
+                <Row gutter={[16, 16]} style={{ flex: 1 }}>
+                    <Col span={24} style={{ height: '100%' }}>
                         <Card
                             title={
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -99,25 +96,24 @@ const AcceptedReceptions = () => {
                                                 />
                                             </Col>
                                             <Col span={20}>
-                                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                                    <Text style={{fontSize: '16px', fontWeight: 'bold'}}>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                    <Text style={{ fontSize: '16px', fontWeight: 'bold' }}>
                                                         {`환자 이름: ${item.patient?.name || '정보 없음'}`}
                                                     </Text>
-                                                    <Text style={{color: '#999'}}>
+                                                    <Text style={{ color: '#999' }}>
                                                         접수 번호: <strong>{item.number || 'N/A'}</strong>
                                                     </Text>
                                                 </div>
-                                                <div style={{marginTop: '10px', color: '#555'}}>
+                                                <div style={{ marginTop: '10px', color: '#555' }}>
                                                     <Text>
                                                         나이: {item.patient?.age || 'N/A'} | 성별:{' '}
                                                         {getGenderLabel(item.patient?.gender)} | 증상:{' '}
                                                         {item.patient?.reference || 'N/A'}
                                                     </Text>
                                                 </div>
-                                                <div style={{marginTop: '10px'}}>
+                                                <div style={{ marginTop: '10px' }}>
                                                     <Text>
-                                                        전화번호:{' '}
-                                                        {item.patient?.phoneNumber || 'N/A'}
+                                                        전화번호: {item.patient?.phoneNumber || 'N/A'}
                                                     </Text>
                                                 </div>
                                             </Col>
@@ -127,7 +123,6 @@ const AcceptedReceptions = () => {
                                 style={{
                                     flex: 1,
                                     overflowY: 'auto',
-                                    minHeight: '603px',
                                 }}
                             />
                         </Card>

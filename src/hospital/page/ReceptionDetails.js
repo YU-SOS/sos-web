@@ -74,6 +74,8 @@ const ReceptionDetails = () => {
             const processedArrivals = JSON.parse(localStorage.getItem("processedArrivals") || "[]");
             processedArrivals.push(id);
             localStorage.setItem("processedArrivals", JSON.stringify(processedArrivals));
+
+            navigate("/hospital/reception");
         } catch (error) {
             console.error("구급대 병원 도착 처리 실패:", error);
             message.error("구급대 병원 도착 처리 중 오류가 발생했습니다.");
@@ -211,7 +213,7 @@ const ReceptionDetails = () => {
                                     <Text strong>증상</Text>
                                 </Col>
                                 <Col span={21}>
-                                    <Input.TextArea rows={6} value={patient?.reference || "정보 없음"} readOnly />
+                                    <Input.TextArea rows={6} value={patient?.symptom || "정보 없음"} readOnly />
                                 </Col>
                             </Row>
                             <Row gutter={[16, 16]} style={{ marginBottom: "16px" }}>
@@ -219,7 +221,15 @@ const ReceptionDetails = () => {
                                     <Text strong>복용약</Text>
                                 </Col>
                                 <Col span={21}>
-                                    <Input.TextArea rows={6} value={patient?.medication || "정보 없음"} readOnly />
+                                    <Input.TextArea rows={5} value={patient?.medication || "정보 없음"} readOnly />
+                                </Col>
+                            </Row>
+                            <Row gutter={[16, 16]} style={{ marginBottom: "16px" }}>
+                                <Col span={3}>
+                                    <Text strong>특이사항</Text>
+                                </Col>
+                                <Col span={21}>
+                                    <Input.TextArea rows={6} value={patient?.reference || "정보 없음"} readOnly />
                                 </Col>
                             </Row>
                             <Row justify="end" gutter={[16, 16]}>
