@@ -21,6 +21,7 @@ const SignupHospital = () => {
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
   const [address, setAddress] = useState('');
+  const [addr, setAddr] = useState('');
   const [isIdChecked, setIsIdChecked] = useState(false);
   const [mapCenter, setMapCenter] = useState({ lat: 35.8358302, lng: 128.7521449 });
   const [markerPosition, setMarkerPosition] = useState({ lat: 35.8358302, lng: 128.7521449 });
@@ -71,12 +72,14 @@ const SignupHospital = () => {
           lat: parseFloat(data[0].y),
           lng: parseFloat(data[0].x),
         };
+        
         const newCenter = new window.kakao.maps.LatLng(newLocation.lat, newLocation.lng);
 
         if (mapInstance) {
           mapInstance.panTo(newCenter);
         }
 
+        setAddr(data[0].road_address_name)
         setMapCenter(newLocation);
         setMarkerPosition(newLocation);
         setLatitude(newLocation.lat);
@@ -157,6 +160,7 @@ const SignupHospital = () => {
       const downloadURL = await uploadImage();
       const payload = {
         ...values,
+        address : addr,
         imageUrl: downloadURL,
         location: { latitude, longitude },
       };
