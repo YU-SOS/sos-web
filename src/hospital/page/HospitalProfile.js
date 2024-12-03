@@ -50,12 +50,11 @@ const HospitalProfilePage = () => {
     const handleUpdate = async (values) => {
         try {
             setLoading(true);
-            let finalImageUrl = imageUrl;
-            if (imageFile) {
-                const storageRef = ref(storage, `images/${imageFile.name}`);
-                const uploadTask = uploadBytesResumable(storageRef, imageFile);
 
-                finalImageUrl = await new Promise((resolve, reject) => {
+            const finalImageUrl = imageFile
+                ? await new Promise((resolve, reject) => {
+                    const storageRef = ref(storage, `images/${imageFile.name}`);
+                    const uploadTask = uploadBytesResumable(storageRef, imageFile);
                     uploadTask.on(
                         'state_changed',
                         null,
@@ -64,25 +63,21 @@ const HospitalProfilePage = () => {
                             reject(error);
                         },
                         async () => {
-                            const url = await getDownloadURL(uploadTask.snapshot.ref);
-                            resolve(url);
+                            resolve(await getDownloadURL(uploadTask.snapshot.ref));
                         }
                     );
-                });
-            }
+                })
+                : imageUrl;
 
-            const updatedData = {
+            await updateHospitalInfo({
                 ...values,
                 imageUrl: finalImageUrl,
                 location: { latitude, longitude },
-            };
+            });
 
-            await updateHospitalInfo(updatedData);
             message.success('병원 정보가 성공적으로 수정되었습니다.');
 
-            setTimeout(() => {
-                window.location.reload();
-            }, 300);
+            setTimeout(() => window.location.reload(), 300);
         } catch (error) {
             console.error(error);
             message.error('병원 정보를 수정하는 중 오류가 발생했습니다.');

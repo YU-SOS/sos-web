@@ -11,7 +11,6 @@ const signupHospital = async (hospitalData) => {
 
   } catch (error) {
     console.error(error);
-    console.log(error.response.status);
 
     if(error.response.status === 409) {
       return {

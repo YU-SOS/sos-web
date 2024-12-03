@@ -70,7 +70,6 @@ const Dashboard = () => {
     const handleEmergencyStatusToggle = async (status) => {
         try {
             const response = await updateHospitalStatus({emergencyStatus: status === 'AVAILABLE'});
-            console.log('API 응답:', response);
             setEmergencyStatus(status);
         } catch (error) {
             console.error(error);

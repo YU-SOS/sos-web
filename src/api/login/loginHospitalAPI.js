@@ -2,8 +2,6 @@ import apiClient from "../apiClient";
 
 const loginHospital = async (id, password, role) => {
   try {
-    console.log("Sending request with:", { id, password, role });
-
     const response = await apiClient.post('/login', { id, password, role });
 
     let accessToken = response.headers['authorization'];
