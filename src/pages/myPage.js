@@ -28,7 +28,6 @@ const ApiComponent = () => {
     const checkDuplication = async () => {
       try {
         const result = await dupCheckAPI();
-        console.log("Duplication Check Result:", result);
         setDupCheckResult(result);
       } catch (error) {
         console.error("Duplication Check Error:", error);
@@ -39,7 +38,6 @@ const ApiComponent = () => {
     const loginAdmin = async () => {
       try {
         const result = await loginAdminAPI();
-        console.log("Admin Login Result:", result);
         setLoginAdminResult(result);
       } catch (error) {
         console.error("Admin Login Error:", error);
@@ -50,7 +48,6 @@ const ApiComponent = () => {
     const loginHospitalAmbulance = async () => {
       try {
         const result = await loginHospitalAmbulanceAPI();
-        console.log("Hospital/Ambulance Login Result:", result);
         setLoginHospitalResult(result);
       } catch (error) {
         console.error("Hospital/Ambulance Login Error:", error);
@@ -61,7 +58,6 @@ const ApiComponent = () => {
     const logout = async () => {
       try {
         const result = await logoutAPI();
-        console.log("Logout Result:", result);
         setLogoutResult(result);
       } catch (error) {
         console.error("Logout Error:", error);
@@ -72,7 +68,6 @@ const ApiComponent = () => {
     const reissueToken = async () => {
       try {
         const result = await reissueTokenAPI();
-        console.log("Reissue Token Result:", result);
         setReissueTokenResult(result);
       } catch (error) {
         console.error("Reissue Token Error:", error);
@@ -83,7 +78,6 @@ const ApiComponent = () => {
     const signupHospital = async () => {
       try {
         const result = await signupHospitalAPI();
-        console.log("Signup Hospital Result:", result);
         setSignupHospitalResult(result);
       } catch (error) {
         console.error("Signup Hospital Error:", error);
@@ -94,7 +88,6 @@ const ApiComponent = () => {
     const fetchRegistrationRequestOverview = async () => {
       try {
         const result = await RegistrationRequestOverview();
-        console.log("Registration Request Overview Result:", result);
         setRegistrationRequestOverviewResult(result);
       } catch (error) {
         console.error("Registration Request Overview Error:", error);
@@ -105,7 +98,6 @@ const ApiComponent = () => {
     const fetchRegistrationRequestDetail = async (id = 'sample-id', role = 'AMB_GUEST') => {
       try {
         const result = await RegistrationRequestDetail(id, role);
-        console.log("Registration Request Detail Result:", result);
         setRegistrationRequestDetailResult(result);
       } catch (error) {
         console.error("Registration Request Detail Error:", error);
@@ -116,7 +108,6 @@ const ApiComponent = () => {
     const handleRegistrationDecision = async (id = 'sample-id', role = 'AMB_GUEST', decision = 'approve') => {
       try {
         const result = await RegistrationDecision(id, role, decision);
-        console.log("Registration Decision Result:", result);
         setRegistrationDecisionResult(result);
       } catch (error) {
         console.error("Registration Decision Error:", error);

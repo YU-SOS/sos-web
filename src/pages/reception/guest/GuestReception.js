@@ -18,7 +18,6 @@ const GuestReception = () => {
                 const response = await apiClient.get(`/reception/${receptionNumber}/guest`);
                 const data = response.data.data;
 
-                console.log(data);
                 setHospital(data.hospital);
                 setAmbulance(data.ambulance);
                 setPatient(data.patient);

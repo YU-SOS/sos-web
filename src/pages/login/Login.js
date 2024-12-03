@@ -16,18 +16,15 @@ const Login = () => {
     setRole(key);
   };
 
-  const handleSubmit = async (values) => {
-    const { id, password } = values;
+  const handleSubmit = async ({ id, password }) => {
     setLoading(true);
 
     try {
-      let result;
-      if (role === 'HOS') {
-        result = await loginHospital(id, password, role);
-      } else {
-        result = await loginAdminAPI({ adminId: id, password });
-      }
-        if (result.status === 200) {
+      const result = role === 'HOS'
+        ? await loginHospital(id, password, role)
+        : await loginAdminAPI({ adminId: id, password });
+
+      if (result.status === 200) {
         notification.success({ message: '로그인 성공!', description: '환영합니다.' });
         if (role === 'HOS') {
           localStorage.setItem('HospitalDoctorLoggedIn', true);
@@ -36,17 +33,17 @@ const Login = () => {
           navigate('/admin/dashboard');
         }
       } else if (result.status === 403) {
-            let message = result.message;
-            console.log(result.message);
-          if (message === 'GUEST') {
-              notification.error({ message: '로그인 실패', description: '승인 대기 중입니다.' });
-          } else if (message == 'BLACKLIST') {
-              notification.error({ message: '로그인 실패', description: '블랙리스트된 사용자입니다.' });
-          } else {
-              notification.error({ message: '로그인 실패', description: '접근이 거부되었습니다.' });
-          }
+        const messages = {
+          GUEST: '승인 대기 중입니다.',
+          BLACKLIST: '블랙리스트된 사용자입니다.',
+          default: '접근이 거부되었습니다.',
+        };
+        notification.error({
+          message: '로그인 실패',
+          description: messages[result.message] || messages.default,
+        });
       } else {
-          notification.error({ message: '로그인 실패', description: '다시 시도해주세요.' });
+        notification.error({ message: '로그인 실패', description: '다시 시도해주세요.' });
       }
     } catch (error) {
       notification.error({ message: '오류', description: '로그인 중 오류가 발생했습니다. 다시 시도해주세요.' });

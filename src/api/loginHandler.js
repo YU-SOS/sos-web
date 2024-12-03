@@ -8,8 +8,6 @@ const loginHandler = async () => {
             password : "test"
         })
 
-        console.log(result);
-
         return {
             status : result.status,
             data : result.data
