@@ -2,7 +2,7 @@
 
 ## 실행방법
 
-0. 웹 페이지 링크([www.yu-sos.co.kr](www.yu-sos.co.kr))로 접속한다.
+0. 웹 페이지 링크([http://www.yu-sos.co.kr](http://www.yu-sos.co.kr))로 접속한다.
 1. 병원 기능(접수 요청 관련, 접수 관련, 정보 수정) 등은 병원 로그인 후 사용이 가능하다.
    - 테스트용 아이디 1 - ID: testhos1 / PW: testhos1
    - 테스트용 아이디 2 - ID: testhos14 / PW: testhos14 (회원가입 요청 대기 중인 구급대, 로그인 실패 확인 용)
