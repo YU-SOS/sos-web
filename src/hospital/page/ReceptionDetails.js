@@ -128,6 +128,14 @@ const ReceptionDetails = () => {
                 <Row gutter={[16, 16]} style={{ height: "100%" }}>
                     <Col span={16} style={{ height: "100%" }}>
                         <Card style={{ height: "100%" }}>
+                            <Row align="middle" gutter={[16, 16]} style={{ marginBottom: "16px" }}>
+                                <Col span={4}>
+                                    <Text strong>접수 번호</Text>
+                                </Col>
+                                <Col span={4}>
+                                    <Input value={receptionData?.number || "정보 없음"} readOnly />
+                                </Col>
+                            </Row>
                             <Row align="middle" gutter={[16, 16]} style={{ marginBottom: "20px" }}>
                                 <Col span={12} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                     <Avatar
@@ -213,7 +221,7 @@ const ReceptionDetails = () => {
                                     <Text strong>증상</Text>
                                 </Col>
                                 <Col span={21}>
-                                    <Input.TextArea rows={4} value={patient?.symptom || "정보 없음"} readOnly />
+                                    <Input.TextArea rows={3} value={patient?.symptom || "정보 없음"} readOnly />
                                 </Col>
                             </Row>
                             <Row gutter={[16, 16]} style={{ marginBottom: "16px" }}>
@@ -221,7 +229,7 @@ const ReceptionDetails = () => {
                                     <Text strong>복용약</Text>
                                 </Col>
                                 <Col span={21}>
-                                    <Input.TextArea rows={4} value={patient?.medication || "정보 없음"} readOnly />
+                                    <Input.TextArea rows={3} value={patient?.medication || "정보 없음"} readOnly />
                                 </Col>
                             </Row>
                             <Row gutter={[16, 16]} style={{ marginBottom: "16px" }}>
@@ -229,7 +237,7 @@ const ReceptionDetails = () => {
                                     <Text strong>특이사항</Text>
                                 </Col>
                                 <Col span={21}>
-                                    <Input.TextArea rows={4} value={patient?.reference || "정보 없음"} readOnly />
+                                    <Input.TextArea rows={3} value={patient?.reference || "정보 없음"} readOnly />
                                 </Col>
                             </Row>
                             <Row justify="end" gutter={[16, 16]}>
